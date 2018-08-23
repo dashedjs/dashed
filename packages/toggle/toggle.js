@@ -94,7 +94,6 @@ export class DashedToggle extends LitElement {
           width: 100%;
           height: 100%;
           fill: none;
-          /* stroke-linecap: round; */
           z-index: -1;
         }
   
@@ -104,7 +103,6 @@ export class DashedToggle extends LitElement {
         }
   
         svg.dash .toggle-switcher {
-          /* fill: var(--dashed-secondary-color); */
           fill: var(--dashed-primary-color);
           transition: all 100ms ease-in-out;
         }

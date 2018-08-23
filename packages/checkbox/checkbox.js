@@ -85,7 +85,6 @@ export class DashedCheckbox extends LitElement {
           width: 100%;
           height: 100%;
           fill: none;
-          /* stroke-linecap: round; */
           z-index: -1;
         }
   

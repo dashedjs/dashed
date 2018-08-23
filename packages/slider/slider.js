@@ -99,7 +99,6 @@ export class DashedSlider extends LitElement {
           width: 100%;
           height: 100%;
           fill: none;
-          /* stroke-linecap: round; */
           z-index: -1;
           transition: all 50ms ease-in-out;
           will-change: tranform, opacity;
