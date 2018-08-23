@@ -1,0 +1,18 @@
+{
+  "name": "dashed-footer",
+  "version": "0.0.1",
+  "description": "Footer web component",
+  "main": "footer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dashedjs/dashedjs.git"
+  },
+  "keywords": [
+    "Web component"
+  ],
+  "author": "",
+  "license": "MIT"
+}
