@@ -26,6 +26,7 @@ video {
 /* Main */
 main {
   min-height: 120%;
+  padding: 1rem;
 }
 
 section {

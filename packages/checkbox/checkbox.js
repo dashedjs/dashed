@@ -122,17 +122,22 @@ export class DashedCheckbox extends LitElement {
 
   drawDash() {
     const [width, height] = [24, 24];
-    const { strokeDasharray, strokeDashOffset, dashWidth } = this._computeRectStrokeDashParams(width, height);
+    const { dashWidth } = this._validateDashProps(width, height);
 
     const svg = this.svg;
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
     const border = svg.querySelector('.border');
+    const borderRadius = 0;
+    border.setAttribute('stroke-width', dashWidth);
     border.setAttribute('x', dashWidth / 2);
     border.setAttribute('y', dashWidth / 2);
     border.setAttribute('width', width - dashWidth);
     border.setAttribute('height', height - dashWidth);
-    border.setAttribute('stroke-width', dashWidth);
+    border.setAttribute('rx', borderRadius);
+    border.setAttribute('ry', borderRadius);
+
+    const { strokeDasharray, strokeDashOffset } = this._computeRectStrokeDashParams(width, height, borderRadius);
     border.setAttribute('stroke-dasharray', strokeDasharray);
     border.setAttribute('stroke-dashoffset', strokeDashOffset);
 
@@ -142,24 +147,45 @@ export class DashedCheckbox extends LitElement {
     checkmark.setAttribute('d', 'M6 12l4 4l8 -8');
   }
 
-  _computeRectStrokeDashParams(width, height) {
+  _computeRectStrokeDashParams(width, height, borderRadius) {
     const { dashWidth, dashLength, dashRatio } = this._validateDashProps(width, height);
 
-    const [borderWidth, borderHeight] = [width - dashWidth, height - dashWidth];
+    const lineX = width - dashWidth - 2 * borderRadius;
+    const lineY = height - dashWidth - 2 * borderRadius;
+    const arcCorner = (2 * Math.PI * borderRadius) / 4;
 
-    const dashCountX = Math.floor((borderWidth - dashRatio * dashLength) / ((1 + dashRatio) * dashLength));
-    const dashCountY = Math.floor((borderHeight - dashRatio * dashLength) / ((1 + dashRatio) * dashLength));
+    const dashCountX = calculateDashCount(lineX);
+    const dashCountY = calculateDashCount(lineY);
+    const dashCountCorner = calculateDashCount(arcCorner);
 
-    const dashSpacingX = (borderWidth - dashCountX * dashLength) / (dashCountX + 1);
-    const dashSpacingY = (borderHeight - dashCountY * dashLength) / (dashCountY + 1);
+    const dashSpacingX = calculateDashSpacing(lineX, dashCountX);
+    const dashSpacingY = calculateDashSpacing(lineY, dashCountY);
+    const dashSpacingCorner = calculateDashSpacing(arcCorner, dashCountCorner);
 
-    const strokeDashArrayX =
-      `${dashLength} ${dashSpacingX} `.repeat(dashCountX - 1) + `${dashLength} ${dashSpacingX + dashSpacingY} `;
-    const strokeDasharrayY =
-      `${dashLength} ${dashSpacingY} `.repeat(dashCountY - 1) + `${dashLength} ${dashSpacingY + dashSpacingX} `;
+    const strokeDashArrayX = calculateStrokeDasharray(dashCountX, dashSpacingX, dashSpacingCorner);
+    const strokeDashArrayCorner1 = calculateStrokeDasharray(dashCountCorner, dashSpacingCorner, dashSpacingY);
+    const strokeDasharrayY = calculateStrokeDasharray(dashCountY, dashSpacingY, dashSpacingCorner);
+    const strokeDashArrayCorner2 = calculateStrokeDasharray(dashCountCorner, dashSpacingCorner, dashSpacingX);
 
-    const strokeDasharray = `${strokeDashArrayX}${strokeDasharrayY}`.trim();
+    const strokeDasharray = `${strokeDashArrayX}${strokeDashArrayCorner1}${strokeDasharrayY}${strokeDashArrayCorner2}`.trim();
     const strokeDashOffset = -dashSpacingX;
+
+    function calculateDashCount(totalDistance) {
+      if (totalDistance - dashRatio * dashLength <= 0) return 0;
+      return Math.floor((totalDistance - dashRatio * dashLength) / ((1 + dashRatio) * dashLength));
+    }
+
+    function calculateDashSpacing(totalDistance, dashCount) {
+      if (dashCount === 0) return totalDistance / 2;
+      return (totalDistance - dashCount * dashLength) / (dashCount + 1);
+    }
+
+    function calculateStrokeDasharray(dashCount, dashSpacing, adjacentdashSpacing) {
+      if (dashCount === 0) return `0 ${dashSpacing + adjacentdashSpacing} `;
+      return (
+        `${dashLength} ${dashSpacing} `.repeat(dashCount - 1) + `${dashLength} ${dashSpacing + adjacentdashSpacing} `
+      );
+    }
 
     return { strokeDasharray, strokeDashOffset, dashWidth };
   }

@@ -22,9 +22,9 @@ export class DashedHeader extends LitElement {
 
   constructor() {
     super();
-    this.dashWidth = 4;
-    this.dashLength = 10;
-    this.dashRatio = 0.5;
+    this.dashWidth = 1;
+    this.dashLength = 4;
+    this.dashRatio = 1;
   }
 
   _createRoot() {
@@ -72,7 +72,6 @@ export class DashedHeader extends LitElement {
           top: 0;
           z-index: 1;
           color: var(--dashed-primary-color);
-          /* box-shadow: var(--dashed-header-shadow); */
         }
 
         header {

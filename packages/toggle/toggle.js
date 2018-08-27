@@ -22,8 +22,8 @@ export class DashedToggle extends LitElement {
     this.checked = false;
 
     this.dashWidth = 2;
-    this.dashLength = 6;
-    this.dashRatio = 0.2;
+    this.dashLength = 4;
+    this.dashRatio = 0.5;
   }
 
   _createRoot() {
@@ -137,26 +137,27 @@ export class DashedToggle extends LitElement {
 
   drawDash() {
     const [width, height] = [48, 24];
-    const { dashWidth } = this._validateDashProps(width, height);
+    const [widthDelta, heightDelta] = [6, 10];
+    const { dashWidth } = this._validateDashProps(width - widthDelta, height - heightDelta);
 
     const svg = this.svg;
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
     const toggleBackground = svg.querySelector('.toggle-background');
-    const [toggleBackgroundWidth, toggleBackgroundHeight] = [width - 4 * dashWidth, height - 6 * dashWidth];
-    const toggleBackgroundBorderRadius = toggleBackgroundHeight / 2;
-    toggleBackground.setAttribute('x', 4);
-    toggleBackground.setAttribute('y', 6);
-    toggleBackground.setAttribute('width', toggleBackgroundWidth);
-    toggleBackground.setAttribute('height', toggleBackgroundHeight);
+    const toggleBackgroundBorderRadius = (height - heightDelta - dashWidth) / 2;
+    toggleBackground.setAttribute('stroke-width', dashWidth);
+    toggleBackground.setAttribute('x', (widthDelta + dashWidth) / 2);
+    toggleBackground.setAttribute('y', (heightDelta + dashWidth) / 2);
+    toggleBackground.setAttribute('width', width - widthDelta - dashWidth);
+    toggleBackground.setAttribute('height', height - heightDelta - dashWidth);
     toggleBackground.setAttribute('rx', toggleBackgroundBorderRadius);
     toggleBackground.setAttribute('ry', toggleBackgroundBorderRadius);
-    toggleBackground.setAttribute('stroke-width', dashWidth);
 
-    const lineX = toggleBackgroundWidth - 2 * toggleBackgroundBorderRadius;
-    const arcY = (toggleBackground.getTotalLength() - 2 * lineX) / 2;
-
-    const { strokeDasharray, strokeDashOffset } = this._computeRectRoundedStrokeDashParams(width, height, lineX, arcY);
+    const { strokeDasharray, strokeDashOffset } = this._computeRectStrokeDashParams(
+      width - widthDelta,
+      height - heightDelta,
+      toggleBackgroundBorderRadius
+    );
     toggleBackground.setAttribute('stroke-dasharray', strokeDasharray);
     toggleBackground.setAttribute('stroke-dashoffset', strokeDashOffset);
 
@@ -167,23 +168,45 @@ export class DashedToggle extends LitElement {
     toggleSwitcher.setAttribute('r', (height - dashWidth) / 2);
   }
 
-  _computeRectRoundedStrokeDashParams(width, height, lineX, arcY) {
+  _computeRectStrokeDashParams(width, height, borderRadius) {
     const { dashWidth, dashLength, dashRatio } = this._validateDashProps(width, height);
 
-    const dashCountX = Math.floor(
-      (lineX - this.dashRatio * this.dashLength) / ((1 + this.dashRatio) * this.dashLength)
-    );
-    const dashCountY = Math.floor((arcY - dashRatio * this.dashLength) / ((1 + dashRatio) * dashLength));
+    const lineX = width - dashWidth - 2 * borderRadius;
+    const lineY = height - dashWidth - 2 * borderRadius;
+    const arcCorner = (2 * Math.PI * borderRadius) / 4;
 
-    const dashSpacingX = (lineX - dashCountX * this.dashLength) / (dashCountX + 1);
-    const dashSpacingY = (arcY - dashCountY * this.dashLength) / (dashCountY + 1);
+    const dashCountX = calculateDashCount(lineX);
+    const dashCountY = calculateDashCount(lineY);
+    const dashCountCorner = calculateDashCount(arcCorner);
 
-    const strokeDashArrayX =
-      `${dashLength} ${dashSpacingX} `.repeat(dashCountX - 1) + `${dashLength} ${dashSpacingX + dashSpacingY} `;
-    const strokeDasharrayY =
-      `${dashLength} ${dashSpacingY} `.repeat(dashCountY - 1) + `${dashLength} ${dashSpacingY + dashSpacingX} `;
-    const strokeDasharray = `${strokeDashArrayX}${strokeDasharrayY}`.trim();
+    const dashSpacingX = calculateDashSpacing(lineX, dashCountX);
+    const dashSpacingY = calculateDashSpacing(lineY, dashCountY);
+    const dashSpacingCorner = calculateDashSpacing(arcCorner, dashCountCorner);
+
+    const strokeDashArrayX = calculateStrokeDasharray(dashCountX, dashSpacingX, dashSpacingCorner);
+    const strokeDashArrayCorner1 = calculateStrokeDasharray(dashCountCorner, dashSpacingCorner, dashSpacingY);
+    const strokeDasharrayY = calculateStrokeDasharray(dashCountY, dashSpacingY, dashSpacingCorner);
+    const strokeDashArrayCorner2 = calculateStrokeDasharray(dashCountCorner, dashSpacingCorner, dashSpacingX);
+
+    const strokeDasharray = `${strokeDashArrayX}${strokeDashArrayCorner1}${strokeDasharrayY}${strokeDashArrayCorner2}`.trim();
     const strokeDashOffset = -dashSpacingX;
+
+    function calculateDashCount(totalDistance) {
+      if (totalDistance - dashRatio * dashLength <= 0) return 0;
+      return Math.floor((totalDistance - dashRatio * dashLength) / ((1 + dashRatio) * dashLength));
+    }
+
+    function calculateDashSpacing(totalDistance, dashCount) {
+      if (dashCount === 0) return totalDistance / 2;
+      return (totalDistance - dashCount * dashLength) / (dashCount + 1);
+    }
+
+    function calculateStrokeDasharray(dashCount, dashSpacing, adjacentdashSpacing) {
+      if (dashCount === 0) return `0 ${dashSpacing + adjacentdashSpacing} `;
+      return (
+        `${dashLength} ${dashSpacing} `.repeat(dashCount - 1) + `${dashLength} ${dashSpacing + adjacentdashSpacing} `
+      );
+    }
 
     return { strokeDasharray, strokeDashOffset, dashWidth };
   }

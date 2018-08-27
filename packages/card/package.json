@@ -14,5 +14,8 @@
     "Web component"
   ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "lit-element": "^0.5.0"
+  }
 }

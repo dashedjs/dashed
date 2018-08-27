@@ -76,7 +76,7 @@ export class DashedSlider extends LitElement {
           pointer-events: none;
         }
 
-        .slider-container {
+        .slider {
           display: inline-flex;
           justify-content: center;
           align-items: center;
@@ -122,7 +122,7 @@ export class DashedSlider extends LitElement {
           opacity: 0;
         }
       </style>
-      <div class="slider-container">
+      <div class="slider">
         <input type="range" min="${min}" max="${max}" step="${step}" value="${value}"
           on-input="${e => this._onInputHandler(e)}" />
         <svg class="dash">

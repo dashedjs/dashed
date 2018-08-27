@@ -16,6 +16,6 @@ export { DashedSlider } from './slider/slider.js';
 // export { DashedSpinner } from './spinner/spinner.js';
 // export { DashedTabs } from './tabs/tabs.js';
 export { DashedTag } from './tag/tag.js';
-export { DashedTextarea } from './textarea/textarea.js';
+// export { DashedTextarea } from './textarea/textarea.js';
 export { DashedToggle } from './toggle/toggle.js';
 // export { DashedTooltip } from './tooltip/tooltip.js';

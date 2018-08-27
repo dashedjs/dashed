@@ -134,17 +134,13 @@ export class DashedRadio extends LitElement {
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
     const outerCircle = svg.querySelector('.outer-circle');
+    const radius = (width - dashWidth) / 2;
     outerCircle.setAttribute('cx', width / 2);
     outerCircle.setAttribute('cy', height / 2);
     outerCircle.setAttribute('r', (width - dashWidth) / 2);
     outerCircle.setAttribute('stroke-width', dashWidth);
 
-    const outerCirconference = outerCircle.getTotalLength();
-    const { strokeDasharray, strokeDashOffset } = this._computeCircleStrokeDashParams(
-      width,
-      height,
-      outerCirconference
-    );
+    const { strokeDasharray, strokeDashOffset } = this._computeCircleStrokeDashParams(width, height, radius);
     outerCircle.setAttribute('stroke-dasharray', strokeDasharray);
     outerCircle.setAttribute('stroke-dashoffset', strokeDashOffset);
 
@@ -154,14 +150,14 @@ export class DashedRadio extends LitElement {
     innerCircle.setAttribute('r', 5);
   }
 
-  _computeCircleStrokeDashParams(width, height, totalLength) {
+  _computeCircleStrokeDashParams(width, height, radius) {
     const { dashWidth, dashLength, dashRatio } = this._validateDashProps(width, height);
 
-    const dashCount = Math.floor((totalLength - dashRatio * dashLength) / ((1 + dashRatio) * dashLength));
-    const dashSpacing = (totalLength - dashCount * dashLength) / (dashCount + 1);
+    const circonference = 2 * Math.PI * radius;
+    const dashCount = Math.floor((circonference - dashRatio * dashLength) / ((1 + dashRatio) * dashLength));
+    const dashSpacing = (circonference - dashCount * dashLength) / (dashCount + 1);
 
     const strokeDasharray = `${dashLength} ${dashSpacing}`;
-    // const strokeDashOffset = dashLength - dashSpacing / 2;
     const strokeDashOffset = 0;
 
     return { strokeDasharray, strokeDashOffset, dashWidth };
