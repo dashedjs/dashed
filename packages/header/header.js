@@ -60,6 +60,8 @@ export class DashedHeader extends LitElement {
           --dashed-header-height: 56px;
           --dashed-lightgrey: lightgrey;
           --dashed-primary-color: blue;
+          --dashed-secondary-color: red;
+          --dashed-fill-color: lightcyan;
           --dashed-transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
           --dashed-shadow-2:
             0 2px 2px 0 rgba(10, 9, 9, 0.14),
@@ -168,7 +170,10 @@ export class DashedHeader extends LitElement {
         svg.dash .border-bottom {
           stroke: var(--dashed-primary-color);
           transition: all 100ms ease-in-out;
-          opacity: 1;
+        }
+
+        svg.dash .background {
+          fill: var(--dashed-fill-color);
         }
 
         @media screen and (min-width: 600px) {
@@ -224,10 +229,11 @@ export class DashedHeader extends LitElement {
         </nav>
         <button role="search" aria-label="search button">🔍</button>
       </header>
-      <svg class="dash" filter="url(#shadow)">
+      <svg class="dash" filter="url(#shadow2)">
+        <rect class="background" />
         <line class="border-bottom" />
-        <filter id="shadow">
-          <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.9" />
+        <filter id="shadow2">
+          <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.9" />
         </filter>
       </svg>
     `;
@@ -245,12 +251,18 @@ export class DashedHeader extends LitElement {
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     const borderBottom = svg.querySelector('.border-bottom');
     borderBottom.setAttribute('x1', 0);
-    borderBottom.setAttribute('y1', height);
+    borderBottom.setAttribute('y1', height - dashWidth / 2);
     borderBottom.setAttribute('x2', width);
-    borderBottom.setAttribute('y2', height);
+    borderBottom.setAttribute('y2', height - dashWidth / 2);
     borderBottom.setAttribute('stroke-width', dashWidth);
     borderBottom.setAttribute('stroke-dasharray', strokeDasharray);
     borderBottom.setAttribute('stroke-dashoffset', strokeDashOffset);
+
+    const background = svg.querySelector('.background');
+    background.setAttribute('x', 0);
+    background.setAttribute('y', 0);
+    background.setAttribute('width', width);
+    background.setAttribute('height', height - dashWidth / 2);
   }
 
   _computeLineStrokeDashParams(width) {

@@ -16,7 +16,7 @@ export class DashedNotification extends LitElement {
   constructor() {
     super();
     this.dashWidth = 2;
-    this.dashLength = 20;
+    this.dashLength = 10;
     this.dashRatio = 0.1;
   }
 
@@ -35,8 +35,12 @@ export class DashedNotification extends LitElement {
         :host {
           --dashed-primary-color: blue;
           --dashed-secondary-color: red;
+          --dashed-fill-color: lightcyan;
           --dashed-outline-color: rgba(255, 0, 0, 0.5);
-          --dashed-card-width: 256px;
+          --dashed-notification-min-width: 256px;
+          --dashed-notification-max-width: 512px;
+          --dashed-notification-min-height: 48px;
+          --dashed-notification-padding: 8px;
 
           display: inline-flex;
           align-items: center;
@@ -44,7 +48,9 @@ export class DashedNotification extends LitElement {
           position: relative;
           cursor: inherit;
           outline: none;
-          min-width: var(--dashed-card-width);
+          min-height: var(--dashed-notification-min-height);
+          min-width: var(--dashed-notification-min-width);
+          max-width: var(--dashed-notification-max-width);
         }
 
         :host(:focus) .dash {
@@ -57,24 +63,32 @@ export class DashedNotification extends LitElement {
           pointer-events: none;
         }
 
-        .card {
-          display: inline-block;
+        .notification {
+          display: grid;
+          grid-template-columns: 32px auto 32px;
+          justify-items: center;
+          align-items: center;
           position: relative;
           width: 100%;
           height: 100%;
-          padding: 10px;
+          padding: var(--dashed-notification-padding);
         }
 
-        .card__header {
-          opacity: 0;
+        .notification__icon {
+          /* display: inline-block; */
         }
 
-        .card__content {
-          opacity: 0;
+        .notification__message {
         }
 
-        .card__footer {
-          opacity: 0;
+        .notification__button {
+          display: inline-block;
+          cursor: pointer;
+          background: none;
+          border: none;
+          width: 32px;
+          height: 32px;
+          margin: 0;
         }
 
         svg.dash {
@@ -90,27 +104,22 @@ export class DashedNotification extends LitElement {
         svg.dash .border {
           stroke: var(--dashed-primary-color);
           transition: all 100ms ease-in-out;
+          fill: var(--dashed-fill-color);
         }
       </style>
-      <div class="card">
-        <h3 class="card__header">Card title</h3>
-        <div class="card__content">
-          This is the card content. This is a text placehoder.
-          <p>It can grow at will</p>
-        </div>
-        <div class="card__footer">
-          Here the card footer
-        </div>
+      <div class="notification">
+        <span class="notification__icon">ico</span>
+        <div class="notification__message">Here is an example of notification.</div>
+        <button class="notification__button">x</button>
         <svg class="dash">
           <rect class="border" />
-          <circle cx="80" cy="80" r="70" stroke="red" stroke-width="2"></circle>
         </svg>
       </div>
     `;
   }
 
   get nativeElement() {
-    return this._root.querySelector('card');
+    return this._root.querySelector('notification');
   }
 
   get svg() {
@@ -125,7 +134,7 @@ export class DashedNotification extends LitElement {
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
     const border = svg.querySelector('.border');
-    const borderRadius = 16;
+    const borderRadius = 10;
     border.setAttribute('stroke-width', dashWidth);
     border.setAttribute('x', dashWidth / 2);
     border.setAttribute('y', dashWidth / 2);

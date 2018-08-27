@@ -41,6 +41,7 @@ export class DashedRadio extends LitElement {
         :host {
           --dashed-primary-color: blue;
           --dashed-secondary-color: red;
+          --dashed-fill-color: lightcyan;
           --dashed-outline-color: rgba(255, 0, 0, 0.5);
           --dashed-radio-dimension: 24px;
           --dashed-dash-width: 2px;
@@ -91,10 +92,10 @@ export class DashedRadio extends LitElement {
         svg.dash .outer-circle {
           stroke: var(--dashed-primary-color);
           transition: all 100ms ease-in-out;
+          fill: var(--dashed-fill-color);
         }
   
         svg.dash .inner-circle {
-          /* stroke: var(--dashed-primary-color); */
           fill: var(--dashed-secondary-color);
           transition: all 100ms ease-in-out;
         }
@@ -110,8 +111,8 @@ export class DashedRadio extends LitElement {
       <div class="radio-container">
         <input type="radio" id="radio" />
         <svg class="dash">
-          <circle class="inner-circle" />
           <circle class="outer-circle" />
+          <circle class="inner-circle" />
         </svg>
       </div>
       <label for="radio"><slot></slot></label>

@@ -41,6 +41,7 @@ export class DashedInput extends LitElement {
         :host {
           --dashed-primary-color: blue;
           --dashed-secondary-color: red;
+          --dashed-fill-color: lightcyan;
           --dashed-outline-color: rgba(255, 0, 0, 0.5);
           --dashed-input-dimension: 24px;
 
@@ -80,6 +81,7 @@ export class DashedInput extends LitElement {
           outline: none;
           max-width: 100%;
           height: 100%;
+          background: var(--dashed-fill-color);
         }
 
         svg.dash {
@@ -88,7 +90,7 @@ export class DashedInput extends LitElement {
           left: 0;
           width: 100%;
           height: 100%;
-          fill: none;
+          fill: var(--dashed-fill-color);
           z-index: -1;
         }
   

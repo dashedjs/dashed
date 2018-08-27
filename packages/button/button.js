@@ -41,6 +41,7 @@ export class DashedButton extends LitElement {
         :host {
           --dashed-primary-color: blue;
           --dashed-secondary-color: red;
+          --dashed-fill-color: lightcyan;
           --dashed-outline-color: rgba(255, 0, 0, 0.5);
 
           display: inline-flex;
@@ -91,6 +92,7 @@ export class DashedButton extends LitElement {
         svg.dash .border {
           stroke: var(--dashed-primary-color);
           transition: all 100ms ease-in-out;
+          fill: var(--dashed-fill-color);
         }
       </style>
       <button type="button">

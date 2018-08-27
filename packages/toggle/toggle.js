@@ -41,6 +41,7 @@ export class DashedToggle extends LitElement {
         :host {
           --dashed-primary-color: blue;
           --dashed-secondary-color: red;
+          --dashed-fill-color: lightcyan;
           --dashed-outline-color: rgba(255, 0, 0, 0.5);
           --dashed-toggle-width: 48px;
           --dashed-toggle-height: 24px;
@@ -100,6 +101,7 @@ export class DashedToggle extends LitElement {
         svg.dash .toggle-background {
           stroke: var(--dashed-primary-color);
           transition: all 100ms ease-in-out;
+          fill: var(--dashed-fill-color);
         }
   
         svg.dash .toggle-switcher {

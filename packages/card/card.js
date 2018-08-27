@@ -35,8 +35,10 @@ export class DashedCard extends LitElement {
         :host {
           --dashed-primary-color: blue;
           --dashed-secondary-color: red;
+          --dashed-fill-color: lightcyan;
           --dashed-outline-color: rgba(255, 0, 0, 0.5);
-          --dashed-card-width: 256px;
+          --dashed-card-min-width: 256px;
+          --dashed-card-max-width: 512px;
 
           display: inline-flex;
           align-items: center;
@@ -44,7 +46,8 @@ export class DashedCard extends LitElement {
           position: relative;
           cursor: inherit;
           outline: none;
-          min-width: var(--dashed-card-width);
+          min-width: var(--dashed-card-min-width);
+          max-width: var(--dashed-card-max-width);
         }
 
         :host(:focus) .dash {
@@ -65,16 +68,20 @@ export class DashedCard extends LitElement {
           padding: 10px;
         }
 
-        .card__header {
-          opacity: 0;
+        .card__title {
         }
 
         .card__content {
-          opacity: 0;
         }
 
         .card__footer {
-          opacity: 0;
+          display: flex;
+          justify-content: flex-end;
+        }
+
+        .card__footer__button {
+          display: inline-block;
+          cursor: pointer;
         }
 
         svg.dash {
@@ -90,20 +97,26 @@ export class DashedCard extends LitElement {
         svg.dash .border {
           stroke: var(--dashed-primary-color);
           transition: all 100ms ease-in-out;
+          fill: var(--dashed-fill-color);
         }
       </style>
       <div class="card">
-        <h3 class="card__header">Card title</h3>
+        <h4 class="card__title">Card title</h3>
+        <h5 class="card__subtitle">Card subtitle</h5>
         <div class="card__content">
-          This is the card content. This is a text placehoder.
+          This is the card content. This is a text divlacehoder.
           <p>It can grow at will</p>
         </div>
         <div class="card__footer">
-          Here the card footer
+          <small>Here the card footer</small>
+          <button class="card__footer__button">button1</button>
+          <button class="card__footer__button">button2</button>
         </div>
-        <svg class="dash">
+        <svg class="dash" filter="url(#shadow2)">
           <rect class="border" />
-          <circle cx="80" cy="80" r="70" stroke="red" stroke-width="2"></circle>
+          <filter id="shadow2">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.3" />
+          </filter>
         </svg>
       </div>
     `;

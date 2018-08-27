@@ -41,9 +41,9 @@ export class DashedCheckbox extends LitElement {
         :host {
           --dashed-primary-color: blue;
           --dashed-secondary-color: red;
+          --dashed-fill-color: lightcyan;
           --dashed-outline-color: rgba(255, 0, 0, 0.5);
           --dashed-checkbox-dimension: 24px;
-          --dashed-dash-width: 2px;
 
           display: inline-flex;
           align-items: center;
@@ -91,6 +91,7 @@ export class DashedCheckbox extends LitElement {
         svg.dash .border {
           stroke: var(--dashed-primary-color);
           transition: all 100ms ease-in-out;
+          fill: var(--dashed-fill-color);
         }
 
         input[type="checkbox"]:not(:checked) ~ svg.dash .checkmark {
@@ -104,8 +105,8 @@ export class DashedCheckbox extends LitElement {
       <div class="checkbox-container">
         <input type="checkbox" id="checkbox" />
         <svg class="dash">
-          <path class="checkmark" />
           <rect class="border" />
+          <path class="checkmark" />
         </svg>
       </div>
       <label for="checkbox"><slot></slot></label>
@@ -136,7 +137,6 @@ export class DashedCheckbox extends LitElement {
     border.setAttribute('height', height - dashWidth);
     border.setAttribute('rx', borderRadius);
     border.setAttribute('ry', borderRadius);
-
     const { strokeDasharray, strokeDashOffset } = this._computeRectStrokeDashParams(width, height, borderRadius);
     border.setAttribute('stroke-dasharray', strokeDasharray);
     border.setAttribute('stroke-dashoffset', strokeDashOffset);

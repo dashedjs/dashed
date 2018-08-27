@@ -1,14 +1,13 @@
-import { LitElement, html } from '../button/node_modules/@polymer/lit-element/lit-element';
+import { LitElement, html, svg } from '@polymer/lit-element/lit-element.js';
 
-export class DashedSelect extends LitElement {
+export class DashedLink extends LitElement {
   static get is() {
-    return 'dashed-select';
+    return 'dashed-link';
   }
 
   static get properties() {
     return {
       disabled: Boolean,
-      value: String,
 
       dashWidth: Number,
       dashLength: Number,
@@ -19,11 +18,10 @@ export class DashedSelect extends LitElement {
   constructor() {
     super();
     this.disabled = false;
-    this.value = '';
 
-    this.dashWidth = 2;
-    this.dashLength = 10;
-    this.dashRatio = 0.3;
+    this.dashWidth = 4;
+    this.dashLength = 8;
+    this.dashRatio = 0.4;
   }
 
   _createRoot() {
@@ -43,20 +41,22 @@ export class DashedSelect extends LitElement {
           --dashed-secondary-color: red;
           --dashed-fill-color: lightcyan;
           --dashed-outline-color: rgba(255, 0, 0, 0.5);
-          --dashed-select-min-width: 96px;
 
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          position: relative;
-          cursor: inherit;
+          cursor: pointer;
           outline: none;
-          min-width: var(--dashed-select-min-width);
+          min-width: 48px;
         }
 
-        :host(:focus) .dash {
+        :host(:focus) svg.dash {
           outline: 1px solid var(--dashed-outline-color);
           outline-offset: 1px;
+        }
+
+        :host(:hover) link {
+          color: var(--dashed-secondary-color);
         }
 
         :host(:disabled) {
@@ -64,16 +64,16 @@ export class DashedSelect extends LitElement {
           pointer-events: none;
         }
 
-        .select-container {
+        a {
           display: inline-block;
-          position: relative;
-          width: 100%;
-        }
-
-        select {
-          border: none;
+          cursor: inherit;
+          text-decoration: none;
           outline: none;
-          margin-bottom: 4px;
+          padding-bottom: 6px;
+          font-size: 16px;
+          position: relative;
+          color: var(--dashed-primary-color);
+          transition: 50ms ease-in-out;
         }
 
         svg.dash {
@@ -82,7 +82,7 @@ export class DashedSelect extends LitElement {
           left: 0;
           width: 100%;
           height: 100%;
-          fill: var(--dashed-fill-color);
+          fill: none;
           z-index: -1;
         }
   
@@ -90,24 +90,23 @@ export class DashedSelect extends LitElement {
           stroke: var(--dashed-primary-color);
           transition: all 100ms ease-in-out;
         }
+
+        svg.dash .background {
+          fill: var(--dashed-fill-color);
+        }
       </style>
-      <!-- <label for="select"><slot></slot></label> -->
-      <div class="select-container">
-        <select id="select">
-          <option value="1">My Option 1</option>
-          <option value="3">My Option 3</option>
-          <option value="2">My Option 2</option>
-        </select>
+      <a href="#">
+        <slot></slot>
         <svg class="dash">
-          <path class="caret" />
+          <rect class="background" />
           <line class="border-bottom" />
         </svg>
-      </div>
+      </a>
     `;
   }
 
   get nativeElement() {
-    return this._root.querySelector('select');
+    return this._root.querySelector('a');
   }
 
   get svg() {
@@ -120,7 +119,6 @@ export class DashedSelect extends LitElement {
 
     const svg = this.svg;
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-
     const borderBottom = svg.querySelector('.border-bottom');
     borderBottom.setAttribute('x1', 0);
     borderBottom.setAttribute('y1', height - dashWidth / 2);
@@ -130,10 +128,11 @@ export class DashedSelect extends LitElement {
     borderBottom.setAttribute('stroke-dasharray', strokeDasharray);
     borderBottom.setAttribute('stroke-dashoffset', strokeDashOffset);
 
-    const caret = svg.querySelector('.caret');
-    caret.setAttribute('stroke-width', dashWidth * 1.8);
-    caret.setAttribute('stroke', 'red');
-    caret.setAttribute('d', 'M6 12l4 4l8 -8');
+    const background = svg.querySelector('.background');
+    background.setAttribute('x', 0);
+    background.setAttribute('y', 0);
+    background.setAttribute('width', width);
+    background.setAttribute('height', height - dashWidth / 2);
   }
 
   _computeLineStrokeDashParams(width) {
@@ -159,4 +158,4 @@ export class DashedSelect extends LitElement {
     return { dashWidth, dashLength, dashRatio };
   }
 }
-customElements.define(DashedSelect.is, DashedSelect);
+customElements.define(DashedLink.is, DashedLink);
