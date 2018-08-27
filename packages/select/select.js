@@ -50,6 +50,7 @@ export class DashedSelect extends LitElement {
           --dashed-fill-color: lightcyan;
           --dashed-outline-color: rgba(255, 0, 0, 0.5);
           --dashed-select-min-width: 96px;
+          --dashed-select-min-height: 24px;
 
           display: inline-flex;
           align-items: center;
@@ -58,6 +59,7 @@ export class DashedSelect extends LitElement {
           cursor: inherit;
           outline: none;
           min-width: var(--dashed-select-min-width);
+          min-height: var(--dashed-select-min-height);
         }
 
         :host(:focus) .dash {
@@ -74,12 +76,20 @@ export class DashedSelect extends LitElement {
           display: inline-block;
           position: relative;
           width: 100%;
+          height: 100%;
         }
 
         select {
           border: none;
           outline: none;
           margin-bottom: 4px;
+          background: transparent;
+          cursor: pointer;
+          width: 100%;
+          height: 100%;
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
         }
 
         svg.dash {
@@ -96,13 +106,18 @@ export class DashedSelect extends LitElement {
           stroke: var(--dashed-primary-color);
           transition: all 100ms ease-in-out;
         }
+  
+        svg.dash .caret {
+          stroke: var(--dashed-primary-color);
+          transition: all 100ms ease-in-out;
+        }
       </style>
       <!-- <label for="select"><slot></slot></label> -->
       <div class="select-container">
         <select id="select">
-          <option value="1">My Option 1</option>
-          <option value="3">My Option 3</option>
-          <option value="2">My Option 2</option>
+          <option value="1">Option 1</option>
+          <option value="3">Option 3</option>
+          <option value="2">Option 2</option>
         </select>
         <svg class="dash">
           <path class="caret" />
@@ -138,8 +153,7 @@ export class DashedSelect extends LitElement {
 
     const caret = svg.querySelector('.caret');
     caret.setAttribute('stroke-width', dashWidth * 1.8);
-    caret.setAttribute('stroke', 'red');
-    caret.setAttribute('d', 'M6 12l4 4l8 -8');
+    caret.setAttribute('d', `M${width - 12} ${8}l4 4l4 -4`);
   }
 
   _computeLineStrokeDashParams(width) {
