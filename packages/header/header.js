@@ -42,8 +42,8 @@ export class DashedHeader extends LitElement {
     this._mediaQueryChange(this._mediaQueryList);
 
     document.addEventListener('click', this._closeMenu.bind(this));
-    window.addEventListener('resize', this.drawDash.bind(this));
     this.drawDash();
+    window.addEventListener('resize', this.drawDash.bind(this));
   }
 
   disconnectedCallback() {

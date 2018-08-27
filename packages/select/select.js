@@ -33,6 +33,12 @@ export class DashedSelect extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     this.drawDash();
+    window.addEventListener('resize', this.drawDash.bind(this));
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('resize', this.drawDash.bind(this));
   }
 
   _render({ disabled, dashWidth, dashLength, dashRatio }) {

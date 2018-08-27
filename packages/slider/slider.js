@@ -40,6 +40,12 @@ export class DashedSlider extends LitElement {
     this.drawDash();
     this._sliderCursor = this.svg.querySelector('.slider-cursor');
     this._sliderTracker = this.svg.querySelector('.slider-tracker');
+    window.addEventListener('resize', this.drawDash.bind(this));
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('resize', this.drawDash.bind(this));
   }
 
   _render({ disabled, min, max, value, step }) {
