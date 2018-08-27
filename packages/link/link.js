@@ -72,7 +72,7 @@ export class DashedLink extends LitElement {
           padding-bottom: 6px;
           font-size: 16px;
           position: relative;
-          color: var(--dashed-primary-color);
+          /* color: var(--dashed-primary-color); */
           transition: 50ms ease-in-out;
         }
 

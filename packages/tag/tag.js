@@ -69,7 +69,7 @@ export class DashedTag extends LitElement {
           padding: 4px 8px;
           font-size: 12px;
           position: relative;
-          color: var(--dashed-primary-color);
+          /* color: var(--dashed-primary-color); */
           transition: 50ms ease-in-out;
         }
 
