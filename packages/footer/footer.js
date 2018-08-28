@@ -1,4 +1,5 @@
 import { LitElement, html } from '@polymer/lit-element';
+import { dashedColors } from '../styles/styles.js';
 
 export class DashedFooter extends LitElement {
   static get is() {
@@ -39,10 +40,11 @@ export class DashedFooter extends LitElement {
     return html`
       <style>
         :host {
-          --dashed-primary-color: blue;
+          /* --dashed-primary-color: blue;
           --dashed-secondary-color: red;
           --dashed-fill-color: lightcyan;
-          --dashed-outline-color: rgba(255, 0, 0, 0.5);
+          --dashed-outline-color: rgba(255, 0, 0, 0.5); */
+
           --dashed-footer-min-width: 256px;
           --dashed-footer-max-width: 512px;
 
@@ -54,6 +56,7 @@ export class DashedFooter extends LitElement {
           outline: none;
           min-width: var(--dashed-footer-min-width);
           max-width: var(--dashed-footer-max-width);
+          ${dashedColors}
         }
 
         :host(:focus) .dash {

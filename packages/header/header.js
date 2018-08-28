@@ -1,6 +1,7 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { repeat } from './node_modules/lit-html/lib/repeat.js';
 import { DashedButton } from '../button/button.js';
+import { dashedColors } from '../styles/styles.js';
 
 export class DashedHeader extends LitElement {
   static get is() {
@@ -57,11 +58,13 @@ export class DashedHeader extends LitElement {
     return html`
       <style>
         :host {
-          --dashed-header-height: 56px;
-          --dashed-lightgrey: lightgrey;
-          --dashed-primary-color: blue;
+          /* --dashed-primary-color: blue;
           --dashed-secondary-color: red;
           --dashed-fill-color: lightcyan;
+          --dashed-outline-color: rgba(255, 0, 0, 0.5); */
+
+          --dashed-header-height: 56px;
+          --dashed-lightgrey: lightgrey;
           --dashed-transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
           --dashed-shadow-2:
             0 2px 2px 0 rgba(10, 9, 9, 0.14),
@@ -73,7 +76,7 @@ export class DashedHeader extends LitElement {
           position: sticky;
           top: 0;
           z-index: 1;
-          color: var(--dashed-primary-color);
+          ${dashedColors}
         }
 
         header {
@@ -259,8 +262,6 @@ export class DashedHeader extends LitElement {
     borderBottom.setAttribute('stroke-dashoffset', strokeDashOffset);
 
     const background = svg.querySelector('.background');
-    background.setAttribute('x', 0);
-    background.setAttribute('y', 0);
     background.setAttribute('width', width);
     background.setAttribute('height', height - dashWidth / 2);
   }

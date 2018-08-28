@@ -1,4 +1,5 @@
 import { LitElement, html } from '@polymer/lit-element';
+import { dashedColors } from '../styles/styles.js';
 
 export class DashedNotification extends LitElement {
   static get is() {
@@ -39,10 +40,11 @@ export class DashedNotification extends LitElement {
     return html`
       <style>
         :host {
-          --dashed-primary-color: blue;
+          /* --dashed-primary-color: blue;
           --dashed-secondary-color: red;
           --dashed-fill-color: lightcyan;
-          --dashed-outline-color: rgba(255, 0, 0, 0.5);
+          --dashed-outline-color: rgba(255, 0, 0, 0.5); */
+
           --dashed-notification-min-width: 256px;
           --dashed-notification-max-width: 512px;
           --dashed-notification-min-height: 48px;
@@ -57,6 +59,7 @@ export class DashedNotification extends LitElement {
           min-height: var(--dashed-notification-min-height);
           min-width: var(--dashed-notification-min-width);
           max-width: var(--dashed-notification-max-width);
+          ${dashedColors}
         }
 
         :host(:focus) .dash {

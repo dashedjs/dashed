@@ -1,4 +1,5 @@
 import { LitElement, html, svg } from '@polymer/lit-element/lit-element.js';
+import { dashedColors } from '../styles/styles.js';
 
 export class DashedCheckbox extends LitElement {
   static get is() {
@@ -39,10 +40,11 @@ export class DashedCheckbox extends LitElement {
     return html`
       <style>
         :host {
-          --dashed-primary-color: blue;
+          /* --dashed-primary-color: blue;
           --dashed-secondary-color: red;
           --dashed-fill-color: lightcyan;
-          --dashed-outline-color: rgba(255, 0, 0, 0.5);
+          --dashed-outline-color: rgba(255, 0, 0, 0.5); */
+
           --dashed-checkbox-dimension: 24px;
 
           display: inline-flex;
@@ -52,6 +54,7 @@ export class DashedCheckbox extends LitElement {
           cursor: inherit;
           outline: none;
           min-width: 48px;
+          ${dashedColors}
         }
 
         :host(:focus) .dash {

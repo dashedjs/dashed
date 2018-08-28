@@ -1,4 +1,5 @@
 import { LitElement, html, svg } from '@polymer/lit-element/lit-element.js';
+import { dashedColors } from '../styles/styles.js';
 
 export class DashedLink extends LitElement {
   static get is() {
@@ -37,10 +38,10 @@ export class DashedLink extends LitElement {
     return html`
       <style>
         :host {
-          --dashed-primary-color: blue;
+          /* --dashed-primary-color: blue;
           --dashed-secondary-color: red;
           --dashed-fill-color: lightcyan;
-          --dashed-outline-color: rgba(255, 0, 0, 0.5);
+          --dashed-outline-color: rgba(255, 0, 0, 0.5); */
 
           display: inline-flex;
           align-items: center;
@@ -48,6 +49,7 @@ export class DashedLink extends LitElement {
           cursor: pointer;
           outline: none;
           min-width: 48px;
+          ${dashedColors}
         }
 
         :host(:focus) svg.dash {
@@ -72,7 +74,6 @@ export class DashedLink extends LitElement {
           padding-bottom: 6px;
           font-size: 16px;
           position: relative;
-          /* color: var(--dashed-primary-color); */
           transition: 50ms ease-in-out;
         }
 
@@ -129,8 +130,6 @@ export class DashedLink extends LitElement {
     borderBottom.setAttribute('stroke-dashoffset', strokeDashOffset);
 
     const background = svg.querySelector('.background');
-    background.setAttribute('x', 0);
-    background.setAttribute('y', 0);
     background.setAttribute('width', width);
     background.setAttribute('height', height - dashWidth / 2);
   }

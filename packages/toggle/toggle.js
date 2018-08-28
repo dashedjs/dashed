@@ -1,4 +1,5 @@
 import { LitElement, html } from '../button/node_modules/@polymer/lit-element/lit-element';
+import { dashedColors } from '../styles/styles.js';
 
 export class DashedToggle extends LitElement {
   static get is() {
@@ -39,10 +40,11 @@ export class DashedToggle extends LitElement {
     return html`
       <style>
         :host {
-          --dashed-primary-color: blue;
+          /* --dashed-primary-color: blue;
           --dashed-secondary-color: red;
           --dashed-fill-color: lightcyan;
-          --dashed-outline-color: rgba(255, 0, 0, 0.5);
+          --dashed-outline-color: rgba(255, 0, 0, 0.5); */
+
           --dashed-toggle-width: 48px;
           --dashed-toggle-height: 24px;
           --dashed-dash-width: 2px;
@@ -54,6 +56,7 @@ export class DashedToggle extends LitElement {
           cursor: pointer;
           outline: none;
           min-width: 48px;
+          ${dashedColors}
         }
 
         :host(:focus) svg.dash {

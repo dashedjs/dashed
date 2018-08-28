@@ -1,4 +1,5 @@
 import { LitElement, html } from '../button/node_modules/@polymer/lit-element/lit-element';
+import { dashedColors } from '../styles/styles.js';
 
 export class DashedSelect extends LitElement {
   static get is() {
@@ -45,10 +46,11 @@ export class DashedSelect extends LitElement {
     return html`
       <style>
         :host {
-          --dashed-primary-color: blue;
+          /* --dashed-primary-color: blue;
           --dashed-secondary-color: red;
           --dashed-fill-color: lightcyan;
-          --dashed-outline-color: rgba(255, 0, 0, 0.5);
+          --dashed-outline-color: rgba(255, 0, 0, 0.5); */
+
           --dashed-select-min-width: 96px;
           --dashed-select-min-height: 24px;
 
@@ -60,6 +62,7 @@ export class DashedSelect extends LitElement {
           outline: none;
           min-width: var(--dashed-select-min-width);
           min-height: var(--dashed-select-min-height);
+          ${dashedColors}
         }
 
         :host(:focus) .dash {
@@ -82,6 +85,7 @@ export class DashedSelect extends LitElement {
         select {
           border: none;
           outline: none;
+          padding-right: 12px;
           margin-bottom: 4px;
           background: transparent;
           cursor: pointer;
@@ -112,7 +116,7 @@ export class DashedSelect extends LitElement {
           transition: all 100ms ease-in-out;
         }
       </style>
-      <!-- <label for="select"><slot></slot></label> -->
+      <label for="select"><slot></slot></label>
       <div class="select-container">
         <select id="select">
           <option value="1">Option 1</option>
@@ -120,6 +124,7 @@ export class DashedSelect extends LitElement {
           <option value="2">Option 2</option>
         </select>
         <svg class="dash">
+          <rect class="background" />
           <path class="caret" />
           <line class="border-bottom" />
         </svg>
@@ -154,6 +159,10 @@ export class DashedSelect extends LitElement {
     const caret = svg.querySelector('.caret');
     caret.setAttribute('stroke-width', dashWidth * 1.8);
     caret.setAttribute('d', `M${width - 12} ${8}l4 4l4 -4`);
+
+    const background = svg.querySelector('.background');
+    background.setAttribute('width', width);
+    background.setAttribute('height', height - dashWidth / 2);
   }
 
   _computeLineStrokeDashParams(width) {

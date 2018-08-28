@@ -1,4 +1,5 @@
 import { html, LitElement } from '../button/node_modules/@polymer/lit-element';
+import { dashedColors } from '../styles/styles.js';
 
 export class DashedRadio extends LitElement {
   static get is() {
@@ -39,10 +40,11 @@ export class DashedRadio extends LitElement {
     return html`
       <style>
         :host {
-          --dashed-primary-color: blue;
+          /* --dashed-primary-color: blue;
           --dashed-secondary-color: red;
           --dashed-fill-color: lightcyan;
-          --dashed-outline-color: rgba(255, 0, 0, 0.5);
+          --dashed-outline-color: rgba(255, 0, 0, 0.5); */
+
           --dashed-radio-dimension: 24px;
           --dashed-dash-width: 2px;
 
@@ -53,6 +55,7 @@ export class DashedRadio extends LitElement {
           cursor: inherit;
           outline: none;
           min-width: 48px;
+          ${dashedColors}
         }
 
         :host(:focus) svg.dash {

@@ -1,4 +1,5 @@
 import { LitElement, html } from '../button/node_modules/@polymer/lit-element/lit-element';
+import { dashedColors } from '../styles/styles';
 
 export class DashedSlider extends LitElement {
   static get is() {
@@ -52,9 +53,11 @@ export class DashedSlider extends LitElement {
     return html`
       <style>
         :host {
-          --dashed-primary-color: blue;
+          /* --dashed-primary-color: blue;
           --dashed-secondary-color: red;
           --dashed-outline-color: rgba(255, 0, 0, 0.5);
+          --dashed-fill-color: lightcyan; */
+
           --dashed-slider-width: 192px;
           --dashed-slider-height: 24px;
           --dashed-slider-cursor-radius: 6px;
@@ -66,6 +69,7 @@ export class DashedSlider extends LitElement {
           cursor: inherit;
           outline: none;
           min-width: var(--dashed-slider-width);
+          ${dashedColors}
         }
 
         :host(:focus) svg.dash {

@@ -1,4 +1,5 @@
 import { LitElement, html } from '../button/node_modules/@polymer/lit-element/lit-element';
+import { dashedColors } from '../styles/styles';
 
 export class DashedTag extends LitElement {
   static get is() {
@@ -37,10 +38,10 @@ export class DashedTag extends LitElement {
     return html`
       <style>
         :host {
-          --dashed-primary-color: blue;
+          /* --dashed-primary-color: blue;
           --dashed-secondary-color: red;
           --dashed-fill-color: lightcyan;
-          --dashed-outline-color: rgba(255, 0, 0, 0.5);
+          --dashed-outline-color: rgba(255, 0, 0, 0.5); */
 
           display: inline-flex;
           align-items: center;
@@ -48,6 +49,7 @@ export class DashedTag extends LitElement {
           cursor: pointer;
           outline: none;
           min-width: 48px;
+          ${dashedColors}
         }
 
         :host(:focus) svg.dash {
@@ -69,7 +71,6 @@ export class DashedTag extends LitElement {
           padding: 4px 8px;
           font-size: 12px;
           position: relative;
-          /* color: var(--dashed-primary-color); */
           transition: 50ms ease-in-out;
         }
 
