@@ -58,11 +58,6 @@ export class DashedHeader extends LitElement {
     return html`
       <style>
         :host {
-          /* --dashed-primary-color: blue;
-          --dashed-secondary-color: red;
-          --dashed-fill-color: lightcyan;
-          --dashed-outline-color: rgba(255, 0, 0, 0.5); */
-
           --dashed-header-height: 56px;
           --dashed-lightgrey: lightgrey;
           --dashed-transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);

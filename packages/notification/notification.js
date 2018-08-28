@@ -40,11 +40,6 @@ export class DashedNotification extends LitElement {
     return html`
       <style>
         :host {
-          /* --dashed-primary-color: blue;
-          --dashed-secondary-color: red;
-          --dashed-fill-color: lightcyan;
-          --dashed-outline-color: rgba(255, 0, 0, 0.5); */
-
           --dashed-notification-min-width: 256px;
           --dashed-notification-max-width: 512px;
           --dashed-notification-min-height: 48px;

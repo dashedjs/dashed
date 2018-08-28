@@ -53,11 +53,6 @@ export class DashedSlider extends LitElement {
     return html`
       <style>
         :host {
-          /* --dashed-primary-color: blue;
-          --dashed-secondary-color: red;
-          --dashed-outline-color: rgba(255, 0, 0, 0.5);
-          --dashed-fill-color: lightcyan; */
-
           --dashed-slider-width: 192px;
           --dashed-slider-height: 24px;
           --dashed-slider-cursor-radius: 6px;
