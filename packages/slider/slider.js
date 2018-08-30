@@ -1,5 +1,6 @@
-import { LitElement, html } from '../button/node_modules/@polymer/lit-element/lit-element';
+import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { dashedColors } from '../styles/styles';
+import { drawDashedLine } from '../utils/line-stroke-dasharray.js';
 
 export class DashedSlider extends LitElement {
   static get is() {

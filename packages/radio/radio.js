@@ -1,5 +1,6 @@
-import { html, LitElement } from '../button/node_modules/@polymer/lit-element';
+import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { dashedColors } from '../styles/styles.js';
+import { drawDashedCircle } from '../utils/circle-stroke-dasharray.js';
 
 export class DashedRadio extends LitElement {
   static get is() {
@@ -126,52 +127,18 @@ export class DashedRadio extends LitElement {
   }
 
   drawDash() {
-    const [width, height] = [24, 24];
-    const { dashWidth } = this._validateDashProps(width, height);
-
     const svg = this.svg;
-    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    const [width, height] = [24, 24];
 
     const outerCircle = svg.querySelector('.outer-circle');
-    const radius = (width - dashWidth) / 2;
-    outerCircle.setAttribute('cx', width / 2);
-    outerCircle.setAttribute('cy', height / 2);
-    outerCircle.setAttribute('r', (width - dashWidth) / 2);
-    outerCircle.setAttribute('stroke-width', dashWidth);
-
-    const { strokeDasharray, strokeDashOffset } = this._computeCircleStrokeDashParams(width, height, radius);
-    outerCircle.setAttribute('stroke-dasharray', strokeDasharray);
-    outerCircle.setAttribute('stroke-dashoffset', strokeDashOffset);
+    const hostProps = { width, height };
+    const dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
+    drawDashedCircle(outerCircle, hostProps, dashProps);
 
     const innerCircle = svg.querySelector('.inner-circle');
     innerCircle.setAttribute('cx', width / 2);
     innerCircle.setAttribute('cy', height / 2);
     innerCircle.setAttribute('r', 5);
-  }
-
-  _computeCircleStrokeDashParams(width, height, radius) {
-    const { dashWidth, dashLength, dashRatio } = this._validateDashProps(width, height);
-
-    const circonference = 2 * Math.PI * radius;
-    const dashCount = Math.floor((circonference - dashRatio * dashLength) / ((1 + dashRatio) * dashLength));
-    const dashSpacing = (circonference - dashCount * dashLength) / (dashCount + 1);
-
-    const strokeDasharray = `${dashLength} ${dashSpacing}`;
-    const strokeDashOffset = 0;
-
-    return { strokeDasharray, strokeDashOffset, dashWidth };
-  }
-
-  _validateDashProps(width, height) {
-    if (this.dashWidth < 0 || this.dashLength < 0 || this.dashRatio < 0) {
-      throw new Error(`dashWidth, dashLength and dashRatio must be positive numbers`);
-    }
-    const refDimension = (Math.min(width, height) * 3.1) / 4;
-    const dashLength = this.dashLength > refDimension ? refDimension : this.dashLength;
-    const dashWidth = this.dashWidth > refDimension / 2 ? refDimension / 2 : this.dashWidth;
-    const dashRatio = dashLength * (1 + this.dashRatio) > refDimension ? refDimension - dashLength : this.dashRatio;
-
-    return { dashWidth, dashLength, dashRatio };
   }
 }
 customElements.define(DashedRadio.is, DashedRadio);

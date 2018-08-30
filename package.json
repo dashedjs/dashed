@@ -2,12 +2,20 @@
   "name": "dashedjs",
   "version": "0.0.1",
   "description": "Set of reusable Web Components to speed up WebApps development",
-  "main": "index.js",
+  "main": "dist/dashed.cjs.js",
+  "umd": "dist/dashed.umd.js",
+  "module": "dist/dashed.es.js",
   "scripts": {
     "start": "polyserve --npm --module-resolution=node",
+    "bootstrap": "lerna bootstrap --hoist",
     "install-dep": " cd scripts && ./install-dep.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build": "rm -rf dist && rollup -c"
   },
+  "files": [
+    "dist",
+    "lib"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/dashedjs/dashedjs.git"
@@ -18,13 +26,15 @@
     "vanilla javascript",
     "charts"
   ],
-  "author": "The dashed authors",
+  "author": "The Dashed.js authors",
   "license": "MIT",
   "bugs": {
-    "url": "hhttps://github.com/dashedjs/issues"
+    "url": "hhttps://github.com/dashedjs/dashedjs#issues"
   },
-  "homepage": "hhttps://github.com/dashedjs#README",
+  "homepage": "hhttps://github.com/dashedjs/dashedjs#README",
   "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
     "eslint": "^5.3.0",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.13.0",
@@ -33,9 +43,11 @@
     "polyserve": "^0.27.12",
     "rollup": "^0.63.5",
     "rollup-plugin-babel": "^3.0.7",
+    "rollup-plugin-babel-minify": "^6.0.0",
     "rollup-plugin-commonjs": "^9.1.4",
     "rollup-plugin-node-resolve": "^3.3.0",
-    "rollup-plugin-replace": "^2.0.0"
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-terser": "^1.0.1"
   },
   "dependencies": {
     "@polymer/lit-element": "^0.5.2",

@@ -1,5 +1,6 @@
-import { LitElement, html } from '../button/node_modules/@polymer/lit-element/lit-element';
+import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { dashedColors } from '../styles/styles.js';
+import { drawDashedLine } from '../utils/line-stroke-dasharray.js';
 
 export class DashedSelect extends LitElement {
   static get is() {
@@ -136,51 +137,21 @@ export class DashedSelect extends LitElement {
   }
 
   drawDash() {
-    const { width, height } = this.getBoundingClientRect();
-    const { strokeDasharray, strokeDashOffset, dashWidth } = this._computeLineStrokeDashParams(width);
-
     const svg = this.svg;
-    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-
     const borderBottom = svg.querySelector('.border-bottom');
-    borderBottom.setAttribute('x1', 0);
-    borderBottom.setAttribute('y1', height - dashWidth / 2);
-    borderBottom.setAttribute('x2', width);
-    borderBottom.setAttribute('y2', height - dashWidth / 2);
-    borderBottom.setAttribute('stroke-width', dashWidth);
-    borderBottom.setAttribute('stroke-dasharray', strokeDasharray);
-    borderBottom.setAttribute('stroke-dashoffset', strokeDashOffset);
+    const { width, height } = this.getBoundingClientRect();
+
+    const hostProps = { width, height };
+    const dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
+    drawDashedLine(borderBottom, hostProps, dashProps);
 
     const caret = svg.querySelector('.caret');
-    caret.setAttribute('stroke-width', dashWidth * 1.8);
+    caret.setAttribute('stroke-width', this.dashWidth * 1.8);
     caret.setAttribute('d', `M${width - 12} ${8}l4 4l4 -4`);
 
     const background = svg.querySelector('.background');
     background.setAttribute('width', width);
-    background.setAttribute('height', height - dashWidth / 2);
-  }
-
-  _computeLineStrokeDashParams(width) {
-    const { dashWidth, dashLength, dashRatio } = this._validateDashProps(width);
-
-    const dashCount = 1 + Math.floor((width - dashLength) / ((1 + dashRatio) * dashLength));
-    const dashSpacing = (width - dashCount * dashLength) / (dashCount - 1);
-
-    const strokeDasharray = `${dashLength} ${dashSpacing}`;
-    const strokeDashOffset = 0;
-
-    return { strokeDasharray, strokeDashOffset, dashWidth };
-  }
-
-  _validateDashProps(width) {
-    if (this.dashWidth < 0 || this.dashLength < 0 || this.dashRatio < 0) {
-      throw new Error(`dashWidth, dashLength and dashRatio must be positive numbers`);
-    }
-    const refDimension = width;
-    const dashLength = this.dashLength > refDimension ? refDimension : this.dashLength;
-    const dashWidth = this.dashWidth > refDimension / 2 ? refDimension / 2 : this.dashWidth;
-    const dashRatio = dashLength * (1 + this.dashRatio) > refDimension ? refDimension - dashLength : this.dashRatio;
-    return { dashWidth, dashLength, dashRatio };
+    background.setAttribute('height', height - this.dashWidth / 2);
   }
 }
 customElements.define(DashedSelect.is, DashedSelect);

@@ -1,7 +1,8 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { repeat } from './node_modules/lit-html/lib/repeat.js';
+// import { repeat } from './node_modules/lit-html/lib/repeat.js';
 import { DashedButton } from '../button/button.js';
 import { dashedColors } from '../styles/styles.js';
+import { drawDashedLine } from '..//utils/line-stroke-dasharray.js';
 
 export class DashedHeader extends LitElement {
   static get is() {
@@ -148,7 +149,7 @@ export class DashedHeader extends LitElement {
           margin: 4px;
         }
 
-        svg.icon-menu {
+        svg.icon {
           width: 24px;
           height: 24px;
           fill: var(--dashed-primary-color);
@@ -198,10 +199,10 @@ export class DashedHeader extends LitElement {
           aria-expanded="false"
           aria-controls="menu"
           aria-label="Menu button">
-          <svg class="icon-menu" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect x="0" y="2" width="24" height="4" stroke-width="0" />
-            <rect x="0" y="10" width="24" height="4" stroke-width="0" />
-            <rect x="0" y="18" width="24" height="4" stroke-width="0" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon">
+            <path d="M0 6h24 M0 12h24 M0 18h24" stroke-width="2" stroke-dasharray="5 1.333" />
+            <!-- <path d="M4 4L20 20 M4 20L20 4" stroke-width="2" stroke-dasharray="5 0.876" /> -->
+            <!-- <path d="M4 4L20 20 M4 20L20 4" stroke-width="2" stroke-dasharray="5 0.876" /> -->
           </svg>
         </button>
         <a href="#">
@@ -242,46 +243,17 @@ export class DashedHeader extends LitElement {
   }
 
   drawDash() {
-    const { width, height } = this.getBoundingClientRect();
-    const { strokeDasharray, strokeDashOffset, dashWidth } = this._computeLineStrokeDashParams(width);
-
     const svg = this.svg;
-    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     const borderBottom = svg.querySelector('.border-bottom');
-    borderBottom.setAttribute('x1', 0);
-    borderBottom.setAttribute('y1', height - dashWidth / 2);
-    borderBottom.setAttribute('x2', width);
-    borderBottom.setAttribute('y2', height - dashWidth / 2);
-    borderBottom.setAttribute('stroke-width', dashWidth);
-    borderBottom.setAttribute('stroke-dasharray', strokeDasharray);
-    borderBottom.setAttribute('stroke-dashoffset', strokeDashOffset);
+    const { width, height } = this.getBoundingClientRect();
+
+    const hostProps = { width, height };
+    const dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
+    drawDashedLine(borderBottom, hostProps, dashProps);
 
     const background = svg.querySelector('.background');
     background.setAttribute('width', width);
-    background.setAttribute('height', height - dashWidth / 2);
-  }
-
-  _computeLineStrokeDashParams(width) {
-    const { dashWidth, dashLength, dashRatio } = this._validateDashProps(width);
-
-    const dashCount = 1 + Math.floor((width - dashLength) / ((1 + dashRatio) * dashLength));
-    const dashSpacing = (width - dashCount * dashLength) / (dashCount - 1);
-
-    const strokeDasharray = `${dashLength} ${dashSpacing}`;
-    const strokeDashOffset = 0;
-
-    return { strokeDasharray, strokeDashOffset, dashWidth };
-  }
-
-  _validateDashProps(width) {
-    if (this.dashWidth < 0 || this.dashLength < 0 || this.dashRatio < 0) {
-      throw new Error(`dashWidth, dashLength and dashRatio must be positive numbers`);
-    }
-    const refDimension = width;
-    const dashLength = this.dashLength > refDimension ? refDimension : this.dashLength;
-    const dashWidth = this.dashWidth > refDimension / 2 ? refDimension / 2 : this.dashWidth;
-    const dashRatio = dashLength * (1 + this.dashRatio) > refDimension ? refDimension - dashLength : this.dashRatio;
-    return { dashWidth, dashLength, dashRatio };
+    background.setAttribute('height', height - this.dashWidth / 2);
   }
 
   _toggleMenu(e) {
