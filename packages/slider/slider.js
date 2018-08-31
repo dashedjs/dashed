@@ -160,47 +160,36 @@ export class DashedSlider extends LitElement {
   }
 
   drawDash() {
-    const [width, height] = [192, 24];
-    const { strokeDasharray, strokeDashOffset, dashWidth } = this._computeLineStrokeDashParams(width);
-
     const svg = this.svg;
-    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    const { width, height } = this.getBoundingClientRect();
 
     const sliderCursor = svg.querySelector('.slider-cursor');
     const sliderCursorInner = sliderCursor.querySelector('.slider-cursor-inner');
     const sliderCursorInnerRadius = 6;
-    sliderCursorInner.setAttribute('stroke-width', dashWidth);
+    sliderCursorInner.setAttribute('stroke-width', this.dashWidth);
     sliderCursorInner.setAttribute('cx', sliderCursorInnerRadius);
     sliderCursorInner.setAttribute('cy', height / 2);
     sliderCursorInner.setAttribute('r', sliderCursorInnerRadius);
-
     const sliderCursorFocusRing = sliderCursor.querySelector('.slider-cursor-focus-ring');
-    sliderCursorFocusRing.setAttribute('stroke-width', dashWidth);
+    sliderCursorFocusRing.setAttribute('stroke-width', this.dashWidth);
     sliderCursorFocusRing.setAttribute('cx', sliderCursorInnerRadius);
     sliderCursorFocusRing.setAttribute('cy', height / 2);
     sliderCursorFocusRing.setAttribute('r', sliderCursorInnerRadius * 1.5);
 
     const sliderBackground = svg.querySelector('.slider-background');
     const sliderBackgroundwidth = width - 2 * sliderCursorInnerRadius;
-    sliderBackground.setAttribute('stroke-width', dashWidth / 2);
-    sliderBackground.setAttribute('x1', sliderCursorInnerRadius);
-    sliderBackground.setAttribute('y1', height / 2);
-    sliderBackground.setAttribute('x2', sliderBackgroundwidth);
-    sliderBackground.setAttribute('y2', height / 2);
-    sliderBackground.setAttribute('stroke-dasharray', strokeDasharray);
-    sliderBackground.setAttribute('stroke-dashoffset', strokeDashOffset);
+    const hostProps = { width: sliderBackgroundwidth, height };
+    let dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
+    drawDashedLine(sliderBackground, hostProps, dashProps);
+    sliderBackground.setAttribute('transform', `translate(${sliderCursorInnerRadius} ${-height / 2})`);
 
     const sliderTracker = svg.querySelector('.slider-tracker');
-    sliderTracker.setAttribute('stroke-width', dashWidth);
-    sliderTracker.setAttribute('stroke', 'red');
-    sliderTracker.setAttribute('x1', sliderCursorInnerRadius);
-    sliderTracker.setAttribute('y1', height / 2);
-    sliderTracker.setAttribute('x2', sliderCursorInnerRadius);
-    sliderTracker.setAttribute('y2', height / 2);
+    drawDashedLine(sliderTracker, hostProps, dashProps);
+    sliderTracker.setAttribute('transform', `translate(${sliderCursorInnerRadius} ${-height / 2})`);
 
     const percentage = (this.value - this.min) / (this.max - this.min);
     sliderCursor.style.transform = `translateX(${percentage * sliderBackgroundwidth}px)`;
-    sliderCursor.style.fill = sliderTracker.setAttribute('x2', percentage * sliderBackgroundwidth);
+    sliderTracker.setAttribute('x2', percentage * sliderBackgroundwidth);
   }
 
   _computeLineStrokeDashParams(width) {

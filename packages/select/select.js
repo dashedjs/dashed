@@ -112,7 +112,7 @@ export class DashedSelect extends LitElement {
           transition: all 100ms ease-in-out;
         }
       </style>
-      <label for="select"><slot></slot></label>
+      <!-- <label for="select"><slot></slot></label> -->
       <div class="select-container">
         <select id="select">
           <option value="1">Option 1</option>

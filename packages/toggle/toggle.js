@@ -142,35 +142,14 @@ export class DashedToggle extends LitElement {
     const [width, height] = [48, 24];
     const [widthDelta, heightDelta] = [6, 10];
     const toggleBackgroundBorderRadius = (height - heightDelta - this.dashWidth) / 2;
-
-    const hostProps = { width, height, borderRadius: toggleBackgroundBorderRadius };
+    const hostProps = {
+      width: width - widthDelta,
+      height: height - heightDelta,
+      borderRadius: toggleBackgroundBorderRadius
+    };
     const dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
     drawDashedRect(toggleBackground, hostProps, dashProps);
-
-    // const [width, height] = [48, 24];
-    // const [widthDelta, heightDelta] = [6, 10];
-    // const { dashWidth } = this._validateDashProps(width - widthDelta, height - heightDelta);
-
-    // const svg = this.svg;
-    // svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-
-    // const toggleBackground = svg.querySelector('.toggle-background');
-    // const toggleBackgroundBorderRadius = (height - heightDelta - dashWidth) / 2;
-    // toggleBackground.setAttribute('stroke-width', dashWidth);
-    // toggleBackground.setAttribute('x', (widthDelta + dashWidth) / 2);
-    // toggleBackground.setAttribute('y', (heightDelta + dashWidth) / 2);
-    // toggleBackground.setAttribute('width', width - widthDelta - dashWidth);
-    // toggleBackground.setAttribute('height', height - heightDelta - dashWidth);
-    // toggleBackground.setAttribute('rx', toggleBackgroundBorderRadius);
-    // toggleBackground.setAttribute('ry', toggleBackgroundBorderRadius);
-
-    // const { strokeDasharray, strokeDashOffset } = this._computeRectStrokeDashParams(
-    //   width - widthDelta,
-    //   height - heightDelta,
-    //   toggleBackgroundBorderRadius
-    // );
-    // toggleBackground.setAttribute('stroke-dasharray', strokeDasharray);
-    // toggleBackground.setAttribute('stroke-dashoffset', strokeDashOffset);
+    toggleBackground.setAttribute('transform', `translate(${widthDelta / 2} ${heightDelta / 2})`);
 
     const toggleSwitcher = svg.querySelector('.toggle-switcher');
     toggleSwitcher.setAttribute('stroke-width', this.dashWidth);
