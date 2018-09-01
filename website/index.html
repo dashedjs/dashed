@@ -6,65 +6,44 @@
   <link rel="canonical" href="https://localhost:8443/" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashed.js Website</title>
-  <link rel="stylesheet" href="style.css">
   <link rel="icon" sizes="192x192" href="img/icons/icon-192x192.png">
   <meta name="description" content="main page" />
   <meta name="theme-color" content="#800000">
   <link rel="manifest" href="/manifest.json">
+  <style>
+    html,
+    body {
+      margin: 0;
+      font-family: 'Roboto', 'Noto', sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    img,
+    audio,
+    video {
+      max-width: 100%;
+    }
+  </style>
 </head>
 
 <body>
-
-  <!-- <dashed-header dashWidth="0.5" dashLength="2" dashRatio="1"></dashed-header> -->
-  <dashed-header></dashed-header>
-  <main>
-    <a href="#" class="abalo">Abalo</a>
-    <input type="checkbox" class="checkbox">
-    <br/>
-    <dashed-button>My button</dashed-button>
-    <br/> 1.
-    <br>
-    <dashed-card>Card</dashed-card>
-    <br/><br/> 1.
-    <dashed-checkbox>Checkbox</dashed-checkbox>
-    <br/> 1.
-    <dashed-input>Input</dashed-input>
-    <br/> 1.
-    <dashed-link>Link</dashed-link>
-    <br/><br> 1.
-    <dashed-notification>Notification</dashed-notification>
-    <br/> 1.
-    <dashed-radio dashLength="4" dashWidth="2" dashRatio="0.5">Radio</dashed-radio>
-    <br/> 1.
-    <dashed-select>select</dashed-select>
-    <br/> 1.
-    <dashed-slider value="30"></dashed-slider>
-    <br/> 1.
-    <dashed-tag>Taunt</dashed-tag>
-    <br/> 1.
-    <dashed-textarea>Textarea</dashed-textarea>
-    <br/> 1.
-    <dashed-toggle>Toggle</dashed-toggle>
-    <br/>
-  </main>
-  <dashed-footer></dashed-footer>
+  <label>Hello<input type="checkbox" name="1" id="1"></label>
+  <button>Button</button>
+  <dashed-site-app></dashed-site-app>
 
   <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-  <script type="module" src="../packages/dashed.js"></script>
+  <script type="module" src="./src/app.js"></script>
   <script>
     if ('serviceWorker' in window.navigator) {
       window.addEventListener('load', () => {
         window.navigator.serviceWorker.register('service-worker.js');
       });
     }
-  </script>
-  <script>
-    const input = document.querySelector('#file');
-    function handleFiles(e) {
-      console.log(1, e);
-      console.log(input.files)
-    }
-    // input.addEventListener('change', handleFiles);
   </script>
 </body>
 

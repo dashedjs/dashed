@@ -27,7 +27,8 @@ function _calculateCircleStrokeDasharray(hostProps, dashProps) {
 
   const circonference = 2 * Math.PI * radius;
   const dashCount = Math.floor((circonference - dashRatio * dashLength) / ((1 + dashRatio) * dashLength));
-  const dashSpacing = (circonference - dashCount * dashLength) / (dashCount + 1);
+  const dashSpacing =
+    Math.round(((circonference - dashCount * dashLength) / (dashCount + 1)) * Math.pow(10, 3)) / Math.pow(10, 3);
 
   const strokeDasharray = `${dashLength} ${dashSpacing}`;
   const strokeDashOffset = 0;

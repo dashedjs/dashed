@@ -1,6 +1,6 @@
 import { LitElement, html, svg } from '@polymer/lit-element/lit-element.js';
 import { dashedColors } from '../styles/styles.js';
-import { drawDashedRect } from '../utils/rect-stroke-dasharray.js';
+import { drawDashedRect } from '../utils/rect-dasharray.js';
 
 export class DashedCheckbox extends LitElement {
   static get is() {
@@ -58,7 +58,7 @@ export class DashedCheckbox extends LitElement {
           outline-offset: 1px;
         }
 
-        :host(:disabled) {
+        :host([disabled]) {
           opacity: 0.6;
           pointer-events: none;
         }
@@ -132,7 +132,7 @@ export class DashedCheckbox extends LitElement {
 
     const checkmark = svg.querySelector('.checkmark');
     checkmark.setAttribute('stroke-width', this.dashWidth * 1.8);
-    checkmark.setAttribute('stroke', 'red');
+    checkmark.setAttribute('stroke', '#ff0000');
     checkmark.setAttribute('d', 'M6 12l4 4l8 -8');
   }
 }

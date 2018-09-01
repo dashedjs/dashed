@@ -2,7 +2,7 @@ import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 // import { repeat } from './node_modules/lit-html/lib/repeat.js';
 import { DashedButton } from '../button/button.js';
 import { dashedColors } from '../styles/styles.js';
-import { drawDashedLine } from '..//utils/line-stroke-dasharray.js';
+import { drawDashedLine } from '../utils/line-dasharray.js';
 
 export class DashedHeader extends LitElement {
   static get is() {
@@ -75,7 +75,13 @@ export class DashedHeader extends LitElement {
           ${dashedColors}
         }
 
-        header {
+        /* header {
+          height: var(--dashed-header-height);
+          display: grid;
+          grid-template-columns: max-content max-content auto max-content;
+        } */
+  
+        .header-container {
           height: var(--dashed-header-height);
           display: grid;
           grid-template-columns: max-content max-content auto max-content;
@@ -176,7 +182,7 @@ export class DashedHeader extends LitElement {
         }
 
         @media screen and (min-width: 600px) {
-          header {
+          .header-container {
             grid-template-columns: max-content auto max-content max-content;
           }
 
@@ -192,7 +198,7 @@ export class DashedHeader extends LitElement {
           }
         }
       </style>
-      <header>
+      <div class="header-container">
         <button id="menubutton"
           on-click="${e => this._toggleMenu(e)}"
           role="menu-button"
@@ -207,27 +213,27 @@ export class DashedHeader extends LitElement {
         </button>
         <a href="#">
           <img class="logo" src="./img/logo.png" alt="Dashedjs logo">
-          <span></span>
+          <h1 class="logo-text"></h1>
         </a>
         <div></div>
         <nav class="sidebar" role="navigation">
           <ul id="menu" role="menu" aria-labelledby="menubutton">
             <li role="none">
-              <a role="menu-item" href="#" on-click="${e => this._activateLink(e)}">Components</a>
+              <a role="menuitem" href="#" on-click="${e => this._activateLink(e)}">Components</a>
             </li>
             <li role="none">
-              <a role="menu-item" href="#" on-click="${e => this._activateLink(e)}">Style Guide</a>
+              <a role="menuitem" href="#" on-click="${e => this._activateLink(e)}">Style Guide</a>
             </li>
             <li role="none">
-              <a role="menu-item" href="#" on-click="${e => this._activateLink(e)}">Chart Components</a>
+              <a role="menuitem" href="#" on-click="${e => this._activateLink(e)}">Chart Components</a>
             </li>
             <li role="none">
-              <a role="menu-item" href="#" on-click="${e => this._activateLink(e)}">About</a>
+              <a role="menuitem" href="#" on-click="${e => this._activateLink(e)}">About</a>
             </li>
           </ul>
         </nav>
         <button role="search" aria-label="search button">🔍</button>
-      </header>
+      </div class="header-container">
       <svg class="dash" filter="url(#shadow2)">
         <rect class="background" />
         <line class="border-bottom" />

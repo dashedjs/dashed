@@ -1,6 +1,6 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { dashedColors } from '../styles/styles';
-import { drawDashedLine } from '../utils/line-stroke-dasharray.js';
+import { drawDashedLine } from '../utils/line-dasharray';
 
 export class DashedSlider extends LitElement {
   static get is() {
@@ -77,12 +77,12 @@ export class DashedSlider extends LitElement {
           opacity: 1;
         }
 
-        :host(:disabled) {
+        :host([disabled]) {
           opacity: 0.6;
           pointer-events: none;
         }
 
-        .slider {
+        .slider-container {
           display: inline-flex;
           justify-content: center;
           align-items: center;
@@ -128,8 +128,9 @@ export class DashedSlider extends LitElement {
           opacity: 0;
         }
       </style>
-      <div class="slider">
-        <input type="range" min="${min}" max="${max}" step="${step}" value="${value}"
+      <label for="range"><slot></slot></label>
+      <div class="slider-container">
+        <input type="range" id="range" min="${min}" max="${max}" step="${step}" value="${value}"
           on-input="${e => this._onInputHandler(e)}" />
         <svg class="dash">
           <line class="slider-background" />
@@ -161,7 +162,7 @@ export class DashedSlider extends LitElement {
 
   drawDash() {
     const svg = this.svg;
-    const { width, height } = this.getBoundingClientRect();
+    const { width, height } = this._root.querySelector('.slider-container').getBoundingClientRect();
 
     const sliderCursor = svg.querySelector('.slider-cursor');
     const sliderCursorInner = sliderCursor.querySelector('.slider-cursor-inner');

@@ -25,7 +25,8 @@ function _calculateLineStrokeDasharray(hostProps, dashProps) {
   const { dashWidth, dashLength, dashRatio } = _validateLineDashProps(hostProps, dashProps);
 
   const dashCount = 1 + Math.floor((width - dashLength) / ((1 + dashRatio) * dashLength));
-  const dashSpacing = (width - dashCount * dashLength) / (dashCount - 1);
+  const dashSpacing =
+    Math.round(((width - dashCount * dashLength) / (dashCount - 1)) * Math.pow(10, 3)) / Math.pow(10, 3);
 
   const strokeDasharray = `${dashLength} ${dashSpacing}`;
   const strokeDashOffset = 0;

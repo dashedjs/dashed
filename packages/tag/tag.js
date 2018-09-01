@@ -1,6 +1,6 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { dashedColors } from '../styles/styles';
-import { drawDashedRect } from '../utils/rect-stroke-dasharray.js';
+import { drawDashedRect } from '../utils/rect-dasharray';
 
 export class DashedTag extends LitElement {
   static get is() {
@@ -53,7 +53,7 @@ export class DashedTag extends LitElement {
           outline-offset: 1px;
         }
 
-        :host(:disabled) {
+        :host([disabled]) {
           opacity: 0.6;
           pointer-events: none;
         }

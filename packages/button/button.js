@@ -1,6 +1,7 @@
 import { LitElement, html, svg } from '@polymer/lit-element/lit-element.js';
 import { dashedColors } from '../styles/styles.js';
-import { drawDashedRect } from '../utils/rect-stroke-dasharray.js';
+import { drawDashedRect } from '../utils/rect-dasharray.js';
+import { ariaButton } from '../utils/wai-aria.js';
 
 export class DashedButton extends LitElement {
   static get is() {
@@ -24,7 +25,7 @@ export class DashedButton extends LitElement {
     this.rounded = false;
 
     this.dashWidth = 2;
-    this.dashLength = 10;
+    this.dashLength = 8;
     this.dashRatio = 0.3;
   }
 
@@ -34,10 +35,11 @@ export class DashedButton extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
+    ariaButton(this, { role: 'button', label: 'dashed-button' });
     this.drawDash();
   }
 
-  _render({ disabled, dashWidth, dashLength, dashRatio }) {
+  _render() {
     return html`
       <style>
         :host {
@@ -61,7 +63,7 @@ export class DashedButton extends LitElement {
           color: var(--dashed-secondary-color);
         }
 
-        :host(:disabled) {
+        :host([disabled]) {
           opacity: 0.6;
           pointer-events: none;
         }

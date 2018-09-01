@@ -1,6 +1,6 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { dashedColors } from '../styles/styles.js';
-import { drawDashedRect } from '../utils/rect-stroke-dasharray.js';
+import { drawDashedRect } from '../utils/rect-dasharray.js';
 
 export class DashedInput extends LitElement {
   static get is() {
@@ -37,7 +37,7 @@ export class DashedInput extends LitElement {
     this.drawDash();
   }
 
-  _render({ disabled, dashWidth, dashLength, dashRatio }) {
+  _render() {
     return html`
       <style>
         :host {
@@ -59,7 +59,7 @@ export class DashedInput extends LitElement {
           outline-offset: 1px;
         }
 
-        :host(:disabled) {
+        :host([disabled]) {
           opacity: 0.6;
           pointer-events: none;
         }
@@ -68,8 +68,8 @@ export class DashedInput extends LitElement {
           display: inline-block;
           position: relative;
           outline: none;
-          width: 100%;
-          height: 100%;
+          /* width: 100%; */
+          /* height: 100%; */
         }
 
         input {
@@ -78,7 +78,7 @@ export class DashedInput extends LitElement {
           box-sizing: border-box;
           border: none;
           outline: none;
-          max-width: 100%;
+          /* max-width: 100%; */
           height: 100%;
           background: var(--dashed-fill-color);
         }
@@ -98,7 +98,7 @@ export class DashedInput extends LitElement {
           transition: all 100ms ease-in-out;
         }
       </style>
-      <!-- <label for="input"><slot></slot></label> -->
+      <label for="input"><slot></slot></label>
       <div class="input-container">
         <input id="input" />
         <svg class="dash">
@@ -119,7 +119,7 @@ export class DashedInput extends LitElement {
   drawDash() {
     const svg = this.svg;
     const border = svg.querySelector('.border');
-    const { width, height } = this.getBoundingClientRect();
+    const { width, height } = this._root.querySelector('.input-container').getBoundingClientRect();
     const borderRadius = 5;
 
     const hostProps = { width, height, borderRadius };

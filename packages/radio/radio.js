@@ -1,6 +1,6 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { dashedColors } from '../styles/styles.js';
-import { drawDashedCircle } from '../utils/circle-stroke-dasharray.js';
+import { drawDashedCircle } from '../utils/circle-dasharray.js';
 
 export class DashedRadio extends LitElement {
   static get is() {
@@ -59,7 +59,7 @@ export class DashedRadio extends LitElement {
           outline-offset: 1px;
         }
 
-        :host(:disabled) {
+        :host([disabled]) {
           opacity: 0.6;
           pointer-events: none;
         }

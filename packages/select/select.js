@@ -1,6 +1,6 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { dashedColors } from '../styles/styles.js';
-import { drawDashedLine } from '../utils/line-stroke-dasharray.js';
+import { drawDashedLine } from '../utils/line-dasharray.js';
 
 export class DashedSelect extends LitElement {
   static get is() {
@@ -66,7 +66,7 @@ export class DashedSelect extends LitElement {
           outline-offset: 1px;
         }
 
-        :host(:disabled) {
+        :host([disabled]) {
           opacity: 0.6;
           pointer-events: none;
         }
@@ -112,7 +112,7 @@ export class DashedSelect extends LitElement {
           transition: all 100ms ease-in-out;
         }
       </style>
-      <!-- <label for="select"><slot></slot></label> -->
+      <label for="select"><slot></slot></label>
       <div class="select-container">
         <select id="select">
           <option value="1">Option 1</option>
@@ -139,7 +139,7 @@ export class DashedSelect extends LitElement {
   drawDash() {
     const svg = this.svg;
     const borderBottom = svg.querySelector('.border-bottom');
-    const { width, height } = this.getBoundingClientRect();
+    const { width, height } = this._root.querySelector('.select-container').getBoundingClientRect();
 
     const hostProps = { width, height };
     const dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };

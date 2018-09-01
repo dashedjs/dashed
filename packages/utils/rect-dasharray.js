@@ -82,7 +82,7 @@ function _calculatePathDashCount(pathLength, dashProps) {
 
 function _calculatePathDashSpacing(pathLength, dashCount, dashLength) {
   if (dashCount === 0) return pathLength / 2;
-  return (pathLength - dashCount * dashLength) / (dashCount + 1);
+  return Math.round(((pathLength - dashCount * dashLength) / (dashCount + 1)) * Math.pow(10, 3)) / Math.pow(10, 3);
 }
 
 function _calculatePathStrokeDasharray(dashCount, dashSpacing, adjacentdashSpacing, dashLength) {

@@ -1,6 +1,6 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { dashedColors } from '../styles/styles.js';
-import { drawDashedLine } from '../utils/line-stroke-dasharray.js';
+import { drawDashedLine } from '../utils/line-dasharray.js';
 
 export class DashedLink extends LitElement {
   static get is() {
@@ -56,7 +56,7 @@ export class DashedLink extends LitElement {
           color: var(--dashed-secondary-color);
         }
 
-        :host(:disabled) {
+        :host([disabled]) {
           opacity: 0.6;
           pointer-events: none;
         }
