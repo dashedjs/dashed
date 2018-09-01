@@ -39,3 +39,6 @@ or
 | --dashed-primary-color | **#0000ff**   |
 | --dashed-fill-color    | **lightcyan** |
 
+### Event listeners
+
+- click 

@@ -75,13 +75,7 @@ export class DashedHeader extends LitElement {
           ${dashedColors}
         }
 
-        /* header {
-          height: var(--dashed-header-height);
-          display: grid;
-          grid-template-columns: max-content max-content auto max-content;
-        } */
-  
-        .header-container {
+        header {
           height: var(--dashed-header-height);
           display: grid;
           grid-template-columns: max-content max-content auto max-content;
@@ -182,7 +176,7 @@ export class DashedHeader extends LitElement {
         }
 
         @media screen and (min-width: 600px) {
-          .header-container {
+          .header {
             grid-template-columns: max-content auto max-content max-content;
           }
 
@@ -198,7 +192,7 @@ export class DashedHeader extends LitElement {
           }
         }
       </style>
-      <div class="header-container">
+      <header>
         <button id="menubutton"
           on-click="${e => this._toggleMenu(e)}"
           role="menu-button"
@@ -206,7 +200,7 @@ export class DashedHeader extends LitElement {
           aria-controls="menu"
           aria-label="Menu button">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon">
-            <path d="M0 6h24 M0 12h24 M0 18h24" stroke-width="2" stroke-dasharray="5 1.333" />
+            <<path d="M2 6h20 M2 12h20 M2 18h20" stroke-width="2" stroke-dasharray="6 1"/>
             <!-- <path d="M4 4L20 20 M4 20L20 4" stroke-width="2" stroke-dasharray="5 0.876" /> -->
             <!-- <path d="M4 4L20 20 M4 20L20 4" stroke-width="2" stroke-dasharray="5 0.876" /> -->
           </svg>
@@ -233,7 +227,7 @@ export class DashedHeader extends LitElement {
           </ul>
         </nav>
         <button role="search" aria-label="search button">🔍</button>
-      </div class="header-container">
+      </header>
       <svg class="dash" filter="url(#shadow2)">
         <rect class="background" />
         <line class="border-bottom" />
