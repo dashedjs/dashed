@@ -41,7 +41,6 @@
   },
   "dependencies": {
     "@polymer/lit-element": "^0.5.2",
-    "@webcomponents/webcomponentsjs": "^2.0.4",
-    "firebase": "^5.4.2"
+    "@webcomponents/webcomponentsjs": "^2.0.4"
   }
 }

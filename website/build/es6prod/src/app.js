@@ -1,21 +1,4 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import * as dashedjs from './components/dashed.js';
-
-class DashedSiteApp extends LitElement {
-  static get is() {
-    return 'dashed-site-app';
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-  }
-
-  _createRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
-  }
-
-  _render(_props) {
-    return html`
+define(["../node_modules/@polymer/lit-element/lit-element.js","./components/dashed.js"],function(_litElement,dashedjs){"use strict";dashedjs=babelHelpers.interopRequireWildcard(dashedjs);class DashedSiteApp extends _litElement.LitElement{static get is(){return"dashed-site-app"}connectedCallback(){super.connectedCallback()}_render(){return _litElement.html`
       <style>
         :host {
           display: block;
@@ -46,6 +29,8 @@ class DashedSiteApp extends LitElement {
       </style>
       <dashed-header></dashed-header>
       <main class="main">
+        <a href="#" class="abalo">Abalo</a>
+        <label>Hello<input type="checkbox" class="checkbox"></label>
         <br/>
         <dashed-button>My button</dashed-button>
         <br/> 1.
@@ -74,7 +59,4 @@ class DashedSiteApp extends LitElement {
         <br/>
       </main>
       <dashed-footer></dashed-footer>
-    `;
-  }
-}
-customElements.define(DashedSiteApp.is, DashedSiteApp);
+    `}}customElements.define(DashedSiteApp.is,DashedSiteApp)});

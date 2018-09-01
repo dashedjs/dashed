@@ -1,4 +1,4 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
+import { LitElement, html } from "../node_modules/@polymer/lit-element/lit-element.js";
 import * as dashedjs from './components/dashed.js';
 
 class DashedSiteApp extends LitElement {
@@ -8,11 +8,10 @@ class DashedSiteApp extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-  }
+  } // _createRoot() {
+  //   return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  // }
 
-  _createRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
-  }
 
   _render(_props) {
     return html`
@@ -46,6 +45,8 @@ class DashedSiteApp extends LitElement {
       </style>
       <dashed-header></dashed-header>
       <main class="main">
+        <a href="#" class="abalo">Abalo</a>
+        <label>Hello<input type="checkbox" class="checkbox"></label>
         <br/>
         <dashed-button>My button</dashed-button>
         <br/> 1.
@@ -76,5 +77,7 @@ class DashedSiteApp extends LitElement {
       <dashed-footer></dashed-footer>
     `;
   }
+
 }
+
 customElements.define(DashedSiteApp.is, DashedSiteApp);

@@ -1,0 +1,82 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src\\app.js",
+  "fragments": [
+    "src/components/dashed.js"
+  ],
+  "sources": [
+    "src/app.js",
+    "img/**",
+    "package.json",
+    "index.html",
+    "src/app.js",
+    "src/components/dashed.js"
+  ],
+  "extraDependencies": [
+    "bower_components/webcomponentsjs/*.js",
+    "manifest.json",
+    "node_modules/@webcomponents/webcomponentsjs/**",
+    "node_modules/@polymer/**"
+  ],
+  "builds": [
+    {
+      "name": "es5prod",
+      "js": {
+        "minify": true,
+        "compile": "es5",
+        "transformModulesToAmd": true
+      },
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
+      "bundle": true,
+      "addServiceWorker": true,
+      "addPushManifest": false,
+      "preset": "es5-bundled"
+    },
+    {
+      "name": "es6prod",
+      "browserCapabilities": [
+        "es2015",
+        "push"
+      ],
+      "js": {
+        "minify": true,
+        "compile": "es2015",
+        "transformModulesToAmd": true
+      },
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
+      "bundle": false,
+      "addServiceWorker": true,
+      "addPushManifest": true,
+      "preset": "es6-unbundled"
+    },
+    {
+      "name": "dev",
+      "js": {
+        "minify": false,
+        "compile": false
+      },
+      "css": {
+        "minify": false
+      },
+      "html": {
+        "minify": false
+      },
+      "bundle": false,
+      "addServiceWorker": false,
+      "addPushManifest": false
+    }
+  ],
+  "npm": true,
+  "componentDir": "node_modules/",
+  "moduleResolution": "node"
+}

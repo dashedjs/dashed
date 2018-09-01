@@ -1,0 +1,34 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src/app.js",
+  "fragments": ["src/components/dashed.js"],
+  "sources": ["src/app.js", "img/**", "package.json"],
+  "extraDependencies": [
+    "manifest.json",
+    "node_modules/@webcomponents/webcomponentsjs/**",
+    "node_modules/@polymer/**"
+  ],
+  "moduleResolution": "node",
+  "npm": true,
+  "builds": [
+    {
+      "name": "es5prod",
+      "preset": "es5-bundled",
+      "addServiceWorker": true
+    },
+    {
+      "name": "es6prod",
+      "preset": "es6-unbundled",
+      "addServiceWorker": true
+    },
+    {
+      "name": "dev",
+      "js": { "minify": false, "compile": false },
+      "css": { "minify": false },
+      "html": { "minify": false },
+      "bundle": false,
+      "addServiceWorker": false,
+      "addPushManifest": false
+    }
+  ]
+}

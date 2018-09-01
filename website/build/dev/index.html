@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
+<!DOCTYPE html><html lang="en"><head>
   <meta charset="utf-8">
-  <link rel="canonical" href="https://localhost:8443/" />
+  <link rel="canonical" href="https://localhost:8443/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashed.js Website</title>
   <link rel="icon" sizes="192x192" href="img/icons/icon-192x192.png">
-  <meta name="description" content="main page" />
+  <meta name="description" content="main page">
   <meta name="theme-color" content="#800000">
   <link rel="manifest" href="/manifest.json">
   <style>
@@ -32,28 +29,26 @@
 </head>
 
 <body>
+  <header>Header text</header>
   <dashed-site-app></dashed-site-app>
+  <footer>Footer text</footer>
   <script src="https://www.gstatic.com/firebasejs/5.4.2/firebase.js"></script>
-  <script>
-    var config = {
-      apiKey: "AIzaSyC2m9b2IwpNUImEn91PP13aryoGGh_SxWU",
-      authDomain: "dashedjs-a9bcf.firebaseapp.com",
-      databaseURL: "https://dashedjs-a9bcf.firebaseio.com",
-      projectId: "dashedjs-a9bcf",
-      storageBucket: "",
-      messagingSenderId: "876777724800"
-    };
-    firebase.initializeApp(config);
-  </script>
+  <script>var config = {
+  apiKey: "AIzaSyC2m9b2IwpNUImEn91PP13aryoGGh_SxWU",
+  authDomain: "dashedjs-a9bcf.firebaseapp.com",
+  databaseURL: "https://dashedjs-a9bcf.firebaseio.com",
+  projectId: "dashedjs-a9bcf",
+  storageBucket: "",
+  messagingSenderId: "876777724800"
+};
+firebase.initializeApp(config);</script>
   <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
   <script type="module" src="./src/app.js"></script>
-  <script>
-    if ('serviceWorker' in window.navigator) {
-      window.addEventListener('load', () => {
-        window.navigator.serviceWorker.register('service-worker.js');
-      });
-    }
-  </script>
-</body>
+  <script>if ('serviceWorker' in window.navigator) {
+  window.addEventListener('load', () => {
+    window.navigator.serviceWorker.register('service-worker.js');
+  });
+}</script>
 
-</html>
+
+</body></html>
