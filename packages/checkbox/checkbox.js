@@ -1,5 +1,5 @@
 import { LitElement, html, svg } from '@polymer/lit-element/lit-element.js';
-import { dashedColors } from '../styles/styles.js';
+import { commonStyles } from '../styles/styles.js';
 import { drawDashedRect } from '../utils/rect-dasharray.js';
 
 export class DashedCheckbox extends LitElement {
@@ -39,6 +39,7 @@ export class DashedCheckbox extends LitElement {
 
   _render({ disabled, dashWidth, dashLength, dashRatio }) {
     return html`
+      ${commonStyles}
       <style>
         :host {
           --dashed-checkbox-dimension: 24px;
@@ -50,17 +51,6 @@ export class DashedCheckbox extends LitElement {
           cursor: inherit;
           outline: none;
           min-width: 48px;
-          ${dashedColors}
-        }
-
-        :host(:focus) .dash {
-          outline: 1px solid var(--dashed-outline-color);
-          outline-offset: 1px;
-        }
-
-        :host([disabled]) {
-          opacity: 0.6;
-          pointer-events: none;
         }
 
         .checkbox-container {
@@ -75,22 +65,6 @@ export class DashedCheckbox extends LitElement {
           width: 100%;
           height: 100%;
           opacity: 0;
-        }
-
-        svg.dash {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          fill: none;
-          z-index: -1;
-        }
-  
-        svg.dash .border {
-          stroke: var(--dashed-primary-color);
-          transition: all 100ms ease-in-out;
-          fill: var(--dashed-fill-color);
         }
 
         input[type="checkbox"]:not(:checked) ~ svg.dash .checkmark {
@@ -127,7 +101,11 @@ export class DashedCheckbox extends LitElement {
     const borderRadius = 0;
 
     const hostProps = { width, height, borderRadius };
-    const dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
+    const dashProps = {
+      dashWidth: this.dashWidth,
+      dashLength: this.dashLength,
+      dashRatio: this.dashRatio
+    };
     drawDashedRect(border, hostProps, dashProps);
 
     const checkmark = svg.querySelector('.checkmark');

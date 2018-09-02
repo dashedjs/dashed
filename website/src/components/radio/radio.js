@@ -1,5 +1,5 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { dashedColors } from '../styles/styles.js';
+import { commonStyles } from '../styles/styles.js';
 import { drawDashedCircle } from '../utils/circle-dasharray.js';
 
 export class DashedRadio extends LitElement {
@@ -39,6 +39,7 @@ export class DashedRadio extends LitElement {
 
   _render({ disabled, dashWidth, dashLength, dashRatio }) {
     return html`
+      ${commonStyles}
       <style>
         :host {
           --dashed-radio-dimension: 24px;
@@ -51,17 +52,6 @@ export class DashedRadio extends LitElement {
           cursor: inherit;
           outline: none;
           min-width: 48px;
-          ${dashedColors}
-        }
-
-        :host(:focus) svg.dash {
-          outline: 1px solid var(--dashed-outline-color);
-          outline-offset: 1px;
-        }
-
-        :host([disabled]) {
-          opacity: 0.6;
-          pointer-events: none;
         }
 
         .radio-container {
@@ -76,16 +66,6 @@ export class DashedRadio extends LitElement {
           width: 100%;
           height: 100%;
           opacity: 0;
-        }
-
-        svg.dash {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          fill: none;
-          z-index: -1;
         }
   
         svg.dash .outer-circle {
@@ -132,7 +112,11 @@ export class DashedRadio extends LitElement {
 
     const outerCircle = svg.querySelector('.outer-circle');
     const hostProps = { width, height };
-    const dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
+    const dashProps = {
+      dashWidth: this.dashWidth,
+      dashLength: this.dashLength,
+      dashRatio: this.dashRatio
+    };
     drawDashedCircle(outerCircle, hostProps, dashProps);
 
     const innerCircle = svg.querySelector('.inner-circle');

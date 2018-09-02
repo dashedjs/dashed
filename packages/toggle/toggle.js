@@ -1,5 +1,5 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { dashedColors } from '../styles/styles.js';
+import { commonStyles } from '../styles/styles.js';
 import { drawDashedRect } from '../utils/rect-dasharray.js';
 
 export class DashedToggle extends LitElement {
@@ -39,6 +39,7 @@ export class DashedToggle extends LitElement {
 
   _render({ disabled, checked, name, dashWidth, dashLength, dashRatio }) {
     return html`
+      ${commonStyles}
       <style>
         :host {
           --dashed-toggle-width: 48px;
@@ -52,17 +53,6 @@ export class DashedToggle extends LitElement {
           cursor: pointer;
           outline: none;
           min-width: 48px;
-          ${dashedColors}
-        }
-
-        :host(:focus) svg.dash {
-          outline: 1px solid var(--dashed-outline-color);
-          outline-offset: 1px;
-        }
-
-        :host([disabled]) {
-          opacity: 0.6;
-          pointer-events: none;
         }
 
         .toggle-container {
@@ -85,16 +75,6 @@ export class DashedToggle extends LitElement {
           height: var(--dashed-toggle-height);
           cursor: pointer;
           opacity: 0;
-        }
-
-        svg.dash {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          fill: none;
-          z-index: -1;
         }
   
         svg.dash .toggle-background {
@@ -141,15 +121,23 @@ export class DashedToggle extends LitElement {
     const toggleBackground = svg.querySelector('.toggle-background');
     const [width, height] = [48, 24];
     const [widthDelta, heightDelta] = [6, 10];
-    const toggleBackgroundBorderRadius = (height - heightDelta - this.dashWidth) / 2;
+    const toggleBackgroundBorderRadius =
+      (height - heightDelta - this.dashWidth) / 2;
     const hostProps = {
       width: width - widthDelta,
       height: height - heightDelta,
       borderRadius: toggleBackgroundBorderRadius
     };
-    const dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
+    const dashProps = {
+      dashWidth: this.dashWidth,
+      dashLength: this.dashLength,
+      dashRatio: this.dashRatio
+    };
     drawDashedRect(toggleBackground, hostProps, dashProps);
-    toggleBackground.setAttribute('transform', `translate(${widthDelta / 2} ${heightDelta / 2})`);
+    toggleBackground.setAttribute(
+      'transform',
+      `translate(${widthDelta / 2} ${heightDelta / 2})`
+    );
 
     const toggleSwitcher = svg.querySelector('.toggle-switcher');
     toggleSwitcher.setAttribute('stroke-width', this.dashWidth);

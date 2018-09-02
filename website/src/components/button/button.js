@@ -1,5 +1,5 @@
 import { LitElement, html, svg } from '@polymer/lit-element/lit-element.js';
-import { dashedColors } from '../styles/styles.js';
+import { commonStyles } from '../styles/styles.js';
 import { drawDashedRect } from '../utils/rect-dasharray.js';
 import { ariaButton } from '../utils/wai-aria.js';
 
@@ -11,7 +11,9 @@ export class DashedButton extends LitElement {
   static get properties() {
     return {
       disabled: Boolean,
+      role: String,
       rounded: Boolean,
+      icon: String,
 
       dashWidth: Number,
       dashLength: Number,
@@ -22,6 +24,7 @@ export class DashedButton extends LitElement {
   constructor() {
     super();
     this.disabled = false;
+    this.role = '';
     this.rounded = false;
 
     this.dashWidth = 2;
@@ -35,41 +38,41 @@ export class DashedButton extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    ariaButton(this, { role: 'button', label: 'dashed-button' });
+    this._reflectPropsToNativeElement();
     this.drawDash();
   }
 
-  _render() {
+  get nativeElement() {
+    return this._root.querySelector('button');
+  }
+
+  _reflectPropsToNativeElement() {
+    if (this.role) {
+      this.nativeElement.setAttribute('role', this.role);
+    }
+  }
+
+  _render({ disabled, role }) {
     return html`
+      ${commonStyles}
       <style>
         :host {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
+          display: inline-block;
           cursor: pointer;
           outline: none;
           min-width: 48px;
           --host-width: 100%;
           --host-height: 100%;
-          ${dashedColors}
-        }
-
-        :host(:focus) svg.dash {
-          outline: 1px solid var(--dashed-outline-color);
-          outline-offset: 1px;
         }
 
         :host(:hover) button {
           color: var(--dashed-secondary-color);
         }
 
-        :host([disabled]) {
-          opacity: 0.6;
-          pointer-events: none;
-        }
-
         button {
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           background: none;
           cursor: inherit;
           border: none;
@@ -79,24 +82,9 @@ export class DashedButton extends LitElement {
           position: relative;
           transition: 50ms ease-in-out;
         }
-
-        svg.dash {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          fill: none;
-          z-index: -1;
-        }
-  
-        svg.dash .border {
-          stroke: var(--dashed-primary-color);
-          transition: all 100ms ease-in-out;
-          fill: var(--dashed-fill-color);
-        }
       </style>
       <button type="button">
+        <slot name="icon"></slot>
         <slot></slot>
         ${svg`
           <svg class="dash">
@@ -107,22 +95,18 @@ export class DashedButton extends LitElement {
     `;
   }
 
-  get nativeElement() {
-    return this._root.querySelector('button');
-  }
-
-  get svg() {
-    return this._root.querySelector('svg.dash');
-  }
-
   drawDash() {
-    const svg = this.svg;
+    const svg = this._root.querySelector('svg.dash');
     const border = svg.querySelector('.border');
     const { width, height } = this.getBoundingClientRect();
     const borderRadius = this.rounded ? (height - this.dashWidth) / 2 : 0;
 
     const hostProps = { width, height, borderRadius };
-    const dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
+    const dashProps = {
+      dashWidth: this.dashWidth,
+      dashLength: this.dashLength,
+      dashRatio: this.dashRatio
+    };
     drawDashedRect(border, hostProps, dashProps);
   }
 }

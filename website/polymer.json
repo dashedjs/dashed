@@ -2,11 +2,14 @@
   "entrypoint": "index.html",
   "shell": "src/app.js",
   "fragments": ["src/components/dashed.js"],
-  "sources": ["src/app.js", "img/**", "package.json"],
+  "sources": ["src/app.js", "img/**", "config/**", "package.json"],
   "extraDependencies": [
     "manifest.json",
     "node_modules/@webcomponents/webcomponentsjs/**",
-    "node_modules/@polymer/**"
+    "node_modules/@polymer/**",
+    "node_modules/@firebase/app/**",
+    "node_modules/@firebase/util/**",
+    "node_modules/tslib/tslib.es6.js"
   ],
   "moduleResolution": "node",
   "npm": true,

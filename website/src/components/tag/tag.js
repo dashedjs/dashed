@@ -1,5 +1,5 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { dashedColors } from '../styles/styles';
+import { commonStyles } from '../styles/styles';
 import { drawDashedRect } from '../utils/rect-dasharray';
 
 export class DashedTag extends LitElement {
@@ -37,6 +37,7 @@ export class DashedTag extends LitElement {
 
   _render({ disabled, checked, name, dashWidth, dashLength, dashRatio }) {
     return html`
+      ${commonStyles}
       <style>
         :host {
           display: inline-flex;
@@ -45,17 +46,6 @@ export class DashedTag extends LitElement {
           cursor: pointer;
           outline: none;
           min-width: 48px;
-          ${dashedColors}
-        }
-
-        :host(:focus) svg.dash {
-          outline: 1px solid var(--dashed-outline-color);
-          outline-offset: 1px;
-        }
-
-        :host([disabled]) {
-          opacity: 0.6;
-          pointer-events: none;
         }
 
         button {
@@ -72,22 +62,6 @@ export class DashedTag extends LitElement {
 
         button.active {
           color: var(--dashed-secondary-color);
-        }
-
-        svg.dash {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          fill: none;
-          z-index: -1;
-        }
-  
-        svg.dash .border {
-          stroke: var(--dashed-primary-color);
-          transition: all 100ms ease-in-out;
-          fill: var(--dashed-fill-color);
         }
       </style>
       <button type="button" on-click="${e => this._toggleTag(e)}">
@@ -143,7 +117,11 @@ export class DashedTag extends LitElement {
     const borderRadius = (height - this.dashWidth) / 2;
 
     const hostProps = { width, height, borderRadius };
-    const dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
+    const dashProps = {
+      dashWidth: this.dashWidth,
+      dashLength: this.dashLength,
+      dashRatio: this.dashRatio
+    };
     drawDashedRect(border, hostProps, dashProps);
   }
 }

@@ -1,5 +1,5 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { dashedColors } from '../styles/styles.js';
+import { commonStyles } from '../styles/styles.js';
 import { drawDashedLine } from '../utils/line-dasharray.js';
 
 export class DashedLink extends LitElement {
@@ -10,6 +10,7 @@ export class DashedLink extends LitElement {
   static get properties() {
     return {
       disabled: Boolean,
+      role: String,
 
       dashWidth: Number,
       dashLength: Number,
@@ -20,6 +21,7 @@ export class DashedLink extends LitElement {
   constructor() {
     super();
     this.disabled = false;
+    this.role = '';
 
     this.dashWidth = 4;
     this.dashLength = 8;
@@ -32,11 +34,23 @@ export class DashedLink extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
+    this._reflectPropsToNativeElement();
     this.drawDash();
+  }
+
+  get nativeElement() {
+    return this._root.querySelector('a');
+  }
+
+  _reflectPropsToNativeElement() {
+    if (this.role) {
+      this.nativeElement.setAttribute('role', this.role);
+    }
   }
 
   _render({ disabled, dashWidth, dashLength, dashRatio }) {
     return html`
+      ${commonStyles}
       <style>
         :host {
           display: inline-flex;
@@ -44,21 +58,10 @@ export class DashedLink extends LitElement {
           justify-content: center;
           cursor: pointer;
           outline: none;
-          ${dashedColors}
-        }
-
-        :host(:focus) svg.dash {
-          outline: 1px solid var(--dashed-outline-color);
-          outline-offset: 1px;
         }
 
         :host(:hover) link {
           color: var(--dashed-secondary-color);
-        }
-
-        :host([disabled]) {
-          opacity: 0.6;
-          pointer-events: none;
         }
 
         a {
@@ -73,27 +76,8 @@ export class DashedLink extends LitElement {
           transition: 50ms ease-in-out;
           width: 100%;
         }
-
-        svg.dash {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          fill: none;
-          z-index: -1;
-        }
-  
-        svg.dash .border-bottom {
-          stroke: var(--dashed-primary-color);
-          transition: all 100ms ease-in-out;
-        }
-
-        svg.dash .background {
-          fill: var(--dashed-fill-color);
-        }
       </style>
-      <a href="#">
+      <a href="#" on-click="${e => console.log(e)}">
         <slot></slot>
         <svg class="dash">
           <rect class="background" />
@@ -103,21 +87,17 @@ export class DashedLink extends LitElement {
     `;
   }
 
-  get nativeElement() {
-    return this._root.querySelector('a');
-  }
-
-  get svg() {
-    return this._root.querySelector('svg.dash');
-  }
-
   drawDash() {
-    const svg = this.svg;
+    const svg = this._root.querySelector('svg.dash');
     const borderBottom = svg.querySelector('.border-bottom');
     const { width, height } = this.getBoundingClientRect();
 
     const hostProps = { width, height };
-    const dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
+    const dashProps = {
+      dashWidth: this.dashWidth,
+      dashLength: this.dashLength,
+      dashRatio: this.dashRatio
+    };
     drawDashedLine(borderBottom, hostProps, dashProps);
 
     const background = svg.querySelector('.background');

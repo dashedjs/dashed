@@ -1,5 +1,6 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import * as dashedjs from './components/dashed.js';
+// import * as dashedjs from '../../packages/dashed.js';
 
 class DashedSiteApp extends LitElement {
   static get is() {
@@ -40,14 +41,24 @@ class DashedSiteApp extends LitElement {
           --paper-spinner-color: var(--app-accent-color);
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         }
+
         main {
           padding: 10px;
+        }
+
+        dashed-button {
+          --dashed-fill-color: #b2eaff;
         }
       </style>
       <dashed-header></dashed-header>
       <main class="main">
         <br/>
-        <dashed-button>My button</dashed-button>
+        <dashed-button role="button">My button</dashed-button>
+        <dashed-button> Hello
+          <svg slot="icon" stroke="blue" width="12" height="12" viewBox="0 0 24 24" class="icon">
+            <path d="M4 4L20 20 M4 20L20 4" stroke-width="2" stroke-dasharray="5 0.876" />
+          </svg>
+        </dashed-button>
         <br/> 1.
         <br>
         <dashed-card>Card</dashed-card>

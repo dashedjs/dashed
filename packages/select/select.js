@@ -1,5 +1,5 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { dashedColors } from '../styles/styles.js';
+import { commonStyles } from '../styles/styles.js';
 import { drawDashedLine } from '../utils/line-dasharray.js';
 
 export class DashedSelect extends LitElement {
@@ -45,6 +45,7 @@ export class DashedSelect extends LitElement {
 
   _render({ disabled, dashWidth, dashLength, dashRatio }) {
     return html`
+      ${commonStyles}
       <style>
         :host {
           --dashed-select-min-width: 96px;
@@ -58,17 +59,6 @@ export class DashedSelect extends LitElement {
           outline: none;
           min-width: var(--dashed-select-min-width);
           min-height: var(--dashed-select-min-height);
-          ${dashedColors}
-        }
-
-        :host(:focus) .dash {
-          outline: 1px solid var(--dashed-outline-color);
-          outline-offset: 1px;
-        }
-
-        :host([disabled]) {
-          opacity: 0.6;
-          pointer-events: none;
         }
 
         .select-container {
@@ -90,21 +80,6 @@ export class DashedSelect extends LitElement {
           appearance: none;
           -webkit-appearance: none;
           -moz-appearance: none;
-        }
-
-        svg.dash {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          fill: var(--dashed-fill-color);
-          z-index: -1;
-        }
-  
-        svg.dash .border-bottom {
-          stroke: var(--dashed-primary-color);
-          transition: all 100ms ease-in-out;
         }
   
         svg.dash .caret {
@@ -139,10 +114,16 @@ export class DashedSelect extends LitElement {
   drawDash() {
     const svg = this.svg;
     const borderBottom = svg.querySelector('.border-bottom');
-    const { width, height } = this._root.querySelector('.select-container').getBoundingClientRect();
+    const { width, height } = this._root
+      .querySelector('.select-container')
+      .getBoundingClientRect();
 
     const hostProps = { width, height };
-    const dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
+    const dashProps = {
+      dashWidth: this.dashWidth,
+      dashLength: this.dashLength,
+      dashRatio: this.dashRatio
+    };
     drawDashedLine(borderBottom, hostProps, dashProps);
 
     const caret = svg.querySelector('.caret');

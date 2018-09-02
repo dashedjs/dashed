@@ -1,5 +1,5 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { dashedColors } from '../styles/styles.js';
+import { commonStyles } from '../styles/styles.js';
 import { drawDashedRect } from '../utils/rect-dasharray.js';
 
 export class DashedInput extends LitElement {
@@ -39,6 +39,7 @@ export class DashedInput extends LitElement {
 
   _render() {
     return html`
+      ${commonStyles}
       <style>
         :host {
           --dashed-input-dimension: 24px;
@@ -51,17 +52,6 @@ export class DashedInput extends LitElement {
           outline: none;
           min-width: 96px;
           min-height: 24px;
-          ${dashedColors}
-        }
-
-        :host(:focus) .dash {
-          outline: 1px solid var(--dashed-outline-color);
-          outline-offset: 1px;
-        }
-
-        :host([disabled]) {
-          opacity: 0.6;
-          pointer-events: none;
         }
 
         .input-container {
@@ -81,21 +71,6 @@ export class DashedInput extends LitElement {
           /* max-width: 100%; */
           height: 100%;
           background: var(--dashed-fill-color);
-        }
-
-        svg.dash {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          fill: var(--dashed-fill-color);
-          z-index: -1;
-        }
-  
-        svg.dash .border {
-          stroke: var(--dashed-primary-color);
-          transition: all 100ms ease-in-out;
         }
       </style>
       <label for="input"><slot></slot></label>
@@ -119,11 +94,17 @@ export class DashedInput extends LitElement {
   drawDash() {
     const svg = this.svg;
     const border = svg.querySelector('.border');
-    const { width, height } = this._root.querySelector('.input-container').getBoundingClientRect();
+    const { width, height } = this._root
+      .querySelector('.input-container')
+      .getBoundingClientRect();
     const borderRadius = 5;
 
     const hostProps = { width, height, borderRadius };
-    const dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
+    const dashProps = {
+      dashWidth: this.dashWidth,
+      dashLength: this.dashLength,
+      dashRatio: this.dashRatio
+    };
     drawDashedRect(border, hostProps, dashProps);
   }
 }

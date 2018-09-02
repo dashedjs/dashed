@@ -1,5 +1,5 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { dashedColors } from '../styles/styles';
+import { commonStyles } from '../styles/styles';
 import { drawDashedLine } from '../utils/line-dasharray';
 
 export class DashedSlider extends LitElement {
@@ -52,6 +52,7 @@ export class DashedSlider extends LitElement {
 
   _render({ disabled, min, max, value, step }) {
     return html`
+      ${commonStyles}
       <style>
         :host {
           --dashed-slider-width: 192px;
@@ -65,21 +66,10 @@ export class DashedSlider extends LitElement {
           cursor: inherit;
           outline: none;
           min-width: var(--dashed-slider-width);
-          ${dashedColors}
-        }
-
-        :host(:focus) svg.dash {
-          outline: 1px solid var(--dashed-outline-color);
-          outline-offset: 1px;
         }
 
         :host(:focus) svg.dash .slider-cursor-focus-ring {
           opacity: 1;
-        }
-
-        :host([disabled]) {
-          opacity: 0.6;
-          pointer-events: none;
         }
 
         .slider-container {
@@ -96,18 +86,6 @@ export class DashedSlider extends LitElement {
           width: calc(100% - var(--dashed-slider-cursor-radius));
           cursor: pointer;
           opacity: 0;
-        }
-
-        svg.dash {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          fill: none;
-          z-index: -1;
-          transition: all 50ms ease-in-out;
-          will-change: tranform, opacity;
         }
   
         svg.dash .slider-background {
@@ -156,22 +134,29 @@ export class DashedSlider extends LitElement {
     this.value = parseFloat(e.target.value);
     const sliderBackgroundwidth = 192 - 2 * 6;
     const percentage = (this.value - this.min) / (this.max - this.min);
-    this._sliderCursor.style.transform = `translateX(${percentage * sliderBackgroundwidth}px)`;
+    this._sliderCursor.style.transform = `translateX(${percentage *
+      sliderBackgroundwidth}px)`;
     this._sliderTracker.setAttribute('x2', percentage * sliderBackgroundwidth);
   }
 
   drawDash() {
     const svg = this.svg;
-    const { width, height } = this._root.querySelector('.slider-container').getBoundingClientRect();
+    const { width, height } = this._root
+      .querySelector('.slider-container')
+      .getBoundingClientRect();
 
     const sliderCursor = svg.querySelector('.slider-cursor');
-    const sliderCursorInner = sliderCursor.querySelector('.slider-cursor-inner');
+    const sliderCursorInner = sliderCursor.querySelector(
+      '.slider-cursor-inner'
+    );
     const sliderCursorInnerRadius = 6;
     sliderCursorInner.setAttribute('stroke-width', this.dashWidth);
     sliderCursorInner.setAttribute('cx', sliderCursorInnerRadius);
     sliderCursorInner.setAttribute('cy', height / 2);
     sliderCursorInner.setAttribute('r', sliderCursorInnerRadius);
-    const sliderCursorFocusRing = sliderCursor.querySelector('.slider-cursor-focus-ring');
+    const sliderCursorFocusRing = sliderCursor.querySelector(
+      '.slider-cursor-focus-ring'
+    );
     sliderCursorFocusRing.setAttribute('stroke-width', this.dashWidth);
     sliderCursorFocusRing.setAttribute('cx', sliderCursorInnerRadius);
     sliderCursorFocusRing.setAttribute('cy', height / 2);
@@ -180,23 +165,35 @@ export class DashedSlider extends LitElement {
     const sliderBackground = svg.querySelector('.slider-background');
     const sliderBackgroundwidth = width - 2 * sliderCursorInnerRadius;
     const hostProps = { width: sliderBackgroundwidth, height };
-    let dashProps = { dashWidth: this.dashWidth, dashLength: this.dashLength, dashRatio: this.dashRatio };
+    let dashProps = {
+      dashWidth: this.dashWidth,
+      dashLength: this.dashLength,
+      dashRatio: this.dashRatio
+    };
     drawDashedLine(sliderBackground, hostProps, dashProps);
-    sliderBackground.setAttribute('transform', `translate(${sliderCursorInnerRadius} ${-height / 2})`);
+    sliderBackground.setAttribute(
+      'transform',
+      `translate(${sliderCursorInnerRadius} ${-height / 2})`
+    );
 
     const sliderTracker = svg.querySelector('.slider-tracker');
     drawDashedLine(sliderTracker, hostProps, dashProps);
-    sliderTracker.setAttribute('transform', `translate(${sliderCursorInnerRadius} ${-height / 2})`);
+    sliderTracker.setAttribute(
+      'transform',
+      `translate(${sliderCursorInnerRadius} ${-height / 2})`
+    );
 
     const percentage = (this.value - this.min) / (this.max - this.min);
-    sliderCursor.style.transform = `translateX(${percentage * sliderBackgroundwidth}px)`;
+    sliderCursor.style.transform = `translateX(${percentage *
+      sliderBackgroundwidth}px)`;
     sliderTracker.setAttribute('x2', percentage * sliderBackgroundwidth);
   }
 
   _computeLineStrokeDashParams(width) {
     const { dashWidth, dashLength, dashRatio } = this._validateDashProps(width);
 
-    const dashCount = 1 + Math.floor((width - dashLength) / ((1 + dashRatio) * dashLength));
+    const dashCount =
+      1 + Math.floor((width - dashLength) / ((1 + dashRatio) * dashLength));
     const dashSpacing = (width - dashCount * dashLength) / (dashCount - 1);
 
     const strokeDasharray = `${dashLength} ${dashSpacing}`;
@@ -207,12 +204,19 @@ export class DashedSlider extends LitElement {
 
   _validateDashProps(width) {
     if (this.dashWidth < 0 || this.dashLength < 0 || this.dashRatio < 0) {
-      throw new Error(`dashWidth, dashLength and dashRatio must be positive numbers`);
+      throw new Error(
+        `dashWidth, dashLength and dashRatio must be positive numbers`
+      );
     }
     const refDimension = width;
-    const dashLength = this.dashLength > refDimension ? refDimension : this.dashLength;
-    const dashWidth = this.dashWidth > refDimension / 2 ? refDimension / 2 : this.dashWidth;
-    const dashRatio = dashLength * (1 + this.dashRatio) > refDimension ? refDimension - dashLength : this.dashRatio;
+    const dashLength =
+      this.dashLength > refDimension ? refDimension : this.dashLength;
+    const dashWidth =
+      this.dashWidth > refDimension / 2 ? refDimension / 2 : this.dashWidth;
+    const dashRatio =
+      dashLength * (1 + this.dashRatio) > refDimension
+        ? refDimension - dashLength
+        : this.dashRatio;
     return { dashWidth, dashLength, dashRatio };
   }
 }

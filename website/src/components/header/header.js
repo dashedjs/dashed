@@ -1,8 +1,10 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { repeat } from '../../../node_modules/lit-html/lib/repeat.js';
-import { DashedButton } from '../button/button.js';
-import { dashedColors } from '../styles/styles.js';
 import { drawDashedLine } from '../utils/line-dasharray.js';
+import { commonStyles } from '../styles/styles.js';
+import { DashedButton } from '../button/button.js';
+import { DashedLink } from '../link/link.js';
+import { menuIcon, closeIcon } from '../icons/icons.js';
 
 export class DashedHeader extends LitElement {
   static get is() {
@@ -11,10 +13,10 @@ export class DashedHeader extends LitElement {
 
   static get properties() {
     return {
-      leftButton: Object,
-      logoImg: Object,
       navItems: Array,
-      rightButton: Object,
+      logo: Object,
+      leftIcon: Object,
+      rightIcon: Object,
 
       dashWidth: Number,
       dashLength: Number,
@@ -24,14 +26,15 @@ export class DashedHeader extends LitElement {
 
   constructor() {
     super();
-    this.dashWidth = 1;
-    this.dashLength = 4;
-    this.dashRatio = 1;
     this.navItems = [
       { text: 'Getting started', href: '#' },
       { text: 'Components', href: '#' },
-      { text: 'Try it', href: '#' }
+      { text: 'Playground', href: '#' }
     ];
+
+    this.dashWidth = 1;
+    this.dashLength = 4;
+    this.dashRatio = 1;
   }
 
   _createRoot() {
@@ -62,6 +65,7 @@ export class DashedHeader extends LitElement {
 
   _render({ navItems }) {
     return html`
+      ${commonStyles}
       <style>
         :host {
           --dashed-header-height: 56px;
@@ -77,7 +81,6 @@ export class DashedHeader extends LitElement {
           position: sticky;
           top: 0;
           z-index: 1;
-          ${dashedColors}
         }
 
         header {
@@ -161,25 +164,6 @@ export class DashedHeader extends LitElement {
           stroke: var(--dashed-primary-color);
         }
 
-        svg.dash {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          fill: none;
-          z-index: -1;
-        }
-  
-        svg.dash .border-bottom {
-          stroke: var(--dashed-primary-color);
-          transition: all 100ms ease-in-out;
-        }
-
-        svg.dash .background {
-          fill: var(--dashed-fill-color);
-        }
-
         @media screen and (min-width: 600px) {
           .header {
             grid-template-columns: max-content auto max-content max-content;
@@ -204,11 +188,7 @@ export class DashedHeader extends LitElement {
           aria-expanded="false"
           aria-controls="menu"
           aria-label="Menu button">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon">
-            <path d="M2 6h20 M2 12h20 M2 18h20" stroke-width="2" stroke-dasharray="6 1" />
-            <!-- <path d="M4 4L20 20 M4 20L20 4" stroke-width="2" stroke-dasharray="5 0.876" /> -->
-            <!-- <path d="M4 4L20 20 M4 20L20 4" stroke-width="2" stroke-dasharray="5 0.876" /> -->
-          </svg>
+            ${menuIcon}
         </button>
         <a href="#">
           <img class="logo" src="./img/logo.png" alt="Dashedjs logo">
@@ -221,8 +201,9 @@ export class DashedHeader extends LitElement {
               navItems,
               navItem => html`
               <li role="none">
-                <a role="menuitem" href="${navItem.href}" on-click="${e =>
-                this._activateLink(e)}">${navItem.text}
+                <a role="menuitem" href="${navItem.href}"
+                on-click="${e => this._activateLink(e)}">
+                ${navItem.text}
                 </a>
               </li>
             `
