@@ -4,7 +4,7 @@ import { drawDashedLine } from '../utils/line-dasharray.js';
 import { commonStyles } from '../styles/styles.js';
 import { DashedButton } from '../button/button.js';
 import { DashedLink } from '../link/link.js';
-import { menuIcon, closeIcon } from '../icons/icons.js';
+import { menuIcon, closeIcon, githubIcon } from '../icons/icons.js';
 
 export class DashedHeader extends LitElement {
   static get is() {
@@ -164,6 +164,11 @@ export class DashedHeader extends LitElement {
           stroke: var(--dashed-primary-color);
         }
 
+        svg.github-icon {
+          stroke: #000000;
+          fill: #000000;
+        }
+
         @media screen and (min-width: 600px) {
           .header {
             grid-template-columns: max-content auto max-content max-content;
@@ -210,7 +215,7 @@ export class DashedHeader extends LitElement {
             )}
           </ul>
         </nav>
-        <button role="search" aria-label="search button">🔍</button>
+        <button role="search" aria-label="search button">${githubIcon}</button>
       </header>
       <svg class="dash" filter="url(#shadow2)">
         <rect class="background" />
