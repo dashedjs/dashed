@@ -101,19 +101,11 @@ export class DashedFooter extends LitElement {
     `;
   }
 
-  get nativeElement() {
-    return this._root.querySelector('footer');
-  }
-
-  get svg() {
-    return this._root.querySelector('svg.dash');
-  }
-
   drawDash() {
     const { width, height } = this.getBoundingClientRect();
     const { dashWidth } = this._validateDashProps(width, height);
 
-    const svg = this.svg;
+    const svg = this._root.querySelector('svg.dash');
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
     const border = svg.querySelector('.border');

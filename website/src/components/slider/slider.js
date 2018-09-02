@@ -40,8 +40,9 @@ export class DashedSlider extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     this.drawDash();
-    this._sliderCursor = this.svg.querySelector('.slider-cursor');
-    this._sliderTracker = this.svg.querySelector('.slider-tracker');
+    const svg = this._root.querySelector('svg.dash');
+    this._sliderCursor = svg.querySelector('.slider-cursor');
+    this._sliderTracker = svg.querySelector('.slider-tracker');
     window.addEventListener('resize', this.drawDash.bind(this));
   }
 
@@ -122,14 +123,6 @@ export class DashedSlider extends LitElement {
     `;
   }
 
-  get nativeElement() {
-    return this._root.querySelector('input[type="range"]');
-  }
-
-  get svg() {
-    return this._root.querySelector('svg.dash');
-  }
-
   _onInputHandler(e) {
     this.value = parseFloat(e.target.value);
     const sliderBackgroundwidth = 192 - 2 * 6;
@@ -140,7 +133,7 @@ export class DashedSlider extends LitElement {
   }
 
   drawDash() {
-    const svg = this.svg;
+    const svg = this._root.querySelector('svg.dash');
     const { width, height } = this._root
       .querySelector('.slider-container')
       .getBoundingClientRect();

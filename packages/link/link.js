@@ -38,13 +38,9 @@ export class DashedLink extends LitElement {
     this.drawDash();
   }
 
-  get nativeElement() {
-    return this._root.querySelector('a');
-  }
-
   _reflectPropsToNativeElement() {
     if (this.role) {
-      this.nativeElement.setAttribute('role', this.role);
+      this._root.querySelector('svg.dash').setAttribute('role', this.role);
     }
   }
 

@@ -98,16 +98,8 @@ export class DashedRadio extends LitElement {
     `;
   }
 
-  get nativeElement() {
-    return this._root.querySelector('input[type="radio"]');
-  }
-
-  get svg() {
-    return this._root.querySelector('svg.dash');
-  }
-
   drawDash() {
-    const svg = this.svg;
+    const svg = this._root.querySelector('svg.dash');
     const [width, height] = [24, 24];
 
     const outerCircle = svg.querySelector('.outer-circle');

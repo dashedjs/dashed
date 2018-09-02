@@ -83,16 +83,8 @@ export class DashedInput extends LitElement {
     `;
   }
 
-  get nativeElement() {
-    return this._root.querySelector('input');
-  }
-
-  get svg() {
-    return this._root.querySelector('svg.dash');
-  }
-
   drawDash() {
-    const svg = this.svg;
+    const svg = this._root.querySelector('svg.dash');
     const border = svg.querySelector('.border');
     const { width, height } = this._root
       .querySelector('.input-container')

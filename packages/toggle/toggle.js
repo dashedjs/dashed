@@ -108,16 +108,8 @@ export class DashedToggle extends LitElement {
     `;
   }
 
-  get nativeElement() {
-    return this._root.querySelector('input[type="checkbox"]');
-  }
-
-  get svg() {
-    return this._root.querySelector('svg.dash');
-  }
-
   drawDash() {
-    const svg = this.svg;
+    const svg = this._root.querySelector('svg.dash');
     const toggleBackground = svg.querySelector('.toggle-background');
     const [width, height] = [48, 24];
     const [widthDelta, heightDelta] = [6, 10];

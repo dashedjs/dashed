@@ -103,16 +103,8 @@ export class DashedSelect extends LitElement {
     `;
   }
 
-  get nativeElement() {
-    return this._root.querySelector('select');
-  }
-
-  get svg() {
-    return this._root.querySelector('svg.dash');
-  }
-
   drawDash() {
-    const svg = this.svg;
+    const svg = this._root.querySelector('svg.dash');
     const borderBottom = svg.querySelector('.border-bottom');
     const { width, height } = this._root
       .querySelector('.select-container')

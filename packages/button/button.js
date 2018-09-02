@@ -42,13 +42,9 @@ export class DashedButton extends LitElement {
     this.drawDash();
   }
 
-  get nativeElement() {
-    return this._root.querySelector('button');
-  }
-
   _reflectPropsToNativeElement() {
     if (this.role) {
-      this.nativeElement.setAttribute('role', this.role);
+      this._root.querySelector('button').setAttribute('role', this.role);
     }
   }
 

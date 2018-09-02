@@ -40,21 +40,21 @@ export class DashedTag extends LitElement {
       ${commonStyles}
       <style>
         :host {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
+          display: inline-block;
           cursor: pointer;
           outline: none;
           min-width: 48px;
         }
 
         button {
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           background: none;
           cursor: inherit;
           border: none;
           outline: none;
-          padding: 4px 8px;
+          padding: 4px 12px;
           font-size: 12px;
           position: relative;
           transition: 50ms ease-in-out;
@@ -73,16 +73,8 @@ export class DashedTag extends LitElement {
     `;
   }
 
-  get nativeElement() {
-    return this._root.querySelector('button');
-  }
-
-  get svg() {
-    return this._root.querySelector('svg.dash');
-  }
-
   _toggleTag(e) {
-    const button = this.nativeElement;
+    const button = this._root.querySelector('svg.dash');
     if (!button.classList.contains('active')) {
       button.classList.add('active');
     } else {
@@ -94,7 +86,7 @@ export class DashedTag extends LitElement {
     // const { width, height } = this.getBoundingClientRect();
     // const { dashWidth } = this._validateDashProps(width, height);
 
-    // const svg = this.svg;
+    // const svg = this._root.querySelector('svg.dash');
     // svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
     // const border = svg.querySelector('.border');
@@ -111,7 +103,7 @@ export class DashedTag extends LitElement {
     // border.setAttribute('stroke-dasharray', strokeDasharray);
     // border.setAttribute('stroke-dashoffset', strokeDashOffset);
 
-    const svg = this.svg;
+    const svg = this._root.querySelector('svg.dash');
     const border = svg.querySelector('.border');
     const { width, height } = this.getBoundingClientRect();
     const borderRadius = (height - this.dashWidth) / 2;
