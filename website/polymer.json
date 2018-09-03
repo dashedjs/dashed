@@ -2,7 +2,7 @@
   "entrypoint": "index.html",
   "shell": "src/app.js",
   "fragments": ["src/components/dashed.js"],
-  "sources": ["src/app.js", "img/**", "config/**", "package.json"],
+  "sources": ["src/app.js", "img/**", "environments/**", "package.json"],
   "extraDependencies": [
     "manifest.json",
     "node_modules/@webcomponents/webcomponentsjs/**",

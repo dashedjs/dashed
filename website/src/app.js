@@ -53,12 +53,18 @@ class DashedSiteApp extends LitElement {
       <dashed-header></dashed-header>
       <main class="main">
         <br/>
-        <dashed-button role="button">My button</dashed-button>
+        <dashed-button role="button" disabled>My button</dashed-button>
         <dashed-button> Hello
           <svg slot="icon" stroke="blue" width="12" height="12" viewBox="0 0 24 24" class="icon">
             <path d="M4 4L20 20 M4 20L20 4" stroke-width="2" stroke-dasharray="5 0.876" />
           </svg>
         </dashed-button>
+        <br>
+        <dashed-button>Hello
+          <dashed-icon slot="icon" name="close"></dashed-icon>
+        </dashed-button>
+        <br>
+        <dashed-icon name="close"></dashed-icon>
         <br/> 1.
         <br>
         <dashed-card>Card</dashed-card>

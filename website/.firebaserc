@@ -1,5 +1,6 @@
 {
   "projects": {
-    "dashedjs": "dashedjs-a9bcf"
+    "dashedjs-dev": "dashedjs-a9bcf",
+    "default": "dashedjs-dev"
   }
 }

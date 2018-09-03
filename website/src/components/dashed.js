@@ -5,6 +5,7 @@ export { DashedCheckbox } from './checkbox/checkbox.js';
 // export { DashedFab } from './fab/fab.js';
 export { DashedFooter } from './footer/footer.js';
 export { DashedHeader } from './header/header.js';
+export { DashedIcon } from './icons/icon.js';
 export { DashedInput } from './input/input.js';
 export { DashedLink } from './link/link.js';
 // export { DashedModal } from './modal/modal.js';

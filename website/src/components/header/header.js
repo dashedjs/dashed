@@ -1,5 +1,5 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { repeat } from '../../../node_modules/lit-html/lib/repeat.js';
+import { repeat } from '../../../node_modules/lit-html/directives/repeat.js';
 import { drawDashedLine } from '../utils/line-dasharray.js';
 import { commonStyles } from '../styles/styles.js';
 import { DashedButton } from '../button/button.js';
@@ -202,17 +202,15 @@ export class DashedHeader extends LitElement {
         <div></div>
         <nav class="sidebar" role="navigation">
           <ul id="menu" role="menu" aria-labelledby="menubutton">
-            ${repeat(
-              navItems,
-              navItem => html`
-              <li role="none">
-                <a role="menuitem" href="${navItem.href}"
-                on-click="${e => this._activateLink(e)}">
-                ${navItem.text}
-                </a>
-              </li>
-            `
-            )}
+            ${navItems.map(navItem => {
+              return html`
+                <li role="none">
+                  <a role="menuitem" href="${navItem.href}"
+                  on-click="${e => this._activateLink(e)}">
+                  ${navItem.text}
+                  </a>
+                </li>`;
+            })}
           </ul>
         </nav>
         <button role="search" aria-label="search button">${githubIcon}</button>

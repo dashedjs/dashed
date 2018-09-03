@@ -1,8 +1,6 @@
 import { LitElement, html, svg } from '@polymer/lit-element/lit-element.js';
 import { commonStyles } from '../styles/styles.js';
 import { drawDashedRect } from '../utils/rect-dasharray.js';
-import { ariaButton } from '../utils/wai-aria.js';
-
 export class DashedButton extends LitElement {
   static get is() {
     return 'dashed-button';
@@ -13,7 +11,6 @@ export class DashedButton extends LitElement {
       disabled: Boolean,
       role: String,
       rounded: Boolean,
-      icon: String,
 
       dashWidth: Number,
       dashLength: Number,
@@ -38,17 +35,10 @@ export class DashedButton extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this._reflectPropsToNativeElement();
     this.drawDash();
   }
 
-  _reflectPropsToNativeElement() {
-    if (this.role) {
-      this._root.querySelector('button').setAttribute('role', this.role);
-    }
-  }
-
-  _render({ disabled, role }) {
+  _render({ disabled, role, icon }) {
     return html`
       ${commonStyles}
       <style>
@@ -79,14 +69,12 @@ export class DashedButton extends LitElement {
           transition: 50ms ease-in-out;
         }
       </style>
-      <button type="button">
+      <button type="button" disabled$="${disabled}" role$="${role}">
         <slot name="icon"></slot>
         <slot></slot>
-        ${svg`
-          <svg class="dash">
+        <svg class="dash">
           <rect class="border" stroke-width="2" />
         </svg>
-        `}
       </button>
     `;
   }
