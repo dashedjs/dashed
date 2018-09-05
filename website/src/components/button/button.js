@@ -35,10 +35,24 @@ export class DashedButton extends LitElement {
 
   firstUpdated() {
     super.firstUpdated();
-    this.drawDash();
+    this._icon = this.renderRoot
+      .querySelector('slot[name="icon"]')
+      .assignedNodes()[0];
+    if (this._icon && this._icon.constructor.name === 'DashedIcon') {
+      this._icon.addEventListener('iconloaded', this.drawDash.bind(this));
+    } else {
+      this.drawDash();
+    }
+  }
+
+  disconnectedCallback() {
+    if (this._icon) {
+      this._icon.removeEventListener('iconloaded', this.drawDash.bind(this));
+    }
   }
 
   render() {
+    console.log('render');
     return html`
       ${commonStyles}
       <style>
@@ -68,6 +82,11 @@ export class DashedButton extends LitElement {
           font-size: 16px;
           position: relative;
           transition: 50ms ease-in-out;
+        }
+        
+        dashed-icon ::slotted(dashed-icon) {
+          width: 12px;
+          height: 12px;
         }
       </style>
       <button type="button">

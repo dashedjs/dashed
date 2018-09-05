@@ -53,10 +53,10 @@ class DashedSiteApp extends LitElement {
         </dashed-button>
         <br>
         <dashed-button>Hello
-          <dashed-icon slot="icon" .name="close"></dashed-icon>
+          <dashed-icon slot="icon" name="close"></dashed-icon>
         </dashed-button>
         <br>
-        <dashed-icon name="close"></dashed-icon>
+        <dashed-icon name="menu"></dashed-icon>
         <br/> 1.
         <br>
         <dashed-card>Card</dashed-card>
@@ -69,7 +69,7 @@ class DashedSiteApp extends LitElement {
         <br/><br> 1.
         <dashed-notification>Notification</dashed-notification>
         <br/> 1.
-        <dashed-radio .dashLength="4" .dashWidth="2" .dashRatio="0.5">Radio</dashed-radio>
+        <dashed-radio>Radio</dashed-radio>
         <br/> 1.
         <dashed-select>select</dashed-select>
         <br/> 1.

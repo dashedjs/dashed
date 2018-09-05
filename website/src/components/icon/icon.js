@@ -30,6 +30,15 @@ export class DashedIcon extends LitElement {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
+  firstUpdated() {
+    super.firstUpdated();
+    const observer = new MutationObserver(mutations => {
+      if (mutations[0].type === 'childList')
+        this.dispatchEvent(new CustomEvent('iconloaded'));
+    });
+    observer.observe(this.renderRoot, { childList: true });
+  }
+
   render() {
     return html`
       <style>
@@ -38,18 +47,20 @@ export class DashedIcon extends LitElement {
           cursor: pointer;
           outline: none;
         }
+        
+        span {
+          display: inline-block;
+        }
       </style>
-      ${until(this.fetchIcon(this.name, this.src), html`<span>...</span>`)}
+      ${until(this.fetchIcon(this.name, this.src), '')}
     `;
   }
 
   fetchIcon(name, src) {
-    const iconUrl = name ? `src/components/icons/${name}.svg` : src;
+    const iconUrl = name ? `/src/components/icons/${name}.svg` : src;
     return fetch(iconUrl)
       .then(res => res.text())
-      .then(icon => {
-        return html`<span innerHTML="${icon}"></span>`;
-      })
+      .then(icon => html`<span .innerHTML="${icon}"></span>`)
       .catch(e => console.error(e));
   }
 }
