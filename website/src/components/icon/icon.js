@@ -26,11 +26,11 @@ export class DashedIcon extends LitElement {
     this.ariaLabelledBy = '';
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  _render({ name, src }) {
+  render() {
     return html`
       <style>
         :host {
@@ -39,7 +39,7 @@ export class DashedIcon extends LitElement {
           outline: none;
         }
       </style>
-      ${until(this.fetchIcon(name, src), html`<span>...</span>`)}
+      ${until(this.fetchIcon(this.name, this.src), html`<span>...</span>`)}
     `;
   }
 
@@ -48,7 +48,6 @@ export class DashedIcon extends LitElement {
     return fetch(iconUrl)
       .then(res => res.text())
       .then(icon => {
-        console.log(iconUrl, icon);
         return html`<span innerHTML="${icon}"></span>`;
       })
       .catch(e => console.error(e));

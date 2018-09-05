@@ -33,25 +33,19 @@ export class DashedSlider extends LitElement {
     this.dashRatio = 0.5;
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  connectedCallback() {
-    super.connectedCallback();
+  firstUpdated() {
+    super.firstUpdated();
     this.drawDash();
-    const svg = this._root.querySelector('svg.dash');
+    const svg = this.renderRoot.querySelector('svg.dash');
     this._sliderCursor = svg.querySelector('.slider-cursor');
     this._sliderTracker = svg.querySelector('.slider-tracker');
-    window.addEventListener('resize', this.drawDash.bind(this));
   }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener('resize', this.drawDash.bind(this));
-  }
-
-  _render({ disabled, min, max, value, step }) {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -109,7 +103,8 @@ export class DashedSlider extends LitElement {
       </style>
       <label for="range"><slot></slot></label>
       <div class="slider-container">
-        <input type="range" id="range" min="${min}" max="${max}" step="${step}" value="${value}"
+        <input type="range" id="range" min="${this.min}" max="${this.max}"
+          step="${this.step}" value="${this.value}"
           on-input="${e => this._onInputHandler(e)}" />
         <svg class="dash">
           <line class="slider-background" />
@@ -133,8 +128,8 @@ export class DashedSlider extends LitElement {
   }
 
   drawDash() {
-    const svg = this._root.querySelector('svg.dash');
-    const { width, height } = this._root
+    const svg = this.renderRoot.querySelector('svg.dash');
+    const { width, height } = this.renderRoot
       .querySelector('.slider-container')
       .getBoundingClientRect();
 

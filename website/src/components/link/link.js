@@ -28,23 +28,16 @@ export class DashedLink extends LitElement {
     this.dashRatio = 0.2;
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    this._reflectPropsToNativeElement();
+  firstUpdated() {
+    super.firstUpdated();
     this.drawDash();
   }
 
-  _reflectPropsToNativeElement() {
-    if (this.role) {
-      this._root.querySelector('svg.dash').setAttribute('role', this.role);
-    }
-  }
-
-  _render({ disabled, dashWidth, dashLength, dashRatio }) {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -54,6 +47,7 @@ export class DashedLink extends LitElement {
           justify-content: center;
           cursor: pointer;
           outline: none;
+          position: relative;
         }
 
         :host(:hover) link {
@@ -73,7 +67,7 @@ export class DashedLink extends LitElement {
           width: 100%;
         }
       </style>
-      <a href="#" on-click="${e => console.log(e)}">
+      <a href="#" @click="${e => console.log(e)}">
         <slot></slot>
         <svg class="dash">
           <rect class="background" />
@@ -84,7 +78,7 @@ export class DashedLink extends LitElement {
   }
 
   drawDash() {
-    const svg = this._root.querySelector('svg.dash');
+    const svg = this.renderRoot.querySelector('svg.dash');
     const borderBottom = svg.querySelector('.border-bottom');
     const { width, height } = this.getBoundingClientRect();
 

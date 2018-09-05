@@ -28,16 +28,16 @@ export class DashedToggle extends LitElement {
     this.dashRatio = 0.5;
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  connectedCallback() {
-    super.connectedCallback();
+  firstUpdated() {
+    super.firstUpdated();
     this.drawDash();
   }
 
-  _render({ disabled, checked, name, dashWidth, dashLength, dashRatio }) {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -109,7 +109,7 @@ export class DashedToggle extends LitElement {
   }
 
   drawDash() {
-    const svg = this._root.querySelector('svg.dash');
+    const svg = this.renderRoot.querySelector('svg.dash');
     const toggleBackground = svg.querySelector('.toggle-background');
     const [width, height] = [48, 24];
     const [widthDelta, heightDelta] = [6, 10];

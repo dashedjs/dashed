@@ -26,16 +26,16 @@ export class DashedTag extends LitElement {
     this.dashRatio = 0.2;
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  connectedCallback() {
-    super.connectedCallback();
+  firstUpdated() {
+    super.firstUpdated();
     this.drawDash();
   }
 
-  _render({ disabled, checked, name, dashWidth, dashLength, dashRatio }) {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -64,7 +64,7 @@ export class DashedTag extends LitElement {
           color: var(--dashed-secondary-color);
         }
       </style>
-      <button type="button" on-click="${e => this._toggleTag(e)}">
+      <button type="button" @click="${e => this._toggleTag(e)}">
         <slot></slot>
         <svg class="dash">
           <rect class="border" />
@@ -74,7 +74,7 @@ export class DashedTag extends LitElement {
   }
 
   _toggleTag(e) {
-    const button = this._root.querySelector('svg.dash');
+    const button = this.renderRoot.querySelector('svg.dash');
     if (!button.classList.contains('active')) {
       button.classList.add('active');
     } else {
@@ -86,7 +86,7 @@ export class DashedTag extends LitElement {
     // const { width, height } = this.getBoundingClientRect();
     // const { dashWidth } = this._validateDashProps(width, height);
 
-    // const svg = this._root.querySelector('svg.dash');
+    // const svg = this.renderRoot.querySelector('svg.dash');
     // svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
     // const border = svg.querySelector('.border');
@@ -103,7 +103,7 @@ export class DashedTag extends LitElement {
     // border.setAttribute('stroke-dasharray', strokeDasharray);
     // border.setAttribute('stroke-dashoffset', strokeDashOffset);
 
-    const svg = this._root.querySelector('svg.dash');
+    const svg = this.renderRoot.querySelector('svg.dash');
     const border = svg.querySelector('.border');
     const { width, height } = this.getBoundingClientRect();
     const borderRadius = (height - this.dashWidth) / 2;

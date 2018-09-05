@@ -21,13 +21,17 @@ export class DashedFooter extends LitElement {
     this.dashRatio = 0.1;
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  }
+
+  firstUpdated() {
+    super.firstUpdated();
+    this.drawDash();
   }
 
   connectedCallback() {
     super.connectedCallback();
-    this.drawDash();
     window.addEventListener('resize', this.drawDash.bind(this));
   }
 
@@ -36,7 +40,7 @@ export class DashedFooter extends LitElement {
     window.removeEventListener('resize', this.drawDash.bind(this));
   }
 
-  _render({ disabled, dashWidth, dashLength, dashRatio }) {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -105,7 +109,7 @@ export class DashedFooter extends LitElement {
     const { width, height } = this.getBoundingClientRect();
     const { dashWidth } = this._validateDashProps(width, height);
 
-    const svg = this._root.querySelector('svg.dash');
+    const svg = this.renderRoot.querySelector('svg.dash');
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
     const border = svg.querySelector('.border');

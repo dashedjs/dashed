@@ -29,16 +29,16 @@ export class DashedButton extends LitElement {
     this.dashRatio = 0.3;
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  connectedCallback() {
-    super.connectedCallback();
+  firstUpdated() {
+    super.firstUpdated();
     this.drawDash();
   }
 
-  _render({ disabled, role, icon }) {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -46,6 +46,7 @@ export class DashedButton extends LitElement {
           display: inline-block;
           cursor: pointer;
           outline: none;
+          position: relative;
           min-width: 48px;
           --host-width: 100%;
           --host-height: 100%;
@@ -69,7 +70,7 @@ export class DashedButton extends LitElement {
           transition: 50ms ease-in-out;
         }
       </style>
-      <button type="button" disabled$="${disabled}" role$="${role}">
+      <button type="button">
         <slot name="icon"></slot>
         <slot></slot>
         <svg class="dash">
@@ -80,7 +81,7 @@ export class DashedButton extends LitElement {
   }
 
   drawDash() {
-    const svg = this._root.querySelector('svg.dash');
+    const svg = this.renderRoot.querySelector('svg.dash');
     const border = svg.querySelector('.border');
     const { width, height } = this.getBoundingClientRect();
     const borderRadius = this.rounded ? (height - this.dashWidth) / 2 : 0;

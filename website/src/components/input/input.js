@@ -28,16 +28,16 @@ export class DashedInput extends LitElement {
     this.dashRatio = 0.15;
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  connectedCallback() {
-    super.connectedCallback();
+  firstUpdated() {
+    super.firstUpdated();
     this.drawDash();
   }
 
-  _render() {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -84,9 +84,9 @@ export class DashedInput extends LitElement {
   }
 
   drawDash() {
-    const svg = this._root.querySelector('svg.dash');
+    const svg = this.renderRoot.querySelector('svg.dash');
     const border = svg.querySelector('.border');
-    const { width, height } = this._root
+    const { width, height } = this.renderRoot
       .querySelector('.input-container')
       .getBoundingClientRect();
     const borderRadius = 5;

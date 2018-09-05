@@ -28,16 +28,16 @@ export class DashedRadio extends LitElement {
     this.dashRatio = 0.5;
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  connectedCallback() {
-    super.connectedCallback();
+  firstUpdated() {
+    super.firstUpdated();
     this.drawDash();
   }
 
-  _render({ disabled, dashWidth, dashLength, dashRatio }) {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -99,7 +99,7 @@ export class DashedRadio extends LitElement {
   }
 
   drawDash() {
-    const svg = this._root.querySelector('svg.dash');
+    const svg = this.renderRoot.querySelector('svg.dash');
     const [width, height] = [24, 24];
 
     const outerCircle = svg.querySelector('.outer-circle');

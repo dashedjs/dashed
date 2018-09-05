@@ -7,6 +7,7 @@ export const commonStyles = html`
       --dashed-secondary-color: #ff0000;
       --dashed-fill-color: none;
       --dashed-outline-color: rgba(255, 0, 0, 0.5);
+      z-index: 1;
     }
 
     :host(:focus) svg.dash {

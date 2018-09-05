@@ -28,22 +28,16 @@ export class DashedSelect extends LitElement {
     this.dashRatio = 0.3;
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  connectedCallback() {
-    super.connectedCallback();
+  firstUpdated() {
+    super.firstUpdated();
     this.drawDash();
-    window.addEventListener('resize', this.drawDash.bind(this));
   }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener('resize', this.drawDash.bind(this));
-  }
-
-  _render({ disabled, dashWidth, dashLength, dashRatio }) {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -104,9 +98,9 @@ export class DashedSelect extends LitElement {
   }
 
   drawDash() {
-    const svg = this._root.querySelector('svg.dash');
+    const svg = this.renderRoot.querySelector('svg.dash');
     const borderBottom = svg.querySelector('.border-bottom');
-    const { width, height } = this._root
+    const { width, height } = this.renderRoot
       .querySelector('.select-container')
       .getBoundingClientRect();
 

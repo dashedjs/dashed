@@ -22,13 +22,17 @@ export class DashedNotification extends LitElement {
     this.dashRatio = 0.1;
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  }
+
+  firstUpdated() {
+    super.firstUpdated();
+    this.drawDash();
   }
 
   connectedCallback() {
     super.connectedCallback();
-    this.drawDash();
     window.addEventListener('resize', this.drawDash.bind(this));
   }
 
@@ -37,7 +41,7 @@ export class DashedNotification extends LitElement {
     window.removeEventListener('resize', this.drawDash.bind(this));
   }
 
-  _render({ disabled, dashWidth, dashLength, dashRatio }) {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -98,7 +102,7 @@ export class DashedNotification extends LitElement {
   }
 
   drawDash() {
-    const svg = this._root.querySelector('svg.dash');
+    const svg = this.renderRoot.querySelector('svg.dash');
     const border = svg.querySelector('.border');
     const { width, height } = this.getBoundingClientRect();
     const borderRadius = this.rounded ? (height - dashWidth) / 2 : 0;

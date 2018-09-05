@@ -1,5 +1,6 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import * as dashedjs from './components/dashed.js';
+import { commonStyles } from './components/styles/styles.js';
 // import * as dashedjs from '../../packages/dashed.js';
 
 class DashedSiteApp extends LitElement {
@@ -7,53 +8,44 @@ class DashedSiteApp extends LitElement {
     return 'dashed-site-app';
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-  }
-
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  _render(_props) {
+  render(_props) {
     return html`
+      ${commonStyles}
       <style>
         :host {
           display: block;
-          /* Color palette */
-          --dark-primary-color:       #1976d2;
-          --default-primary-color:    #2196f3;
-          --light-primary-color:      #bbdefb;
-          --text-primary-color:       #ffffff;
-          --accent-color:             #ff5252;
-          --primary-background-color: #bbdefb;
-          --primary-text-color:       #212121;
-          --secondary-text-color:     #757575;
-          --disabled-text-color:      #bdbdbd;
-          --divider-color:            #bdbdbd;
-          /* Polymer colors */
+          outline: none;
           min-height: 100vh;
-          --app-primary-color: #202020;
-          --app-secondary-color: #757575;
-          --app-accent-color: #172C50;
-          --paper-button-ink-color: var(--app-accent-color);
-          --paper-icon-button-ink-color: var(--app-accent-color);
-          --paper-spinner-color: var(--app-accent-color);
-          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+          /* background: #fbfafe; */
         }
 
         main {
           padding: 10px;
         }
 
+        dashed-header {
+          /* --dashed-fill-color: #e1ecf0; */
+        }
+
         dashed-button {
-          --dashed-fill-color: #b2eaff;
+          /* --dashed-fill-color: #b2eaff; */
+        }
+
+        @media screen and (min-width: 1080px) {
+          :host {
+            width: 1080px;
+            margin: auto;
+          }
         }
       </style>
       <dashed-header></dashed-header>
       <main class="main">
         <br/>
-        <dashed-button role="button" disabled>My button</dashed-button>
+        <dashed-button>My button</dashed-button>
         <dashed-button> Hello
           <svg slot="icon" stroke="blue" width="12" height="12" viewBox="0 0 24 24" class="icon">
             <path d="M4 4L20 20 M4 20L20 4" stroke-width="2" stroke-dasharray="5 0.876" />
@@ -61,7 +53,7 @@ class DashedSiteApp extends LitElement {
         </dashed-button>
         <br>
         <dashed-button>Hello
-          <dashed-icon slot="icon" name="close"></dashed-icon>
+          <dashed-icon slot="icon" .name="close"></dashed-icon>
         </dashed-button>
         <br>
         <dashed-icon name="close"></dashed-icon>
@@ -77,7 +69,7 @@ class DashedSiteApp extends LitElement {
         <br/><br> 1.
         <dashed-notification>Notification</dashed-notification>
         <br/> 1.
-        <dashed-radio dashLength="4" dashWidth="2" dashRatio="0.5">Radio</dashed-radio>
+        <dashed-radio .dashLength="4" .dashWidth="2" .dashRatio="0.5">Radio</dashed-radio>
         <br/> 1.
         <dashed-select>select</dashed-select>
         <br/> 1.

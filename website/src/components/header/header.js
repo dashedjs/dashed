@@ -37,33 +37,33 @@ export class DashedHeader extends LitElement {
     this.dashRatio = 1;
   }
 
-  _createRoot() {
+  createRenderRoot() {
     return this.attachShadow({ mode: 'open' });
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    this._menuButton = this._root.querySelector('#menubutton');
-    this._nav = this._root.querySelector('nav');
+  firstUpdated() {
+    super.firstUpdated();
+    this.drawDash();
+    this._menuButton = this.renderRoot.querySelector('#menubutton');
+    this._nav = this.renderRoot.querySelector('nav');
 
-    const desktopMediaQuery = 'screen and (min-width: 600px)';
-    this._mediaQueryList = window.matchMedia(desktopMediaQuery);
+    this._mediaQueryList = window.matchMedia('screen and (min-width: 600px)');
     this._mediaQueryList.addListener(this._mediaQueryChange.bind(this));
     this._mediaQueryChange(this._mediaQueryList);
 
     document.addEventListener('click', this._closeMenu.bind(this));
-    this.drawDash();
     window.addEventListener('resize', this.drawDash.bind(this));
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this._mediaQueryList.removeListener(this._mediaQueryChange.bind(this));
+
     document.removeEventListener('click', this._closeMenu.bind(this));
     window.removeEventListener('resize', this.drawDash.bind(this));
   }
 
-  _render({ navItems }) {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -80,7 +80,6 @@ export class DashedHeader extends LitElement {
           display: block;
           position: sticky;
           top: 0;
-          z-index: 1;
         }
 
         header {
@@ -116,6 +115,7 @@ export class DashedHeader extends LitElement {
           transition: var(--dashed-transition);
           box-shadow: var(--dashed-shadow-2);
           transform: translate3d(-100%, 0, 0);
+          z-index: 2;
         }
 
         nav.sidebar.open {
@@ -188,7 +188,7 @@ export class DashedHeader extends LitElement {
       </style>
       <header>
         <button id="menubutton"
-          on-click="${e => this._toggleMenu(e)}"
+          @click="${e => this._toggleMenu(e)}"
           role="menu-button"
           aria-expanded="false"
           aria-controls="menu"
@@ -202,11 +202,11 @@ export class DashedHeader extends LitElement {
         <div></div>
         <nav class="sidebar" role="navigation">
           <ul id="menu" role="menu" aria-labelledby="menubutton">
-            ${navItems.map(navItem => {
+            ${this.navItems.map(navItem => {
               return html`
                 <li role="none">
                   <a role="menuitem" href="${navItem.href}"
-                  on-click="${e => this._activateLink(e)}">
+                  @click="${e => this._activateLink(e)}">
                   ${navItem.text}
                   </a>
                 </li>`;
@@ -226,11 +226,11 @@ export class DashedHeader extends LitElement {
   }
 
   get svg() {
-    return this._root.querySelector('svg.dash');
+    return this.renderRoot.querySelector('svg.dash');
   }
 
   drawDash() {
-    const svg = this._root.querySelector('svg.dash');
+    const svg = this.renderRoot.querySelector('svg.dash');
     const borderBottom = svg.querySelector('.border-bottom');
     const { width, height } = this.getBoundingClientRect();
 
@@ -270,7 +270,7 @@ export class DashedHeader extends LitElement {
   }
 
   _activateLink(e) {
-    const oldActive = this._root.querySelector('.active');
+    const oldActive = this.renderRoot.querySelector('.active');
     if (oldActive) {
       oldActive.classList.remove('active');
     }

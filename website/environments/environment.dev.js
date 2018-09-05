@@ -1,12 +1,11 @@
-// TODO: global scope is not window, but local scope
-export function bootstrapFirebase() {
-  config = {
-    apiKey: 'AIzaSyC2m9b2IwpNUImEn91PP13aryoGGh_SxWU',
-    authDomain: 'dashedjs-a9bcf.firebaseapp.com',
-    databaseURL: 'https://dashedjs-a9bcf.firebaseio.com',
-    projectId: 'dashedjs-a9bcf',
-    storageBucket: '',
-    messagingSenderId: '876777724800'
-  };
-  firebase.initializeApp(config);
-}
+import { firebase } from '../node_modules/@firebase/app/dist/index.esm.js';
+
+const config = {
+  apiKey: 'AIzaSyD4x3FiKdcnxrVa79jDtuypLb1dPHjQu-Q',
+  authDomain: 'dashedjs-dev.firebaseapp.com',
+  databaseURL: 'https://dashedjs-dev.firebaseio.com',
+  projectId: 'dashedjs-dev',
+  storageBucket: 'dashedjs-dev.appspot.com',
+  messagingSenderId: '79270390608'
+};
+firebase.initializeApp(config);
