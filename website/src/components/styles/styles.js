@@ -32,13 +32,11 @@ export const commonStyles = html`
 
     svg.dash .border {
       stroke: var(--dashed-primary-color);
-      transition: all 100ms ease-in-out;
       fill: var(--dashed-fill-color);
     }
 
     svg.dash .border-bottom {
       stroke: var(--dashed-primary-color);
-      transition: all 100ms ease-in-out;
     }
 
     svg.dash .background {

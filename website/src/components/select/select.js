@@ -78,7 +78,6 @@ export class DashedSelect extends LitElement {
   
         svg.dash .caret {
           stroke: var(--dashed-primary-color);
-          transition: all 100ms ease-in-out;
         }
       </style>
       <label for="select"><slot></slot></label>

@@ -20,7 +20,7 @@ class DashedSiteApp extends LitElement {
           display: block;
           outline: none;
           min-height: 100vh;
-          /* background: #fbfafe; */
+          background: #fbfafe;
         }
 
         main {
@@ -47,7 +47,7 @@ class DashedSiteApp extends LitElement {
         <br/>
         <dashed-button>My button</dashed-button>
         <dashed-button> Hello
-          <svg slot="icon" stroke="blue" width="12" height="12" viewBox="0 0 24 24" class="icon">
+          <svg slot="icon" stroke="blue" width="16" height="16" viewBox="0 0 24 24" class="icon">
             <path d="M4 4L20 20 M4 20L20 4" stroke-width="2" stroke-dasharray="5 0.876" />
           </svg>
         </dashed-button>
@@ -76,6 +76,10 @@ class DashedSiteApp extends LitElement {
         <dashed-slider value="30">Slider</dashed-slider>
         <br/> 1.
         <dashed-tag>Taunt</dashed-tag>
+        <br/> 1.
+        <dashed-tag>Taunt
+          <dashed-icon slot="icon" name="close"></dashed-icon>
+        </dashed-tag>
         <br/> 1.
         <dashed-textarea>Textarea</dashed-textarea>
         <br/> 1.

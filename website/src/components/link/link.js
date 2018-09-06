@@ -63,7 +63,7 @@ export class DashedLink extends LitElement {
           padding-bottom: 4px;
           font-size: 16px;
           position: relative;
-          transition: 50ms ease-in-out;
+          transition: color 50ms ease-in-out;
           width: 100%;
         }
       </style>

@@ -94,10 +94,7 @@ export class DashedHeader extends LitElement {
           cursor: pointer;
           border: 0;
           outline: 0;
-          padding: 10px;
-          font-size: 24px;
-          height: 100%;
-          line-height: 100%;
+          padding: 8px 16px;
         }
 
         nav {
@@ -115,11 +112,12 @@ export class DashedHeader extends LitElement {
           transition: var(--dashed-transition);
           box-shadow: var(--dashed-shadow-2);
           transform: translate3d(-100%, 0, 0);
+          will-change: transform;
           z-index: 2;
         }
 
         nav.sidebar.open {
-          transform: translate(0, 0);
+          transform: translateX(0);
         }
 
         nav ul {
@@ -141,13 +139,13 @@ export class DashedHeader extends LitElement {
         }
 
         li a.active {
-          font-weight: bold;
+          /* font-weight: bold; */
         }
 
         a {
           padding-bottom: 4px;
           text-decoration: none;
-          text-transform: uppercase;
+          /* text-transform: uppercase; */
           display: flex;
           align-items: center;
         }

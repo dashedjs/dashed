@@ -79,13 +79,13 @@ export class DashedToggle extends LitElement {
   
         svg.dash .toggle-background {
           stroke: var(--dashed-primary-color);
-          transition: all 100ms ease-in-out;
           fill: var(--dashed-fill-color);
         }
   
         svg.dash .toggle-switcher {
           fill: var(--dashed-primary-color);
-          transition: all 100ms ease-in-out;
+          transition: transform 100ms ease-in-out;
+          will-change: transform;
         }
 
         input[type="checkbox"]:checked ~ svg.dash .toggle-switcher {

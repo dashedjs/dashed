@@ -46,10 +46,26 @@ export class DashedIcon extends LitElement {
           display: inline-block;
           cursor: pointer;
           outline: none;
+          width: 24px;
+          height: 24px;
+        }
+
+        :host-context(dashed-button),
+        :host-context(dashed-button) svg {
+          width: 16px;
+          height: 16px;
+        }
+
+        :host-context(dashed-tag),
+        :host-context(dashed-tag) svg {
+          width: 12px;
+          height: 12px;
         }
         
         span {
           display: inline-block;
+          width: 100%;
+          height: 100%;
         }
       </style>
       ${until(this.fetchIcon(this.name, this.src), '')}

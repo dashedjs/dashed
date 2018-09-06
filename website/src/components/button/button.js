@@ -1,4 +1,4 @@
-import { LitElement, html, svg } from '@polymer/lit-element/lit-element.js';
+import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { commonStyles } from '../styles/styles.js';
 import { drawDashedRect } from '../utils/rect-dasharray.js';
 export class DashedButton extends LitElement {
@@ -52,7 +52,6 @@ export class DashedButton extends LitElement {
   }
 
   render() {
-    console.log('render');
     return html`
       ${commonStyles}
       <style>
@@ -61,9 +60,6 @@ export class DashedButton extends LitElement {
           cursor: pointer;
           outline: none;
           position: relative;
-          min-width: 48px;
-          --host-width: 100%;
-          --host-height: 100%;
         }
 
         :host(:hover) button {
@@ -71,6 +67,8 @@ export class DashedButton extends LitElement {
         }
 
         button {
+          min-width: 48px;
+          min-height: 32px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -78,15 +76,15 @@ export class DashedButton extends LitElement {
           cursor: inherit;
           border: none;
           outline: none;
-          padding: 8px 12px;
-          font-size: 16px;
+          padding: 4px 12px;
+          font-size: 14px;
           position: relative;
-          transition: 50ms ease-in-out;
+          transition: color 50ms ease-in-out;
         }
-        
-        dashed-icon ::slotted(dashed-icon) {
-          width: 12px;
-          height: 12px;
+
+        :host ::slotted(dashed-icon[slot="icon"]),
+        :host ::slotted(svg) {
+          padding-right: 4px;
         }
       </style>
       <button type="button">

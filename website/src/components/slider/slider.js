@@ -92,6 +92,10 @@ export class DashedSlider extends LitElement {
           opacity: 0.8;
         }
 
+        svg.dash .slider-cursor {
+          will-change: transform;
+        }
+
         svg.dash .slider-cursor-inner {
           fill: var(--dashed-secondary-color);
         }
@@ -105,7 +109,7 @@ export class DashedSlider extends LitElement {
       <div class="slider-container">
         <input type="range" id="range" min="${this.min}" max="${this.max}"
           step="${this.step}" value="${this.value}"
-          on-input="${e => this._onInputHandler(e)}" />
+          @input="${e => this._onInputHandler(e)}" />
         <svg class="dash">
           <line class="slider-background" />
           <line class="slider-tracker" />

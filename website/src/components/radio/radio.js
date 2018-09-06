@@ -70,13 +70,11 @@ export class DashedRadio extends LitElement {
   
         svg.dash .outer-circle {
           stroke: var(--dashed-primary-color);
-          transition: all 100ms ease-in-out;
           fill: var(--dashed-fill-color);
         }
   
         svg.dash .inner-circle {
           fill: var(--dashed-secondary-color);
-          transition: all 100ms ease-in-out;
         }
 
         input[type="radio"]:not(:checked) ~ svg.dash .inner-circle {

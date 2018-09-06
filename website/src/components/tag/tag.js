@@ -32,7 +32,20 @@ export class DashedTag extends LitElement {
 
   firstUpdated() {
     super.firstUpdated();
-    this.drawDash();
+    this._icon = this.renderRoot
+      .querySelector('slot[name="icon"]')
+      .assignedNodes()[0];
+    if (this._icon && this._icon.constructor.name === 'DashedIcon') {
+      this._icon.addEventListener('iconloaded', this.drawDash.bind(this));
+    } else {
+      this.drawDash();
+    }
+  }
+
+  disconnectedCallback() {
+    if (this._icon) {
+      this._icon.removeEventListener('iconloaded', this.drawDash.bind(this));
+    }
   }
 
   render() {
@@ -43,10 +56,12 @@ export class DashedTag extends LitElement {
           display: inline-block;
           cursor: pointer;
           outline: none;
-          min-width: 48px;
+          position: relative;
         }
 
         button {
+          min-width: 32px;
+          min-height: 24px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -57,15 +72,21 @@ export class DashedTag extends LitElement {
           padding: 4px 12px;
           font-size: 12px;
           position: relative;
-          transition: 50ms ease-in-out;
+          transition: color 50ms ease-in-out;
         }
 
         button.active {
           color: var(--dashed-secondary-color);
         }
+
+        :host ::slotted(dashed-icon[slot="icon"]),
+        :host ::slotted(svg) {
+          padding-left: 4px;
+        }
       </style>
       <button type="button" @click="${e => this._toggleTag(e)}">
         <slot></slot>
+        <slot name="icon"></slot>
         <svg class="dash">
           <rect class="border" />
         </svg>
@@ -74,35 +95,11 @@ export class DashedTag extends LitElement {
   }
 
   _toggleTag(e) {
-    const button = this.renderRoot.querySelector('svg.dash');
-    if (!button.classList.contains('active')) {
-      button.classList.add('active');
-    } else {
-      button.classList.remove('active');
-    }
+    const button = this.renderRoot.querySelector('button');
+    button.classList.toggle('active');
   }
 
   drawDash() {
-    // const { width, height } = this.getBoundingClientRect();
-    // const { dashWidth } = this._validateDashProps(width, height);
-
-    // const svg = this.renderRoot.querySelector('svg.dash');
-    // svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-
-    // const border = svg.querySelector('.border');
-    // const borderRadius = (height - dashWidth) / 2;
-    // border.setAttribute('stroke-width', dashWidth);
-    // border.setAttribute('x', dashWidth / 2);
-    // border.setAttribute('y', dashWidth / 2);
-    // border.setAttribute('width', width - dashWidth);
-    // border.setAttribute('height', height - dashWidth);
-    // border.setAttribute('rx', borderRadius);
-    // border.setAttribute('ry', borderRadius);
-
-    // const { strokeDasharray, strokeDashOffset } = this._computeRectStrokeDashParams(width, height, borderRadius);
-    // border.setAttribute('stroke-dasharray', strokeDasharray);
-    // border.setAttribute('stroke-dashoffset', strokeDashOffset);
-
     const svg = this.renderRoot.querySelector('svg.dash');
     const border = svg.querySelector('.border');
     const { width, height } = this.getBoundingClientRect();
