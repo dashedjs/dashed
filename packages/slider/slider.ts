@@ -1,7 +1,7 @@
-import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
-import { commonStyles } from '../styles/styles';
-import { drawDashedLine } from '../utils/line-dasharray';
+import { LitElement, html, property } from '@polymer/lit-element/lit-element';
 import { Dash, DashProps, HostProps } from '../utils/dash';
+import { drawDashedLine } from '../utils/line-dasharray';
+import { commonStyles } from '../styles/styles';
 
 export class DashedSlider extends LitElement implements Dash {
   static get is() {
@@ -33,7 +33,7 @@ export class DashedSlider extends LitElement implements Dash {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  firstUpdated(_changedProperties: PropertyValues) {
+  firstUpdated(_changedProperties) {
     super.firstUpdated(_changedProperties);
     this.drawDash();
     const svg = this.renderRoot.querySelector('svg.dash');

@@ -1,4 +1,4 @@
-import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
+import { LitElement, html, property } from '@polymer/lit-element/lit-element';
 import { DashProps, HostProps, Dash } from '../utils/dash';
 import { drawDashedRect } from '../utils/rect-dasharray';
 import { commonStyles } from '../styles/styles';
@@ -23,7 +23,7 @@ export class DashedButton extends LitElement implements Dash {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  firstUpdated(_changedProperties: PropertyValues) {
+  firstUpdated(_changedProperties) {
     super.firstUpdated(_changedProperties);
     this._icon = (this.renderRoot.querySelector('slot[name="icon"]') as HTMLSlotElement).assignedNodes()[0];
     if (this._icon && this._icon.constructor.name === 'DashedIcon') {

@@ -1,10 +1,10 @@
-import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
+import { LitElement, html, property } from '@polymer/lit-element/lit-element';
+import { Dash, DashProps } from '../utils/dash';
 import { drawDashedLine } from '../utils/line-dasharray';
 import { commonStyles } from '../styles/styles';
+import { menuIcon, closeIcon, githubIcon } from '../icons/icons';
 import { DashedButton } from '../button/button';
 import { DashedLink } from '../link/link';
-import { menuIcon, closeIcon, githubIcon } from '../icons/icons';
-import { Dash, DashProps } from '../utils/dash';
 
 export type NavItem = { text: string; href: string };
 
@@ -40,7 +40,7 @@ export class DashedHeader extends LitElement implements Dash {
     return this.attachShadow({ mode: 'open' });
   }
 
-  firstUpdated(_changedProperties: PropertyValues) {
+  firstUpdated(_changedProperties) {
     super.firstUpdated(_changedProperties);
     this.drawDash();
     this._menuButton = this.renderRoot.querySelector('#menubutton');
