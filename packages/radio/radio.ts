@@ -2,7 +2,6 @@ import { LitElement, html, property, PropertyValues } from '@polymer/lit-element
 import { commonStyles } from '../styles/styles';
 import { drawDashedCircle } from '../utils/circle-dasharray';
 import { DashProps, HostProps, Dash } from '../utils/dash';
-import { TemplateResult } from 'lit-html';
 
 export class DashedRadio extends LitElement implements Dash {
   static get is() {
@@ -27,7 +26,7 @@ export class DashedRadio extends LitElement implements Dash {
     this.drawDash();
   }
 
-  render(): TemplateResult {
+  render() {
     return html`
       ${commonStyles}
       <style>

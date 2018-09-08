@@ -2,7 +2,6 @@ import { LitElement, html, property, PropertyValues } from '@polymer/lit-element
 import { commonStyles } from '../styles/styles';
 import { drawDashedRect } from '../utils/rect-dasharray';
 import { DashProps, HostProps, Dash } from '../utils/dash';
-import { TemplateResult } from 'lit-html';
 
 export class DashedCard extends LitElement implements Dash {
   static get is() {
@@ -30,7 +29,7 @@ export class DashedCard extends LitElement implements Dash {
     window.removeEventListener('resize', this.drawDash.bind(this));
   }
 
-  render(): TemplateResult {
+  render() {
     return html`
       ${commonStyles}
       <style>

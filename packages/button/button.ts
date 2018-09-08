@@ -1,8 +1,8 @@
 import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
-import { commonStyles } from '../styles/styles';
-import { drawDashedRect } from '../utils/rect-dasharray';
 import { DashProps, HostProps, Dash } from '../utils/dash';
-import { TemplateResult } from 'lit-html';
+import { drawDashedRect } from '../utils/rect-dasharray';
+import { commonStyles } from '../styles/styles';
+
 export class DashedButton extends LitElement implements Dash {
   static get is() {
     return 'dashed-button';
@@ -39,7 +39,7 @@ export class DashedButton extends LitElement implements Dash {
     }
   }
 
-  render(): TemplateResult {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -79,7 +79,7 @@ export class DashedButton extends LitElement implements Dash {
         <slot name="icon"></slot>
         <slot></slot>
         <svg class="dash">
-          <rect class="border" stroke-width="2" />
+          <rect class="border" />
         </svg>
       </button>
     `;

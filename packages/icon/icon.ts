@@ -1,7 +1,6 @@
 import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
 import { until } from 'lit-html/directives/until';
 import { commonStyles } from '../styles/styles';
-import { TemplateResult } from 'lit-html';
 
 export class DashedIcon extends LitElement {
   static get is() {
@@ -35,7 +34,7 @@ export class DashedIcon extends LitElement {
     observer.observe(this.renderRoot, { childList: true });
   }
 
-  render(): TemplateResult {
+  render() {
     return html`
       <style>
         :host {
@@ -56,6 +55,12 @@ export class DashedIcon extends LitElement {
         :host-context(dashed-tag) svg {
           width: 12px;
           height: 12px;
+        }
+
+        :host-context(dashed-fab),
+        :host-context(dashed-fab) svg {
+          width: 16px;
+          height: 16px;
         }
         
         span {

@@ -1,8 +1,8 @@
 import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
 import { commonStyles } from '../styles/styles';
-import { drawDashedRect } from '../utils/rect-dasharray';
+import { drawDashedCircle } from '../utils/circle-dasharray';
 import { DashProps, HostProps, Dash } from '../utils/dash';
-import { TemplateResult } from 'lit-html';
+
 export class DashedFab extends LitElement implements Dash {
   static get is() {
     return 'dashed-fab';
@@ -15,7 +15,7 @@ export class DashedFab extends LitElement implements Dash {
   rounded: boolean = false;
 
   @property({ type: Object })
-  dashProps: DashProps = { dashWidth: 2, dashLength: 8, dashRatio: 0.3 };
+  dashProps: DashProps = { dashWidth: 2, dashLength: 4, dashRatio: 0.5 };
 
   _icon: any;
 
@@ -39,7 +39,7 @@ export class DashedFab extends LitElement implements Dash {
     }
   }
 
-  render(): TemplateResult {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -50,13 +50,22 @@ export class DashedFab extends LitElement implements Dash {
           position: relative;
         }
 
-        :host(:hover) fab {
+        :host(:hover) button {
           color: var(--dashed-secondary-color);
         }
 
-        fab {
-          min-width: 48px;
-          min-height: 32px;
+        .button-container {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          width: 56px;
+          height: 56px;
+        }
+
+        button {
+          width: 48px;
+          height: 48px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -64,35 +73,56 @@ export class DashedFab extends LitElement implements Dash {
           cursor: inherit;
           border: none;
           outline: none;
-          padding: 4px 12px;
-          font-size: 14px;
           position: relative;
           transition: color 50ms ease-in-out;
         }
 
-        :host ::slotted(dashed-icon[slot="icon"]),
-        :host ::slotted(svg) {
-          padding-right: 4px;
+        svg.dash .circles {
+          will-change: transform;
+        }
+
+        svg.dash .outer-circle {
+          stroke: var(--dashed-primary-color);
+        }
+  
+        svg.dash .inner-circle {
+          stroke: var(--dashed-primary-color);
         }
       </style>
-      <fab type="fab">
-        <slot name="icon"></slot>
-        <slot></slot>
+      <div class="button-container">
+        <button type="button">
+          <slot name="icon"></slot>
+        </button>
         <svg class="dash">
-          <rect class="border" stroke-width="2" />
+          <g class="circles">
+            <circle class="outer-circle"  filter="url(#shadow2)"/>
+            <circle class="inner-circle" />
+          </g>
+          <filter id="shadow2">
+            <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.9" />
+          </filter>
         </svg>
-      </fab>
+      </div>
     `;
   }
 
   drawDash() {
     const svg = this.renderRoot.querySelector('svg.dash');
-    const border: SVGRectElement = svg.querySelector('.border');
-    const { width, height } = this.getBoundingClientRect();
-    const borderRadius = this.rounded ? (height - this.dashProps.dashWidth) / 2 : 0;
+    const [width, height] = [48, 48];
 
-    const hostProps: HostProps = { width, height, borderRadius };
-    drawDashedRect(border, hostProps, this.dashProps);
+    const circles = svg.querySelector('.circles');
+
+    const outerCircle: SVGCircleElement = circles.querySelector('.outer-circle');
+    const outerHostProps: HostProps = { width, height };
+    drawDashedCircle(outerCircle, outerHostProps, this.dashProps);
+
+    const innerCircle: SVGCircleElement = circles.querySelector('.inner-circle');
+    const innerCircleOffset: number = 12;
+    const innerHostProps: HostProps = { width: width - innerCircleOffset, height: height - innerCircleOffset };
+    drawDashedCircle(innerCircle, innerHostProps, this.dashProps);
+    innerCircle.setAttribute('transform', `translate(${innerCircleOffset / 2} ${innerCircleOffset / 2})`);
+
+    (circles as SVGGElement).style.transform = `translate(4px, 4px)`;
   }
 }
 customElements.define(DashedFab.is, DashedFab);

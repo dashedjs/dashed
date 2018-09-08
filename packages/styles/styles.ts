@@ -1,7 +1,6 @@
 import { html } from '@polymer/lit-element/lit-element';
-import { TemplateResult } from 'lit-html';
 
-export const commonStyles: TemplateResult = html`
+export const commonStyles = html`
   <style title="Common styles">
     :host{
       --dashed-primary-color: #0000ff;

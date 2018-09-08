@@ -8,7 +8,8 @@
     "noImplicitReturns": true,
     // "noUnusedLocals": true,
     // "noUnusedParameters": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "outDir": "dist/transpiled"
   },
   "include": ["packages"],
   "exclude": ["**/node_modules", "dist", "website"]

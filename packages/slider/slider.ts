@@ -2,7 +2,6 @@ import { LitElement, html, property, PropertyValues } from '@polymer/lit-element
 import { commonStyles } from '../styles/styles';
 import { drawDashedLine } from '../utils/line-dasharray';
 import { Dash, DashProps, HostProps } from '../utils/dash';
-import { TemplateResult } from 'lit-html';
 
 export class DashedSlider extends LitElement implements Dash {
   static get is() {
@@ -42,7 +41,7 @@ export class DashedSlider extends LitElement implements Dash {
     this._sliderTracker = svg.querySelector('.slider-tracker');
   }
 
-  render(): TemplateResult {
+  render() {
     return html`
       ${commonStyles}
       <style>
@@ -156,7 +155,7 @@ export class DashedSlider extends LitElement implements Dash {
     sliderTracker.setAttribute('transform', `translate(${sliderCursorInnerRadius} ${-height / 2})`);
 
     const percentage = (this.value - this.min) / (this.max - this.min);
-    (sliderCursor as HTMLElement).style.transform = `translateX(${percentage * sliderBackgroundwidth}px)`;
+    (sliderCursor as SVGGElement).style.transform = `translateX(${percentage * sliderBackgroundwidth}px)`;
     sliderTracker.setAttribute('x2', `${percentage * sliderBackgroundwidth}`);
   }
 }

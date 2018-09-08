@@ -1,7 +1,6 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-// import * as dashedjs from './components/dashed.js';
-import * as dashedjs from '../../packages/index.js';
-// import * as dashedjs from '../../dist/dashed.es.js';
+// import * as dashedjs from '../../packages/index.js';
+import * as dashedjs from '../../dist/transpiled/index.js';
 
 class DashedSiteApp extends LitElement {
   static get is() {
@@ -63,7 +62,9 @@ class DashedSiteApp extends LitElement {
         <dashed-checkbox>Checkbox</dashed-checkbox>
         <br/> 1.
         <br/><br/> 1.
-        <dashed-fab>Fab</dashed-fab>
+        <dashed-fab>
+          <dashed-icon slot="icon" name="close"></dashed-icon>
+        </dashed-fab>
         <br/> 1.
         <dashed-input>Input</dashed-input>
         <br/> 1.

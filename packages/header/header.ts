@@ -5,7 +5,6 @@ import { DashedButton } from '../button/button';
 import { DashedLink } from '../link/link';
 import { menuIcon, closeIcon, githubIcon } from '../icons/icons';
 import { Dash, DashProps } from '../utils/dash';
-import { TemplateResult } from 'lit-html';
 
 export type NavItem = { text: string; href: string };
 
@@ -62,7 +61,7 @@ export class DashedHeader extends LitElement implements Dash {
     window.removeEventListener('resize', this.drawDash.bind(this));
   }
 
-  render(): TemplateResult {
+  render() {
     return html`
       ${commonStyles}
       <style>
