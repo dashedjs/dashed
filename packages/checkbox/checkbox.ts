@@ -1,43 +1,33 @@
-import { LitElement, html, svg } from '@polymer/lit-element/lit-element.js';
-import { commonStyles } from '../styles/styles.js';
-import { drawDashedRect } from '../utils/rect-dasharray.js';
+import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
+import { commonStyles } from '../styles/styles';
+import { drawDashedRect } from '../utils/rect-dasharray';
+import { Dash, DashProps, HostProps } from '../utils/dash';
+import { TemplateResult } from 'lit-html';
 
-export class DashedCheckbox extends LitElement {
+export class DashedCheckbox extends LitElement implements Dash {
   static get is() {
     return 'dashed-checkbox';
   }
 
-  static get properties() {
-    return {
-      disabled: Boolean,
-      checked: Boolean,
+  @property({ type: Boolean })
+  disabled: boolean = false;
 
-      dashWidth: Number,
-      dashLength: Number,
-      dashRatio: Number
-    };
-  }
+  @property({ type: Boolean })
+  checked: boolean = false;
 
-  constructor() {
-    super();
-    this.disabled = false;
-    this.checked = false;
-
-    this.dashWidth = 2;
-    this.dashLength = 4;
-    this.dashRatio = 0.5;
-  }
+  @property({ type: Object })
+  dashProps: DashProps = { dashWidth: 2, dashLength: 4, dashRatio: 0.5 };
 
   createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  firstUpdated() {
-    super.firstUpdated();
+  firstUpdated(_changedProperties: PropertyValues) {
+    super.firstUpdated(_changedProperties);
     this.drawDash();
   }
 
-  render() {
+  render(): TemplateResult {
     return html`
       ${commonStyles}
       <style>
@@ -88,20 +78,15 @@ export class DashedCheckbox extends LitElement {
 
   drawDash() {
     const svg = this.renderRoot.querySelector('svg.dash');
-    const border = svg.querySelector('.border');
+    const border: SVGRectElement = svg.querySelector('.border');
     const [width, height] = [24, 24];
     const borderRadius = 0;
 
-    const hostProps = { width, height, borderRadius };
-    const dashProps = {
-      dashWidth: this.dashWidth,
-      dashLength: this.dashLength,
-      dashRatio: this.dashRatio
-    };
-    drawDashedRect(border, hostProps, dashProps);
+    const hostProps: HostProps = { width, height, borderRadius };
+    drawDashedRect(border, hostProps, this.dashProps);
 
     const checkmark = svg.querySelector('.checkmark');
-    checkmark.setAttribute('stroke-width', this.dashWidth * 1.8);
+    checkmark.setAttribute('stroke-width', `${this.dashProps.dashWidth * 1.8}`);
     checkmark.setAttribute('stroke', '#ff0000');
     checkmark.setAttribute('d', 'M6 12l4 4l8 -8');
   }

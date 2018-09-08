@@ -1,43 +1,33 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { commonStyles } from '../styles/styles.js';
-import { drawDashedLine } from '../utils/line-dasharray.js';
+import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
+import { commonStyles } from '../styles/styles';
+import { drawDashedLine } from '../utils/line-dasharray';
+import { Dash, DashProps, HostProps } from '../utils/dash';
+import { TemplateResult } from 'lit-html';
 
-export class DashedLink extends LitElement {
+export class DashedLink extends LitElement implements Dash {
   static get is() {
     return 'dashed-link';
   }
 
-  static get properties() {
-    return {
-      disabled: Boolean,
-      role: String,
+  @property({ type: Boolean })
+  disabled: boolean = false;
 
-      dashWidth: Number,
-      dashLength: Number,
-      dashRatio: Number
-    };
-  }
+  @property({ type: String })
+  role: string = '';
 
-  constructor() {
-    super();
-    this.disabled = false;
-    this.role = '';
-
-    this.dashWidth = 4;
-    this.dashLength = 8;
-    this.dashRatio = 0.2;
-  }
+  @property({ type: Boolean })
+  dashProps: DashProps = { dashWidth: 4, dashLength: 8, dashRatio: 0.2 };
 
   createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  firstUpdated() {
-    super.firstUpdated();
+  firstUpdated(_changedProperties: PropertyValues) {
+    super.firstUpdated(_changedProperties);
     this.drawDash();
   }
 
-  render() {
+  render(): TemplateResult {
     return html`
       ${commonStyles}
       <style>
@@ -67,7 +57,7 @@ export class DashedLink extends LitElement {
           width: 100%;
         }
       </style>
-      <a href="#" @click="${e => console.log(e)}">
+      <a href="#" @click="${(e: Event) => console.log(e)}">
         <slot></slot>
         <svg class="dash">
           <rect class="background" />
@@ -79,20 +69,15 @@ export class DashedLink extends LitElement {
 
   drawDash() {
     const svg = this.renderRoot.querySelector('svg.dash');
-    const borderBottom = svg.querySelector('.border-bottom');
+    const borderBottom: SVGLineElement = svg.querySelector('.border-bottom');
     const { width, height } = this.getBoundingClientRect();
 
-    const hostProps = { width, height };
-    const dashProps = {
-      dashWidth: this.dashWidth,
-      dashLength: this.dashLength,
-      dashRatio: this.dashRatio
-    };
-    drawDashedLine(borderBottom, hostProps, dashProps);
+    const hostProps: HostProps = { width, height };
+    drawDashedLine(borderBottom, hostProps, this.dashProps);
 
     const background = svg.querySelector('.background');
-    background.setAttribute('width', width);
-    background.setAttribute('height', height - this.dashWidth / 2);
+    background.setAttribute('width', `${width}`);
+    background.setAttribute('height', `${height - this.dashProps.dashWidth / 2}`);
   }
 }
 customElements.define(DashedLink.is, DashedLink);

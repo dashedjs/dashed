@@ -62,6 +62,9 @@ class DashedSiteApp extends LitElement {
         <br/><br/> 1.
         <dashed-checkbox>Checkbox</dashed-checkbox>
         <br/> 1.
+        <br/><br/> 1.
+        <dashed-fab>Fab</dashed-fab>
+        <br/> 1.
         <dashed-input>Input</dashed-input>
         <br/> 1.
         <dashed-link>Link</dashed-link>

@@ -1,43 +1,33 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { commonStyles } from '../styles/styles.js';
-import { drawDashedCircle } from '../utils/circle-dasharray.js';
+import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
+import { commonStyles } from '../styles/styles';
+import { drawDashedCircle } from '../utils/circle-dasharray';
+import { DashProps, HostProps, Dash } from '../utils/dash';
+import { TemplateResult } from 'lit-html';
 
-export class DashedRadio extends LitElement {
+export class DashedRadio extends LitElement implements Dash {
   static get is() {
     return 'dashed-radio';
   }
 
-  static get properties() {
-    return {
-      disabled: Boolean,
-      checked: Boolean,
+  @property({ type: Boolean })
+  disabled: boolean = false;
 
-      dashWidth: Number,
-      dashLength: Number,
-      dashRatio: Number
-    };
-  }
+  @property({ type: Boolean })
+  checked: boolean = false;
 
-  constructor() {
-    super();
-    this.disabled = false;
-    this.checked = false;
-
-    this.dashWidth = 2;
-    this.dashLength = 4;
-    this.dashRatio = 0.5;
-  }
+  @property({ type: Object })
+  dashProps: DashProps = { dashWidth: 2, dashLength: 4, dashRatio: 0.5 };
 
   createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  firstUpdated() {
-    super.firstUpdated();
+  firstUpdated(_changedProperties: PropertyValues) {
+    super.firstUpdated(_changedProperties);
     this.drawDash();
   }
 
-  render() {
+  render(): TemplateResult {
     return html`
       ${commonStyles}
       <style>
@@ -100,19 +90,14 @@ export class DashedRadio extends LitElement {
     const svg = this.renderRoot.querySelector('svg.dash');
     const [width, height] = [24, 24];
 
-    const outerCircle = svg.querySelector('.outer-circle');
-    const hostProps = { width, height };
-    const dashProps = {
-      dashWidth: this.dashWidth,
-      dashLength: this.dashLength,
-      dashRatio: this.dashRatio
-    };
-    drawDashedCircle(outerCircle, hostProps, dashProps);
+    const outerCircle: SVGCircleElement = svg.querySelector('.outer-circle');
+    const hostProps: HostProps = { width, height };
+    drawDashedCircle(outerCircle, hostProps, this.dashProps);
 
     const innerCircle = svg.querySelector('.inner-circle');
-    innerCircle.setAttribute('cx', width / 2);
-    innerCircle.setAttribute('cy', height / 2);
-    innerCircle.setAttribute('r', 5);
+    innerCircle.setAttribute('cx', `${width / 2}`);
+    innerCircle.setAttribute('cy', `${height / 2}`);
+    innerCircle.setAttribute('r', '5');
   }
 }
 customElements.define(DashedRadio.is, DashedRadio);

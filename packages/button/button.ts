@@ -1,40 +1,31 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
+import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
 import { commonStyles } from '../styles/styles';
 import { drawDashedRect } from '../utils/rect-dasharray';
-
-export class DashedTag extends LitElement {
+import { DashProps, HostProps, Dash } from '../utils/dash';
+import { TemplateResult } from 'lit-html';
+export class DashedButton extends LitElement implements Dash {
   static get is() {
-    return 'dashed-tag';
+    return 'dashed-button';
   }
 
-  static get properties() {
-    return {
-      disabled: Boolean,
+  @property({ type: Boolean })
+  disabled: boolean = false;
 
-      dashWidth: Number,
-      dashLength: Number,
-      dashRatio: Number
-    };
-  }
+  @property({ type: Boolean })
+  rounded: boolean = false;
 
-  constructor() {
-    super();
-    this.disabled = false;
+  @property({ type: Object })
+  dashProps: DashProps = { dashWidth: 2, dashLength: 8, dashRatio: 0.3 };
 
-    this.dashWidth = 1;
-    this.dashLength = 6;
-    this.dashRatio = 0.2;
-  }
+  _icon: any;
 
   createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  firstUpdated() {
-    super.firstUpdated();
-    this._icon = this.renderRoot
-      .querySelector('slot[name="icon"]')
-      .assignedNodes()[0];
+  firstUpdated(_changedProperties: PropertyValues) {
+    super.firstUpdated(_changedProperties);
+    this._icon = (this.renderRoot.querySelector('slot[name="icon"]') as HTMLSlotElement).assignedNodes()[0];
     if (this._icon && this._icon.constructor.name === 'DashedIcon') {
       this._icon.addEventListener('iconloaded', this.drawDash.bind(this));
     } else {
@@ -48,7 +39,7 @@ export class DashedTag extends LitElement {
     }
   }
 
-  render() {
+  render(): TemplateResult {
     return html`
       ${commonStyles}
       <style>
@@ -59,9 +50,13 @@ export class DashedTag extends LitElement {
           position: relative;
         }
 
+        :host(:hover) button {
+          color: var(--dashed-secondary-color);
+        }
+
         button {
-          min-width: 32px;
-          min-height: 24px;
+          min-width: 48px;
+          min-height: 32px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -70,48 +65,34 @@ export class DashedTag extends LitElement {
           border: none;
           outline: none;
           padding: 4px 12px;
-          font-size: 12px;
+          font-size: 14px;
           position: relative;
           transition: color 50ms ease-in-out;
         }
 
-        button.active {
-          color: var(--dashed-secondary-color);
-        }
-
         :host ::slotted(dashed-icon[slot="icon"]),
         :host ::slotted(svg) {
-          padding-left: 4px;
+          padding-right: 4px;
         }
       </style>
-      <button type="button" @click="${e => this._toggleTag(e)}">
-        <slot></slot>
+      <button type="button">
         <slot name="icon"></slot>
+        <slot></slot>
         <svg class="dash">
-          <rect class="border" />
+          <rect class="border" stroke-width="2" />
         </svg>
       </button>
     `;
   }
 
-  _toggleTag(e) {
-    const button = this.renderRoot.querySelector('button');
-    button.classList.toggle('active');
-  }
-
   drawDash() {
     const svg = this.renderRoot.querySelector('svg.dash');
-    const border = svg.querySelector('.border');
+    const border: SVGRectElement = svg.querySelector('.border');
     const { width, height } = this.getBoundingClientRect();
-    const borderRadius = (height - this.dashWidth) / 2;
+    const borderRadius = this.rounded ? (height - this.dashProps.dashWidth) / 2 : 0;
 
-    const hostProps = { width, height, borderRadius };
-    const dashProps = {
-      dashWidth: this.dashWidth,
-      dashLength: this.dashLength,
-      dashRatio: this.dashRatio
-    };
-    drawDashedRect(border, hostProps, dashProps);
+    const hostProps: HostProps = { width, height, borderRadius };
+    drawDashedRect(border, hostProps, this.dashProps);
   }
 }
-customElements.define(DashedTag.is, DashedTag);
+customElements.define(DashedButton.is, DashedButton);

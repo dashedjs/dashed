@@ -1,47 +1,48 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { drawDashedLine } from '../utils/line-dasharray.js';
-import { commonStyles } from '../styles/styles.js';
-import { DashedButton } from '../button/button.js';
-import { DashedLink } from '../link/link.js';
-import { menuIcon, closeIcon, githubIcon } from '../icons/icons.js';
+import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
+import { drawDashedLine } from '../utils/line-dasharray';
+import { commonStyles } from '../styles/styles';
+import { DashedButton } from '../button/button';
+import { DashedLink } from '../link/link';
+import { menuIcon, closeIcon, githubIcon } from '../icons/icons';
+import { Dash, DashProps } from '../utils/dash';
+import { TemplateResult } from 'lit-html';
 
-export class DashedHeader extends LitElement {
+export type NavItem = { text: string; href: string };
+
+export class DashedHeader extends LitElement implements Dash {
   static get is() {
     return 'dashed-header';
   }
 
-  static get properties() {
-    return {
-      navItems: Array,
-      logo: Object,
-      leftIcon: Object,
-      rightIcon: Object,
+  @property({ type: Array })
+  navItems: NavItem[] = [
+    { text: 'Getting started', href: '#' },
+    { text: 'Components', href: '#' },
+    { text: 'Playground', href: '#' }
+  ];
 
-      dashWidth: Number,
-      dashLength: Number,
-      dashRatio: Number
-    };
-  }
+  @property({ type: String })
+  logo: string = '';
 
-  constructor() {
-    super();
-    this.navItems = [
-      { text: 'Getting started', href: '#' },
-      { text: 'Components', href: '#' },
-      { text: 'Playground', href: '#' }
-    ];
+  @property({ type: String })
+  iconLeft: string = '';
 
-    this.dashWidth = 1;
-    this.dashLength = 4;
-    this.dashRatio = 1;
-  }
+  @property({ type: String })
+  iconRight: string = '';
+
+  @property({ type: Object })
+  dashProps: DashProps = { dashWidth: 1, dashLength: 4, dashRatio: 1 };
+
+  _menuButton: any;
+  _nav: any;
+  _mediaQueryList: any;
 
   createRenderRoot() {
     return this.attachShadow({ mode: 'open' });
   }
 
-  firstUpdated() {
-    super.firstUpdated();
+  firstUpdated(_changedProperties: PropertyValues) {
+    super.firstUpdated(_changedProperties);
     this.drawDash();
     this._menuButton = this.renderRoot.querySelector('#menubutton');
     this._nav = this.renderRoot.querySelector('nav');
@@ -55,14 +56,13 @@ export class DashedHeader extends LitElement {
   }
 
   disconnectedCallback() {
-    super.disconnectedCallback();
     this._mediaQueryList.removeListener(this._mediaQueryChange.bind(this));
 
     document.removeEventListener('click', this._closeMenu.bind(this));
     window.removeEventListener('resize', this.drawDash.bind(this));
   }
 
-  render() {
+  render(): TemplateResult {
     return html`
       ${commonStyles}
       <style>
@@ -185,7 +185,7 @@ export class DashedHeader extends LitElement {
       </style>
       <header>
         <button id="menubutton"
-          @click="${e => this._toggleMenu(e)}"
+          @click="${(e: Event) => this._toggleMenu(e)}"
           role="menu-button"
           aria-expanded="false"
           aria-controls="menu"
@@ -203,7 +203,7 @@ export class DashedHeader extends LitElement {
               return html`
                 <li role="none">
                   <a role="menuitem" href="${navItem.href}"
-                  @click="${e => this._activateLink(e)}">
+                  @click="${(e: Event) => this._activateLink(e)}">
                   ${navItem.text}
                   </a>
                 </li>`;
@@ -222,29 +222,20 @@ export class DashedHeader extends LitElement {
     `;
   }
 
-  get svg() {
-    return this.renderRoot.querySelector('svg.dash');
-  }
-
   drawDash() {
     const svg = this.renderRoot.querySelector('svg.dash');
-    const borderBottom = svg.querySelector('.border-bottom');
+    const borderBottom: SVGLineElement = svg.querySelector('.border-bottom');
     const { width, height } = this.getBoundingClientRect();
 
     const hostProps = { width, height };
-    const dashProps = {
-      dashWidth: this.dashWidth,
-      dashLength: this.dashLength,
-      dashRatio: this.dashRatio
-    };
-    drawDashedLine(borderBottom, hostProps, dashProps);
+    drawDashedLine(borderBottom, hostProps, this.dashProps);
 
     const background = svg.querySelector('.background');
-    background.setAttribute('width', width);
-    background.setAttribute('height', height - this.dashWidth / 2);
+    background.setAttribute('width', `${width}`);
+    background.setAttribute('height', `${height - this.dashProps.dashWidth / 2}`);
   }
 
-  _toggleMenu(e) {
+  _toggleMenu(e: Event) {
     if (!this._nav.classList.contains('open')) {
       this._openMenu(e);
     } else {
@@ -252,13 +243,13 @@ export class DashedHeader extends LitElement {
     }
   }
 
-  _openMenu(e) {
+  _openMenu(e: Event) {
     e.stopPropagation();
     this._nav.classList.add('open');
     this._menuButton.setAttribute('aria-expanded', true);
   }
 
-  _closeMenu(e) {
+  _closeMenu(e: Event) {
     if (e.target != this && this._nav.classList.contains('open')) {
       e.stopPropagation();
       this._nav.classList.remove('open');
@@ -266,17 +257,17 @@ export class DashedHeader extends LitElement {
     }
   }
 
-  _activateLink(e) {
+  _activateLink(e: Event) {
     const oldActive = this.renderRoot.querySelector('.active');
     if (oldActive) {
       oldActive.classList.remove('active');
     }
     const newActive = e.target;
-    newActive.classList.add('active');
+    (newActive as HTMLElement).classList.add('active');
     this._closeMenu(e);
   }
 
-  _mediaQueryChange(e) {
+  _mediaQueryChange(e: MediaQueryList) {
     if (e.matches) {
       /* Desktop */
       this._nav.classList.remove('sidebar');

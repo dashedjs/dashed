@@ -1,33 +1,26 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { commonStyles } from '../styles/styles.js';
-import { drawDashedRect } from '../utils/rect-dasharray.js';
+import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
+import { commonStyles } from '../styles/styles';
+import { drawDashedRect } from '../utils/rect-dasharray';
+import { Dash, DashProps, HostProps } from '../utils/dash';
+import { TemplateResult } from 'lit-html';
 
-export class DashedNotification extends LitElement {
+export class DashedNotification extends LitElement implements Dash {
   static get is() {
     return 'dashed-notification';
   }
 
-  static get properties() {
-    return {
-      dashWidth: Number,
-      dashLength: Number,
-      dashRatio: Number
-    };
-  }
+  @property({ type: Boolean })
+  rounded: boolean = false;
 
-  constructor() {
-    super();
-    this.dashWidth = 2;
-    this.dashLength = 10;
-    this.dashRatio = 0.1;
-  }
+  @property({ type: Object })
+  dashProps: DashProps = { dashWidth: 2, dashLength: 10, dashRatio: 0.1 };
 
   createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  firstUpdated() {
-    super.firstUpdated();
+  firstUpdated(_changedProperties: PropertyValues) {
+    super.firstUpdated(_changedProperties);
     this.drawDash();
   }
 
@@ -37,11 +30,10 @@ export class DashedNotification extends LitElement {
   }
 
   disconnectedCallback() {
-    super.disconnectedCallback();
     window.removeEventListener('resize', this.drawDash.bind(this));
   }
 
-  render() {
+  render(): TemplateResult {
     return html`
       ${commonStyles}
       <style>
@@ -103,17 +95,12 @@ export class DashedNotification extends LitElement {
 
   drawDash() {
     const svg = this.renderRoot.querySelector('svg.dash');
-    const border = svg.querySelector('.border');
+    const border: SVGRectElement = svg.querySelector('.border');
     const { width, height } = this.getBoundingClientRect();
-    const borderRadius = this.rounded ? (height - dashWidth) / 2 : 0;
+    const borderRadius = this.rounded ? (height - this.dashProps.dashWidth) / 2 : 0;
 
-    const hostProps = { width, height, borderRadius };
-    const dashProps = {
-      dashWidth: this.dashWidth,
-      dashLength: this.dashLength,
-      dashRatio: this.dashRatio
-    };
-    drawDashedRect(border, hostProps, dashProps);
+    const hostProps: HostProps = { width, height, borderRadius };
+    drawDashedRect(border, hostProps, this.dashProps);
   }
 }
 customElements.define(DashedNotification.is, DashedNotification);

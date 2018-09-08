@@ -1,44 +1,41 @@
-import { LitElement, html, svg } from '@polymer/lit-element/lit-element.js';
-import { until } from '../../node_modules/lit-html/directives/until.js';
-import { commonStyles } from '../styles/styles.js';
+import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
+import { until } from 'lit-html/directives/until';
+import { commonStyles } from '../styles/styles';
+import { TemplateResult } from 'lit-html';
 
 export class DashedIcon extends LitElement {
   static get is() {
     return 'dashed-icon';
   }
 
-  static get properties() {
-    return {
-      name: String,
-      src: String,
-      size: Number,
-      ariaLabel: String,
-      ariaLabelledBy: String
-    };
-  }
+  @property({ type: String })
+  name: string = '';
 
-  constructor() {
-    super();
-    this.name = '';
-    this.src = '';
-    this.size = 24;
-    this.ariaLabel = '';
-    this.ariaLabelledBy = '';
-  }
+  @property({ type: String })
+  src: string = '';
+
+  @property({ type: String })
+  size: number = 24;
+
+  @property({ type: String })
+  ariaLabel: string = '';
+
+  @property({ type: String })
+  ariaLabelledBy: string = '';
 
   createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  firstUpdated() {
-    super.firstUpdated();
+  firstUpdated(_changedProperties: PropertyValues) {
+    super.firstUpdated(_changedProperties);
     const observer = new MutationObserver(mutations => {
       if (mutations[0].type === 'childList') this.dispatchEvent(new CustomEvent('iconloaded'));
     });
     observer.observe(this.renderRoot, { childList: true });
   }
 
-  render() {
+  render(): TemplateResult {
     return html`
       <style>
         :host {
@@ -71,7 +68,7 @@ export class DashedIcon extends LitElement {
     `;
   }
 
-  fetchIcon(name, src) {
+  fetchIcon(name: string, src: string) {
     const iconUrl = name ? `../packages/icons/${name}.svg` : src;
     return fetch(iconUrl)
       .then(res => res.text())

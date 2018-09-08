@@ -1,43 +1,33 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { commonStyles } from '../styles/styles.js';
-import { drawDashedLine } from '../utils/line-dasharray.js';
+import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
+import { commonStyles } from '../styles/styles';
+import { drawDashedLine } from '../utils/line-dasharray';
+import { DashProps, HostProps, Dash } from '../utils/dash';
+import { TemplateResult } from 'lit-html';
 
-export class DashedSelect extends LitElement {
+export class DashedSelect extends LitElement implements Dash {
   static get is() {
     return 'dashed-select';
   }
 
-  static get properties() {
-    return {
-      disabled: Boolean,
-      value: String,
+  @property({ type: Boolean })
+  disabled: boolean = false;
 
-      dashWidth: Number,
-      dashLength: Number,
-      dashRatio: Number
-    };
-  }
+  @property({ type: String })
+  value: string = '';
 
-  constructor() {
-    super();
-    this.disabled = false;
-    this.value = '';
-
-    this.dashWidth = 2;
-    this.dashLength = 10;
-    this.dashRatio = 0.3;
-  }
+  @property({ type: Object })
+  dashProps: DashProps = { dashWidth: 2, dashLength: 10, dashRatio: 0.3 };
 
   createRenderRoot() {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  firstUpdated() {
-    super.firstUpdated();
+  firstUpdated(_changedProperties: PropertyValues) {
+    super.firstUpdated(_changedProperties);
     this.drawDash();
   }
 
-  render() {
+  render(): TemplateResult {
     return html`
       ${commonStyles}
       <style>
@@ -98,26 +88,19 @@ export class DashedSelect extends LitElement {
 
   drawDash() {
     const svg = this.renderRoot.querySelector('svg.dash');
-    const borderBottom = svg.querySelector('.border-bottom');
-    const { width, height } = this.renderRoot
-      .querySelector('.select-container')
-      .getBoundingClientRect();
+    const borderBottom: SVGLineElement = svg.querySelector('.border-bottom');
+    const { width, height } = this.renderRoot.querySelector('.select-container').getBoundingClientRect();
 
-    const hostProps = { width, height };
-    const dashProps = {
-      dashWidth: this.dashWidth,
-      dashLength: this.dashLength,
-      dashRatio: this.dashRatio
-    };
-    drawDashedLine(borderBottom, hostProps, dashProps);
+    const hostProps: HostProps = { width, height };
+    drawDashedLine(borderBottom, hostProps, this.dashProps);
 
     const caret = svg.querySelector('.caret');
-    caret.setAttribute('stroke-width', this.dashWidth * 1.8);
+    caret.setAttribute('stroke-width', `${this.dashProps.dashWidth * 1.8}`);
     caret.setAttribute('d', `M${width - 12} ${8}l4 4l4 -4`);
 
     const background = svg.querySelector('.background');
-    background.setAttribute('width', width);
-    background.setAttribute('height', height - this.dashWidth / 2);
+    background.setAttribute('width', `${width}`);
+    background.setAttribute('height', `${height - this.dashProps.dashWidth / 2}`);
   }
 }
 customElements.define(DashedSelect.is, DashedSelect);
