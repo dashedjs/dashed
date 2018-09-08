@@ -1,7 +1,7 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import * as dashedjs from './components/dashed.js';
-import { commonStyles } from './components/styles/styles.js';
-// import * as dashedjs from '../../packages/dashed.js';
+// import * as dashedjs from './components/dashed.js';
+import * as dashedjs from '../../packages/index.js';
+// import * as dashedjs from '../../dist/dashed.es.js';
 
 class DashedSiteApp extends LitElement {
   static get is() {
@@ -14,7 +14,6 @@ class DashedSiteApp extends LitElement {
 
   render(_props) {
     return html`
-      ${commonStyles}
       <style>
         :host {
           display: block;

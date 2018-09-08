@@ -16,6 +16,7 @@ export { DashedRadio } from './radio/radio.js';
 export { DashedSelect } from './select/select.js';
 export { DashedSlider } from './slider/slider.js';
 // export { DashedSpinner } from './spinner/spinner.js';
+export { commonStyles } from './styles/styles.js';
 // export { DashedTabs } from './tabs/tabs.js';
 export { DashedTag } from './tag/tag.js';
 // export { DashedTextarea } from './textarea/textarea.js';

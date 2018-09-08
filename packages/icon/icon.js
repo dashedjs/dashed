@@ -1,5 +1,5 @@
 import { LitElement, html, svg } from '@polymer/lit-element/lit-element.js';
-import { until } from '../../../node_modules/lit-html/directives/until.js';
+import { until } from '../../node_modules/lit-html/directives/until.js';
 import { commonStyles } from '../styles/styles.js';
 
 export class DashedIcon extends LitElement {
@@ -33,8 +33,7 @@ export class DashedIcon extends LitElement {
   firstUpdated() {
     super.firstUpdated();
     const observer = new MutationObserver(mutations => {
-      if (mutations[0].type === 'childList')
-        this.dispatchEvent(new CustomEvent('iconloaded'));
+      if (mutations[0].type === 'childList') this.dispatchEvent(new CustomEvent('iconloaded'));
     });
     observer.observe(this.renderRoot, { childList: true });
   }
@@ -73,7 +72,7 @@ export class DashedIcon extends LitElement {
   }
 
   fetchIcon(name, src) {
-    const iconUrl = name ? `/src/components/icons/${name}.svg` : src;
+    const iconUrl = name ? `../packages/icons/${name}.svg` : src;
     return fetch(iconUrl)
       .then(res => res.text())
       .then(icon => html`<span .innerHTML="${icon}"></span>`)

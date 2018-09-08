@@ -1,5 +1,4 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { repeat } from '../../../node_modules/lit-html/directives/repeat.js';
 import { drawDashedLine } from '../utils/line-dasharray.js';
 import { commonStyles } from '../styles/styles.js';
 import { DashedButton } from '../button/button.js';

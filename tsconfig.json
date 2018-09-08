@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "allowJs": true,
+    "declaration": true /* Generates corresponding '.d.ts' file. */,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "experimentalDecorators": true
+  },
+  "include": ["packages"],
+  "exclude": ["**/node_modules", "dist", "website"]
+}

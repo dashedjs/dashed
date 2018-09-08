@@ -5,6 +5,7 @@
   "main": "dist/dashed.cjs.js",
   "umd": "dist/dashed.umd.js",
   "module": "dist/dashed.es.js",
+  "types": "dist/dashed.d.ts",
   "scripts": {
     "start": "polyserve --npm --module-resolution=node",
     "bootstrap": "lerna bootstrap --hoist",
@@ -34,25 +35,21 @@
   },
   "homepage": "hhttps://github.com/dashedjs/dashedjs#README",
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.0.0",
-    "eslint": "^5.3.0",
-    "eslint-config-airbnb-base": "^13.0.0",
-    "eslint-plugin-import": "^2.13.0",
     "gulp": "^4.0.0",
-    "lerna": "^3.0.0-rc.0",
+    "lerna": "^3.3.0",
     "polyserve": "^0.27.12",
-    "rollup": "^0.63.5",
-    "rollup-plugin-babel": "^3.0.7",
-    "rollup-plugin-babel-minify": "^6.0.0",
-    "rollup-plugin-commonjs": "^9.1.4",
-    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup": "^0.65.2",
+    "rollup-plugin-commonjs": "^9.1.6",
+    "rollup-plugin-json": "^3.0.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-replace": "^2.0.0",
-    "rollup-plugin-terser": "^1.0.1",
-    "semantic-release": "^15.9.12"
+    "rollup-plugin-terser": "^2.0.2",
+    "rollup-plugin-typescript": "^0.8.1",
+    "semantic-release": "^15.9.12",
+    "typescript": "^3.0.3"
   },
   "dependencies": {
     "@polymer/lit-element": "^0.6.0-dev.6",
-    "@webcomponents/webcomponentsjs": "^2.0.4"
+    "@webcomponents/webcomponentsjs": "^2.1.1"
   }
 }
