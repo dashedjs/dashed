@@ -95,12 +95,15 @@ export class DashedFab extends LitElement implements Dash {
         </button>
         <svg class="dash">
           <g class="circles">
-            <circle class="outer-circle"  filter="url(#shadow2)"/>
+            <circle class="outer-circle" id="outer"  filter="url(#shadow2)"/>
             <circle class="inner-circle" />
           </g>
           <filter id="shadow2">
             <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.9" />
           </filter>
+          <mask id="mask">
+            <use href="#outer" fill="black" stroke="white" />
+          </mask>
         </svg>
       </div>
     `;

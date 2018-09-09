@@ -1,6 +1,7 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 // import * as dashedjs from '../../packages/index.js';
 import * as dashedjs from '../../dist/transpiled/index.js';
+import { LitClock } from './components/clock.js';
 
 class DashedSiteApp extends LitElement {
   static get is() {
@@ -44,8 +45,11 @@ class DashedSiteApp extends LitElement {
       <main class="main">
         <br/>
         <dashed-button>My button</dashed-button>
-        <dashed-button> Hello
-          <svg slot="icon" stroke="blue" width="16" height="16" viewBox="0 0 24 24" class="icon">
+        <br/>
+        <lit-clock></lit-clock>
+        <br>
+        <dashed-button rounded> Hello
+          <svg slot="icon" width="16" height="16" viewBox="0 0 24 24" class="icon">
             <path d="M4 4L20 20 M4 20L20 4" stroke-width="2" stroke-dasharray="5 0.876" />
           </svg>
         </dashed-button>

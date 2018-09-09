@@ -72,6 +72,7 @@ export class DashedButton extends LitElement implements Dash {
 
         :host ::slotted(dashed-icon[slot="icon"]),
         :host ::slotted(svg) {
+          stroke: currentColor;
           padding-right: 4px;
         }
       </style>

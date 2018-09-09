@@ -7,6 +7,7 @@
   "module": "dist/dashed.es.js",
   "types": "dist/dashed.d.ts",
   "scripts": {
+    "compile:watch": "tsc -w",
     "start:ts": "tsc && npm run start",
     "start": "polyserve --npm --module-resolution=node",
     "bootstrap": "lerna bootstrap --hoist",
