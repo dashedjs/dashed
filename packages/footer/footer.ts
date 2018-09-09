@@ -93,8 +93,8 @@ export class DashedFooter extends LitElement implements Dash {
     `;
   }
 
-  drawDash(): void {
-    console.log('Method not implemented.');
+  drawDash() {
+    // console.log('Method not implemented.');
   }
 }
 customElements.define(DashedFooter.is, DashedFooter);

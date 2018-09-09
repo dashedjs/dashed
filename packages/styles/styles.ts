@@ -3,10 +3,17 @@ import { html } from '@polymer/lit-element/lit-element';
 export const commonStyles = html`
   <style title="Common styles">
     :host{
-      --dashed-primary-color: #0000ff;
-      --dashed-secondary-color: #ff0000;
+      --dashed-primary-color: #3636e7;
+      /* --dashed-primary-light-color: #6c6ced; */
+      --dashed-primary-light-color: #dadafa;
+      --dashed-secondary-color: #d34242;
+      --dashed-secondary-light-color: #e38686;
+      --dashed-danger-color: #fa3232;
+      --dashed-danger-light-color: #fb7c7c;
+      --dashed-success-color: #1f8d57;
+      --dashed-success-light-color: #70b694;
       --dashed-fill-color: none;
-      --dashed-outline-color: rgba(255, 0, 0, 0.5);
+      --dashed-outline-color: rgba(129, 129, 193);
       z-index: 1;
     }
 

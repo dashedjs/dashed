@@ -31,8 +31,6 @@ export class DashedCheckbox extends LitElement implements Dash {
       ${commonStyles}
       <style>
         :host {
-          --dashed-checkbox-dimension: 24px;
-
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -45,8 +43,8 @@ export class DashedCheckbox extends LitElement implements Dash {
         .checkbox-container {
           display: inline-block;
           position: relative;
-          width: var(--dashed-checkbox-dimension);
-          height: var(--dashed-checkbox-dimension);
+          width: 24px;
+          height: 24px;
         }
 
         input[type="checkbox"] {
@@ -54,6 +52,10 @@ export class DashedCheckbox extends LitElement implements Dash {
           width: 100%;
           height: 100%;
           opacity: 0;
+        }
+
+        svg.dash .checkmark {
+          stroke: var(--dashed-danger-color);
         }
 
         input[type="checkbox"]:not(:checked) ~ svg.dash .checkmark {
@@ -86,7 +88,6 @@ export class DashedCheckbox extends LitElement implements Dash {
 
     const checkmark = svg.querySelector('.checkmark');
     checkmark.setAttribute('stroke-width', `${this.dashProps.dashWidth * 1.8}`);
-    checkmark.setAttribute('stroke', '#ff0000');
     checkmark.setAttribute('d', 'M6 12l4 4l8 -8');
   }
 }

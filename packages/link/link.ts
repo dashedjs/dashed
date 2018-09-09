@@ -40,7 +40,7 @@ export class DashedLink extends LitElement implements Dash {
         }
 
         :host(:hover) link {
-          color: var(--dashed-secondary-color);
+          color: var(--dashed-danger-color);
         }
 
         a {
@@ -56,7 +56,7 @@ export class DashedLink extends LitElement implements Dash {
           width: 100%;
         }
       </style>
-      <a href="#" @click="${(e: Event) => console.log(e)}">
+      <a href="#" @click="${e => console.log(e)}">
         <slot></slot>
         <svg class="dash">
           <rect class="background" />

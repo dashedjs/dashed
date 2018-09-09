@@ -31,9 +31,6 @@ export class DashedRadio extends LitElement implements Dash {
       ${commonStyles}
       <style>
         :host {
-          --dashed-radio-dimension: 24px;
-          --dashed-dash-width: 2px;
-
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -46,8 +43,8 @@ export class DashedRadio extends LitElement implements Dash {
         .radio-container {
           display: inline-block;
           position: relative;
-          width: var(--dashed-radio-dimension);
-          height: var(--dashed-radio-dimension);
+          width: 24px;
+          height: 24px;
         }
 
         input[type="radio"] {
@@ -63,7 +60,7 @@ export class DashedRadio extends LitElement implements Dash {
         }
   
         svg.dash .inner-circle {
-          fill: var(--dashed-secondary-color);
+          fill: var(--dashed-danger-color);
         }
 
         input[type="radio"]:not(:checked) ~ svg.dash .inner-circle {

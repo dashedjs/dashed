@@ -51,7 +51,7 @@ export class DashedFab extends LitElement implements Dash {
         }
 
         :host(:hover) button {
-          color: var(--dashed-secondary-color);
+          color: var(--dashed-danger-color);
         }
 
         .button-container {
@@ -81,10 +81,7 @@ export class DashedFab extends LitElement implements Dash {
           will-change: transform;
         }
 
-        svg.dash .outer-circle {
-          stroke: var(--dashed-primary-color);
-        }
-  
+        svg.dash .outer-circle,
         svg.dash .inner-circle {
           stroke: var(--dashed-primary-color);
         }

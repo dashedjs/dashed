@@ -44,15 +44,22 @@ class DashedSiteApp extends LitElement {
       <dashed-header></dashed-header>
       <main class="main">
         <br/>
-        <dashed-button>My button</dashed-button>
-        <br/>
-        <lit-clock></lit-clock>
-        <br>
-        <dashed-button rounded> Hello
-          <svg slot="icon" width="16" height="16" viewBox="0 0 24 24" class="icon">
+        <dashed-button>My button
+          <span slot="icon">icon<span>
+        </dashed-button>
+        <dashed-button>Hello
+          <dashed-icon slot="icon" name="close"></dashed-icon>
+        </dashed-button>
+        <dashed-button rounded>With icon
+          <svg slot="icon" width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" class="icon">
             <path d="M4 4L20 20 M4 20L20 4" stroke-width="2" stroke-dasharray="5 0.876" />
           </svg>
         </dashed-button>
+        <dashed-button rounded>Rounded
+        </dashed-button>
+        <br/>
+        <!-- <lit-clock></lit-clock> -->
+        <br>
         <br>
         <dashed-button>Hello
           <dashed-icon slot="icon" name="close"></dashed-icon>
@@ -67,7 +74,7 @@ class DashedSiteApp extends LitElement {
         <br/> 1.
         <br/><br/> 1.
         <dashed-fab>
-          <dashed-icon slot="icon" name="close"></dashed-icon>
+          <dashed-icon slot="icon" name="arrow-bottom"></dashed-icon>
         </dashed-fab>
         <br/> 1.
         <dashed-input>Input</dashed-input>
@@ -83,10 +90,11 @@ class DashedSiteApp extends LitElement {
         <dashed-slider value="30">Slider</dashed-slider>
         <br/> 1.
         <dashed-tag>Taunt</dashed-tag>
-        <br/> 1.
         <dashed-tag>Taunt
           <dashed-icon slot="icon" name="close"></dashed-icon>
         </dashed-tag>
+        <dashed-tag>Tag</dashed-tag>
+        <br/> 1.
         <br/> 1.
         <dashed-textarea>Textarea</dashed-textarea>
         <br/> 1.

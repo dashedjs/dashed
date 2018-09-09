@@ -184,7 +184,7 @@ export class DashedHeader extends LitElement implements Dash {
       </style>
       <header>
         <button id="menubutton"
-          @click="${(e: Event) => this._toggleMenu(e)}"
+          @click="${e => this._toggleMenu(e)}"
           role="menu-button"
           aria-expanded="false"
           aria-controls="menu"
@@ -202,7 +202,7 @@ export class DashedHeader extends LitElement implements Dash {
               return html`
                 <li role="none">
                   <a role="menuitem" href="${navItem.href}"
-                  @click="${(e: Event) => this._activateLink(e)}">
+                  @click="${e => this._activateLink(e)}">
                   ${navItem.text}
                   </a>
                 </li>`;
@@ -234,7 +234,7 @@ export class DashedHeader extends LitElement implements Dash {
     background.setAttribute('height', `${height - this.dashProps.dashWidth / 2}`);
   }
 
-  _toggleMenu(e: Event) {
+  _toggleMenu(e) {
     if (!this._nav.classList.contains('open')) {
       this._openMenu(e);
     } else {
@@ -242,13 +242,13 @@ export class DashedHeader extends LitElement implements Dash {
     }
   }
 
-  _openMenu(e: Event) {
+  _openMenu(e) {
     e.stopPropagation();
     this._nav.classList.add('open');
     this._menuButton.setAttribute('aria-expanded', true);
   }
 
-  _closeMenu(e: Event) {
+  _closeMenu(e) {
     if (e.target != this && this._nav.classList.contains('open')) {
       e.stopPropagation();
       this._nav.classList.remove('open');
@@ -256,7 +256,7 @@ export class DashedHeader extends LitElement implements Dash {
     }
   }
 
-  _activateLink(e: Event) {
+  _activateLink(e) {
     const oldActive = this.renderRoot.querySelector('.active');
     if (oldActive) {
       oldActive.classList.remove('active');

@@ -51,7 +51,8 @@ export class DashedButton extends LitElement implements Dash {
         }
 
         :host(:hover) button {
-          color: var(--dashed-secondary-color);
+          color: var(--dashed-primary-color);
+          --dashed-fill-color: var(--dashed-primary-light-color);
         }
 
         button {
@@ -70,8 +71,7 @@ export class DashedButton extends LitElement implements Dash {
           transition: color 50ms ease-in-out;
         }
 
-        :host ::slotted(dashed-icon[slot="icon"]),
-        :host ::slotted(svg) {
+        :host ::slotted([slot="icon"]) {
           stroke: currentColor;
           padding-right: 4px;
         }

@@ -1,6 +1,5 @@
-import { LitElement, html, property, PropertyValues } from '@polymer/lit-element/lit-element';
+import { LitElement, html, property, svg } from '@polymer/lit-element/lit-element';
 import { until } from 'lit-html/directives/until';
-import { commonStyles } from '../styles/styles';
 
 export class DashedIcon extends LitElement {
   static get is() {
@@ -26,19 +25,25 @@ export class DashedIcon extends LitElement {
     return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  firstUpdated(_changedProperties: PropertyValues) {
+  firstUpdated(_changedProperties) {
     super.firstUpdated(_changedProperties);
     const observer = new MutationObserver(mutations => {
       if (mutations[0].type === 'childList') this.dispatchEvent(new CustomEvent('iconloaded'));
     });
-    observer.observe(this.renderRoot, { childList: true });
+    try {
+      observer.observe(this.renderRoot, { childList: true }); // Chrome
+    } catch (e) {
+      observer.observe(this, { childList: true }); // Firefox & Edge
+    }
   }
 
   render() {
     return html`
       <style>
         :host {
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           cursor: pointer;
           outline: none;
           width: 24px;
@@ -59,12 +64,14 @@ export class DashedIcon extends LitElement {
 
         :host-context(dashed-fab),
         :host-context(dashed-fab) svg {
-          width: 16px;
-          height: 16px;
+          width: 18px;
+          height: 18px;
         }
         
         span {
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           width: 100%;
           height: 100%;
         }

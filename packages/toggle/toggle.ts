@@ -79,7 +79,7 @@ export class DashedToggle extends LitElement implements Dash {
 
         input[type="checkbox"]:checked ~ svg.dash .toggle-switcher {
           transform: translateX(var(--dashed-toggle-height));
-          fill: var(--dashed-secondary-color);
+          fill: var(--dashed-danger-color);
         }
 
         input[type="checkbox"]:not(:checked) ~ svg.dash .toggle-switcher {

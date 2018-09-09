@@ -57,22 +57,23 @@ export class DashedTag extends LitElement implements Dash {
           cursor: inherit;
           border: none;
           outline: none;
-          padding: 4px 12px;
+          padding: 4px 10px;
           font-size: 12px;
           position: relative;
           transition: color 50ms ease-in-out;
         }
 
         button.active {
-          color: var(--dashed-secondary-color);
+          color: var(--dashed-danger-color);
         }
 
         :host ::slotted(dashed-icon[slot="icon"]),
         :host ::slotted(svg) {
+          stroke: currentColor;
           padding-left: 4px;
         }
       </style>
-      <button type="button" @click="${(e: Event) => this._toggleTag(e)}">
+      <button type="button" @click="${e => this._toggleTag(e)}">
         <slot></slot>
         <slot name="icon"></slot>
         <svg class="dash">
@@ -82,7 +83,7 @@ export class DashedTag extends LitElement implements Dash {
     `;
   }
 
-  _toggleTag(e: Event) {
+  _toggleTag(e) {
     const button = this.renderRoot.querySelector('button');
     button.classList.toggle('active');
   }

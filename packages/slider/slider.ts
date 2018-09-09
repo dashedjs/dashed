@@ -84,7 +84,7 @@ export class DashedSlider extends LitElement implements Dash {
         }
   
         svg.dash .slider-tracker {
-          stroke: var(--dashed-secondary-color);
+          stroke: var(--dashed-danger-color);
           opacity: 0.8;
         }
 
@@ -93,7 +93,7 @@ export class DashedSlider extends LitElement implements Dash {
         }
 
         svg.dash .slider-cursor-inner {
-          fill: var(--dashed-secondary-color);
+          fill: var(--dashed-danger-color);
         }
 
         svg.dash .slider-cursor-focus-ring {
@@ -105,7 +105,7 @@ export class DashedSlider extends LitElement implements Dash {
       <div class="slider-container">
         <input type="range" id="range" min="${this.min}" max="${this.max}"
           step="${this.step}" value="${this.value}"
-          @input="${(e: Event) => this._onInputHandler(e)}" />
+          @input="${e => this._onInputHandler(e)}" />
         <svg class="dash">
           <line class="slider-background" />
           <line class="slider-tracker" />
@@ -118,7 +118,7 @@ export class DashedSlider extends LitElement implements Dash {
     `;
   }
 
-  _onInputHandler(e: Event) {
+  _onInputHandler(e) {
     this.value = parseFloat((e.target as HTMLInputElement).value);
     const sliderBackgroundwidth = 192 - 2 * 6;
     const percentage = (this.value - this.min) / (this.max - this.min);
