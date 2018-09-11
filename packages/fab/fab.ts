@@ -11,8 +11,8 @@ export class DashedFab extends LitElement implements Dash {
   @property({ type: Boolean })
   disabled: boolean = false;
 
-  @property({ type: Boolean })
-  rounded: boolean = false;
+  @property({ type: String })
+  ariaLabel: string = 'Fab button';
 
   @property({ type: Object })
   dashProps: DashProps = { dashWidth: 2, dashLength: 4, dashRatio: 0.5 };
@@ -87,7 +87,7 @@ export class DashedFab extends LitElement implements Dash {
         }
       </style>
       <div class="button-container">
-        <button type="button">
+        <button type="button" aria-label="${this.ariaLabel}">
           <slot name="icon"></slot>
         </button>
         <svg class="dash">

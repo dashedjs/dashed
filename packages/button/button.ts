@@ -50,7 +50,7 @@ export class DashedButton extends LitElement implements Dash {
           position: relative;
         }
 
-        :host(:hover) button {
+        :host(:hover) {
           color: var(--dashed-primary-color);
           --dashed-fill-color: var(--dashed-primary-light-color);
         }
@@ -63,6 +63,7 @@ export class DashedButton extends LitElement implements Dash {
           justify-content: center;
           background: none;
           cursor: inherit;
+          color: inherit;
           border: none;
           outline: none;
           padding: 4px 12px;

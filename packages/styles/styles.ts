@@ -3,16 +3,16 @@ import { html } from '@polymer/lit-element/lit-element';
 export const commonStyles = html`
   <style title="Common styles">
     :host{
-      --dashed-primary-color: #3636e7;
-      /* --dashed-primary-light-color: #6c6ced; */
-      --dashed-primary-light-color: #dadafa;
-      --dashed-secondary-color: #d34242;
-      --dashed-secondary-light-color: #e38686;
-      --dashed-danger-color: #fa3232;
-      --dashed-danger-light-color: #fb7c7c;
-      --dashed-success-color: #1f8d57;
-      --dashed-success-light-color: #70b694;
-      --dashed-fill-color: none;
+      --dashed-primary-color: rgba(54, 54, 231, 1);
+      --dashed-primary-light-color: rgba(54, 54, 231, 0.15);
+
+      --dashed-danger-color: rgba(250, 50, 50, 1);
+      --dashed-danger-light-color: rgba(250, 50, 50, 0.15);
+
+      --dashed-success-color: rgba(31, 141, 87, 1);
+      --dashed-success-light-color: rgba(31, 141, 87, 0.15);
+
+      --dashed-fill-color: var(--dashed-primary-light-color);
       --dashed-outline-color: rgba(129, 129, 193);
       z-index: 1;
     }

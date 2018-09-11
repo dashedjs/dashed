@@ -185,7 +185,6 @@ export class DashedHeader extends LitElement implements Dash {
       <header>
         <button id="menubutton"
           @click="${e => this._toggleMenu(e)}"
-          role="menu-button"
           aria-expanded="false"
           aria-controls="menu"
           aria-label="Menu button">
