@@ -36,7 +36,12 @@
   },
   "homepage": "hhttps://github.com/dashedjs/dashedjs#README",
   "devDependencies": {
+    "@babel/core": "^7.0.1",
+    "@babel/preset-env": "^7.0.0",
+    "del": "^3.0.0",
     "gulp": "^4.0.0",
+    "gulp-babel-minify": "^0.4.3",
+    "gulp-load-plugins": "^1.5.0",
     "lerna": "^3.3.0",
     "polyserve": "^0.27.12",
     "rollup": "^0.65.2",

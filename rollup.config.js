@@ -1,17 +1,13 @@
 import resolve from 'rollup-plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 import replace from 'rollup-plugin-replace';
-import typescript from 'rollup-plugin-typescript';
 import pkg from './package.json';
 
 export default [
   {
-    input: 'packages/index.ts',
+    input: 'packages/index.js',
     plugins: [
       resolve(),
-      typescript({
-        typescript: require('typescript')
-      }),
       terser({
         module: true,
         mangle: {

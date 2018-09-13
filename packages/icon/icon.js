@@ -1,5 +1,5 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { until } from 'lit-html/directives/until';
+import { until } from 'lit-html/directives/until.js';
 
 export class DashedIcon extends LitElement {
   static get is() {
