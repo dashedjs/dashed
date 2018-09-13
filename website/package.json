@@ -1,5 +1,5 @@
 {
-  "name": "dashedjs",
+  "name": "@dashedjs/dashed-site",
   "version": "0.0.1",
   "description": "Set of reusable Web Components to speed up WebApps development",
   "main": "index.js",

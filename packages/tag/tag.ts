@@ -1,7 +1,6 @@
 import { LitElement, html, property } from '@polymer/lit-element/lit-element';
-import { DashProps, Dash } from '../utils/dash';
-import { drawDashedRect } from '../utils/rect-dasharray';
-import { commonStyles } from '../styles/styles';
+import { drawDashedRect, DashProps, Dash } from '@dashedjs/dashed-utils/utils';
+import { commonStyles } from '@dashedjs/dashed-styles/styles';
 
 export class DashedTag extends LitElement implements Dash {
   static get is() {

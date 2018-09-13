@@ -1,10 +1,8 @@
 import { LitElement, html, property } from '@polymer/lit-element/lit-element';
-import { Dash, DashProps } from '../utils/dash';
-import { drawDashedLine } from '../utils/line-dasharray';
-import { commonStyles } from '../styles/styles';
-import { menuIcon, closeIcon, githubIcon } from '../icons/icons';
-import { DashedButton } from '../button/button';
-import { DashedLink } from '../link/link';
+import { drawDashedLine, Dash, DashProps } from '@dashedjs/dashed-utils/utils';
+import { commonStyles } from '@dashedjs/dashed-styles/styles';
+import { DashedIcon } from '@dashedjs/dashed-icon/icon';
+import { menuIcon, closeIcon, githubIcon } from '@dashedjs/dashed-icons/icons';
 
 export type NavItem = { text: string; href: string };
 
@@ -32,9 +30,9 @@ export class DashedHeader extends LitElement implements Dash {
   @property({ type: Object })
   dashProps: DashProps = { dashWidth: 1, dashLength: 4, dashRatio: 1 };
 
-  _menuButton: any;
-  _nav: any;
-  _mediaQueryList: any;
+  _menuButton: HTMLButtonElement;
+  _nav: HTMLElement;
+  _mediaQueryList: MediaQueryList;
 
   createRenderRoot() {
     return this.attachShadow({ mode: 'open' });
@@ -170,7 +168,7 @@ export class DashedHeader extends LitElement implements Dash {
             grid-template-columns: max-content auto max-content max-content;
           }
 
-          button[role="menu-button"] {
+          button#menubutton {
             display: none;
           }
 
@@ -198,14 +196,14 @@ export class DashedHeader extends LitElement implements Dash {
         <nav class="sidebar" role="navigation">
           <ul id="menu" role="menu" aria-labelledby="menubutton">
             ${this.navItems.map(navItem => {
-              return html`
+        return html`
                 <li role="none">
                   <a role="menuitem" href="${navItem.href}"
                   @click="${e => this._activateLink(e)}">
                   ${navItem.text}
                   </a>
                 </li>`;
-            })}
+      })}
           </ul>
         </nav>
         <button role="search" aria-label="search button">${githubIcon}</button>
@@ -244,21 +242,21 @@ export class DashedHeader extends LitElement implements Dash {
   _openMenu(e) {
     e.stopPropagation();
     this._nav.classList.add('open');
-    this._menuButton.setAttribute('aria-expanded', true);
+    this._menuButton.setAttribute('aria-expanded', 'true');
   }
 
   _closeMenu(e) {
     if (e.target != this && this._nav.classList.contains('open')) {
       e.stopPropagation();
       this._nav.classList.remove('open');
-      this._menuButton.setAttribute('aria-expanded', false);
+      this._menuButton.setAttribute('aria-expanded', 'false');
     }
   }
 
   _activateLink(e) {
     const oldActive = this.renderRoot.querySelector('.active');
     if (oldActive) {
-      oldActive.classList.remove('active');
+      oldActive.classList.remove('active')
     }
     const newActive = e.target;
     (newActive as HTMLElement).classList.add('active');

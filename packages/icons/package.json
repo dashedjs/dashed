@@ -1,5 +1,5 @@
 {
-  "name": "dashed-icons",
+  "name": "@dashedjs/dashed-icons",
   "version": "0.0.1",
   "description": "Icons",
   "main": "icons.js",

@@ -1,16 +1,28 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "es5",
     // "declaration": true,
-    "module": "esnext",
+    "module": "es6",
     "moduleResolution": "node",
     // "noImplicitAny": true,
     "noImplicitReturns": true,
     // "noUnusedLocals": true,
     // "noUnusedParameters": true,
     "experimentalDecorators": true,
-    "outDir": "dist/transpiled"
+    "lib": [
+      "es5",
+      "es6",
+      "dom"
+    ],
+    "outDir": "lib"
   },
-  "include": ["packages"],
-  "exclude": ["**/node_modules", "dist", "website"]
+  "include": [
+    "packages"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "dist",
+    "lib",
+    "website"
+  ]
 }

@@ -1,7 +1,7 @@
 {
-  "name": "dashed-utils",
+  "name": "@dashedjs/dashed-utils",
   "version": "0.0.1",
-  "description": "Button web component",
+  "description": "Utils for dashed web components",
   "main": "utils.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

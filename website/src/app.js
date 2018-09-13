@@ -1,6 +1,6 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 // import * as dashedjs from '../../packages/index.js';
-import * as dashedjs from '../../dist/transpiled/index.js';
+import * as dashedjs from '../../lib/index.js';
 import { LitClock } from './components/clock.js';
 
 class DashedSiteApp extends LitElement {

@@ -1,5 +1,5 @@
 {
-  "name": "dashed-link",
+  "name": "@dashedjs/dashed-link",
   "version": "0.0.1",
   "description": "Link web component",
   "main": "link.js",
@@ -19,6 +19,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@dashedjs/dashed-styles": "^0.0.1",
+    "@dashedjs/dashed-utils": "^0.0.1",
     "@polymer/lit-element": "^0.6.0-dev.6"
   }
 }

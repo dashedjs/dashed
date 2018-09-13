@@ -1,7 +1,7 @@
 {
-  "name": "dashedjs",
+  "name": "@dashedjs/dashed-core",
   "version": "0.0.1",
-  "description": "Set of reusable Web Components to speed up WebApps development",
+  "description": "Set of reusable dashed Web Components to speed up WebApps development",
   "main": "dist/dashed.cjs.js",
   "umd": "dist/dashed.umd.js",
   "module": "dist/dashed.es.js",
@@ -29,7 +29,7 @@
     "vanilla javascript",
     "charts"
   ],
-  "author": "The Dashed.js authors",
+  "author": "Fidèle Palouki",
   "license": "MIT",
   "bugs": {
     "url": "hhttps://github.com/dashedjs/dashedjs#issues"

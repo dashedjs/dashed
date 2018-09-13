@@ -1,5 +1,5 @@
 {
-  "name": "dashed-styles",
+  "name": "@dashedjs/dashed-styles",
   "version": "0.0.1",
   "description": "Button web component",
   "main": "styles.js",

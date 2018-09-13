@@ -1,7 +1,7 @@
 {
-  "name": "dashed-toggle",
+  "name": "@dashedjs/dashed-toggle",
   "version": "0.0.1",
-  "description": "Button web component",
+  "description": "Toggle web component",
   "main": "toggle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -19,6 +19,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@dashedjs/dashed-styles": "^0.0.1",
+    "@dashedjs/dashed-utils": "^0.0.1",
     "@polymer/lit-element": "^0.6.0-dev.6"
   }
 }
