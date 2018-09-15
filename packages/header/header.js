@@ -27,6 +27,7 @@ export class DashedHeader extends LitElement {
       { text: 'Playground', href: '#' }
     ];
     this.dashProps = { dashWidth: 1, dashLength: 4, dashRatio: 1 };
+    console.log({ menuIcon });
   }
 
   createRenderRoot() {
