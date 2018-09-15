@@ -12,7 +12,7 @@
     "bootstrap": "lerna bootstrap --hoist",
     "install-dep": "cd scripts && ./install-dep.js",
     "lint": "eslint .",
-    "build": "rollup -c"
+    "build": "gulp build"
   },
   "private": true,
   "files": [

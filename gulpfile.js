@@ -25,6 +25,8 @@ const packages = [
   'utils'
 ];
 
+gulp.task('build', gulp.parallel(buildSeries, buildBundle));
+
 gulp.task('buildSeries', buildSeries);
 gulp.task('buildParallel', buildParallel);
 gulp.task('buildBundle', buildBundle);
