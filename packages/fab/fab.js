@@ -38,7 +38,7 @@ export class DashedFab extends HTMLElement {
 
   updateIcon() {
     this._icon = this.shadowRoot.querySelector('slot[name="icon"]').assignedNodes()[0];
-    if (this._icon && this._icon.constructor.name === 'DashedIcon') {
+    if (this._icon && this._icon.localName === 'dashed-icon') {
       this._icon.addEventListener('iconloaded', this.drawDash.bind(this));
     } else {
       this.drawDash();
