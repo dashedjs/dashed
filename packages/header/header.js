@@ -57,7 +57,10 @@ export class DashedHeader extends HTMLElement {
     this.render();
     this.drawDash();
     this._menuButton = this.shadowRoot.querySelector('#menubutton');
+    this._menuButton.addEventListener('click', this._toggleMenu.bind(this));
     this._nav = this.shadowRoot.querySelector('nav');
+    this._menuItems = [...this._nav.querySelectorAll('a[role="menuitem"]')];
+    this._menuItems.forEach(menuitem => menuitem.addEventListener('click', this._activateLink.bind(this)));
 
     this._mediaQueryList = window.matchMedia('screen and (min-width: 600px)');
     this._mediaQueryList.addListener(this._mediaQueryChange.bind(this));
@@ -68,6 +71,8 @@ export class DashedHeader extends HTMLElement {
   }
 
   disconnectedCallback() {
+    this._menuButton.removeEventListener('click', this._toggleMenu.bind(this));
+    this._menuItems.forEach(menuitem => menuitem.removeEventListener('click', this._activateLink.bind(this)));
     this._mediaQueryList.removeListener(this._mediaQueryChange.bind(this));
 
     document.removeEventListener('click', this._closeMenu.bind(this));
@@ -198,7 +203,6 @@ export class DashedHeader extends HTMLElement {
       </style>
       <header>
         <button id="menubutton"
-          @click="${e => this._toggleMenu(e)}"
           aria-expanded="false"
           aria-controls="menu"
           aria-label="Menu button">
@@ -215,8 +219,7 @@ export class DashedHeader extends HTMLElement {
               .map(navItem => {
                 return `
                 <li role="none">
-                  <a role="menuitem" href="${navItem.href}"
-                  @click="${e => this._activateLink(e)}">
+                  <a role="menuitem" href="${navItem.href}">
                   ${navItem.text}
                   </a>
                 </li>`;
