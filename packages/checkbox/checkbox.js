@@ -1,38 +1,42 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedCheckbox extends LitElement {
-  static get is() {
-    return 'dashed-checkbox';
-  }
-
-  static get properties() {
-    return {
-      disabled: Boolean,
-      checked: String,
-      dashProps: Object
-    };
-  }
-
+export class DashedCheckbox extends HTMLElement {
   constructor() {
     super();
-    this.disabled = false;
-    this.checked = false;
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 2, dashLength: 4, dashRatio: 0.5 };
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
+  get checked() {
+    return this.hasAttribute('checked');
+  }
+  set checked(value) {
+    Boolean(value) ? this.setAttribute('checked', '') : this.removeAttribute('checked');
+  }
+
+  get dashProps() {
+    return this._dashProps;
+  }
+  set dashProps(value) {
+    this._dashProps = value;
+  }
+
+  connectedCallback() {
+    this.render();
     this.drawDash();
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -80,10 +84,11 @@ export class DashedCheckbox extends LitElement {
       </div>
       <label for="checkbox"><slot></slot></label>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
+    const svg = this.shadowRoot.querySelector('svg.dash');
     const border = svg.querySelector('.border');
     const [width, height] = [24, 24];
     const borderRadius = 0;
@@ -96,4 +101,4 @@ export class DashedCheckbox extends LitElement {
     checkmark.setAttribute('d', 'M6 12l4 4l8 -8');
   }
 }
-customElements.define(DashedCheckbox.is, DashedCheckbox);
+customElements.define('dashed-checkbox', DashedCheckbox);

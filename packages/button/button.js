@@ -1,37 +1,54 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedButton extends LitElement {
-  static get is() {
-    return 'dashed-button';
-  }
-
-  static get properties() {
-    return {
-      disabled: Boolean,
-      role: String,
-      rounded: Boolean,
-      dashProps: Object
-    };
-  }
-
+export class DashedButton extends HTMLElement {
   constructor() {
     super();
-    this.disabled = false;
-    this.role = '';
-    this.rounded = false;
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 2, dashLength: 8, dashRatio: 0.3 };
+    this._firstRender = true;
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    this._icon = this.renderRoot.querySelector('slot[name="icon"]').assignedNodes()[0];
-    if (this._icon && this._icon.localName === 'dashed-icon') {
+  get rounded() {
+    return this.hasAttribute('rounded');
+  }
+  set rounded(value) {
+    Boolean(value) ? this.setAttribute('rounded', '') : this.removeAttribute('rounded');
+  }
+
+  get dashProps() {
+    return this._dashProps;
+  }
+  set dashProps(value) {
+    this._dashProps = value;
+  }
+
+  connectedCallback() {
+    this.render();
+    this.updateIcon();
+    this._firstRender = false;
+  }
+
+  static get observedAttributes() {
+    return ['rounded'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (!this._firstRender) {
+      this.drawDash();
+    }
+  }
+
+  updateIcon() {
+    this._icon = this.shadowRoot.querySelector('slot[name="icon"]').assignedNodes()[0];
+    if (this._icon && this._icon.constructor.name === 'DashedIcon') {
       this._icon.addEventListener('iconloaded', this.drawDash.bind(this));
     } else {
       this.drawDash();
@@ -45,7 +62,8 @@ export class DashedButton extends LitElement {
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -90,10 +108,11 @@ export class DashedButton extends LitElement {
         </svg>
       </button>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
+    const svg = this.shadowRoot.querySelector('svg.dash');
     const border = svg.querySelector('.border');
     const { width, height } = this.getBoundingClientRect();
     const borderRadius = this.rounded ? (height - this.dashProps.dashWidth) / 2 : 0;
@@ -102,4 +121,4 @@ export class DashedButton extends LitElement {
     drawDashedRect(border, hostProps, this.dashProps);
   }
 }
-customElements.define(DashedButton.is, DashedButton);
+customElements.define('dashed-button', DashedButton);

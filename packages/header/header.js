@@ -1,42 +1,63 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedLine } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
+import { menuIcon, closeIcon, githubIcon } from '@dashedjs/dashed-icons/icons.js';
 
-export class DashedHeader extends LitElement {
+export class DashedHeader extends HTMLElement {
   static get is() {
     return 'dashed-header';
   }
 
-  static get properties() {
-    return {
-      navItems: Array,
-      logo: String,
-      iconLeft: String,
-      iconRight: String,
-      dashProps: Object
-    };
-  }
-
   constructor() {
     super();
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.navItems = [
       { text: 'Getting started', href: '#' },
       { text: 'Components', href: '#' },
       { text: 'Playground', href: '#' }
     ];
     this.dashProps = { dashWidth: 1, dashLength: 4, dashRatio: 1 };
-    console.log({ dashedStyles });
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open' });
+  get navItems() {
+    return this._navItems;
+  }
+  set navItems(value) {
+    this._navItems = value;
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
+  get logo() {
+    return this._logo;
+  }
+  set logo(value) {
+    this._logo = value;
+  }
+
+  get iconLeft() {
+    return this._iconLeft;
+  }
+  set iconLeft(value) {
+    this._iconLeft = value;
+  }
+
+  get iconRight() {
+    return this._iconRight;
+  }
+  set iconRight(value) {
+    this._iconRight = value;
+  }
+
+  get dashProps() {
+    return this._dashProps;
+  }
+  set dashProps(value) {
+    this._dashProps = value;
+  }
+
+  connectedCallback() {
+    this.render();
     this.drawDash();
-    this._menuButton = this.renderRoot.querySelector('#menubutton');
-    this._nav = this.renderRoot.querySelector('nav');
+    this._menuButton = this.shadowRoot.querySelector('#menubutton');
+    this._nav = this.shadowRoot.querySelector('nav');
 
     this._mediaQueryList = window.matchMedia('screen and (min-width: 600px)');
     this._mediaQueryList.addListener(this._mediaQueryChange.bind(this));
@@ -54,7 +75,8 @@ export class DashedHeader extends LitElement {
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -189,15 +211,17 @@ export class DashedHeader extends LitElement {
         <div></div>
         <nav class="sidebar" role="navigation">
           <ul id="menu" role="menu" aria-labelledby="menubutton">
-            ${this.navItems.map(navItem => {
-              return html`
+            ${this.navItems
+              .map(navItem => {
+                return `
                 <li role="none">
                   <a role="menuitem" href="${navItem.href}"
                   @click="${e => this._activateLink(e)}">
                   ${navItem.text}
                   </a>
                 </li>`;
-            })}
+              })
+              .join(' ')}
           </ul>
         </nav>
         <button role="search" aria-label="search button">
@@ -212,10 +236,11 @@ export class DashedHeader extends LitElement {
         </filter>
       </svg>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
+    const svg = this.shadowRoot.querySelector('svg.dash');
     const borderBottom = svg.querySelector('.border-bottom');
     const { width, height } = this.getBoundingClientRect();
 
@@ -250,7 +275,7 @@ export class DashedHeader extends LitElement {
   }
 
   _activateLink(e) {
-    const oldActive = this.renderRoot.querySelector('.active');
+    const oldActive = this.shadowRoot.querySelector('.active');
     if (oldActive) {
       oldActive.classList.remove('active');
     }
@@ -271,4 +296,4 @@ export class DashedHeader extends LitElement {
     }
   }
 }
-customElements.define(DashedHeader.is, DashedHeader);
+customElements.define('dashed-header', DashedHeader);

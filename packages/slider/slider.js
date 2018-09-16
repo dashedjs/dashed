@@ -1,26 +1,10 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedLine } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedSlider extends LitElement {
-  static get is() {
-    return 'dashed-slider';
-  }
-
-  static get properties() {
-    return {
-      disabled: Boolean,
-      min: Number,
-      max: Number,
-      value: Number,
-      step: Number,
-      dashProps: Object
-    };
-  }
-
+export class DashedSlider extends HTMLElement {
   constructor() {
     super();
-    this.disabled = false;
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.min = 0;
     this.max = 100;
     this.value = 0;
@@ -28,20 +12,62 @@ export class DashedSlider extends LitElement {
     this.dashProps = { dashWidth: 2, dashLength: 2, dashRatio: 0.5 };
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
+  get min() {
+    return this.getAttribute('min');
+  }
+  set min(value) {
+    this.setAttribute('min', value);
+  }
+
+  get max() {
+    return this.getAttribute('max');
+  }
+  set max(value) {
+    this.setAttribute('max', value);
+  }
+
+  get value() {
+    return this.getAttribute('value');
+  }
+  set value(value) {
+    this.setAttribute('value', value);
+  }
+
+  get step() {
+    return this.hasAttribute('step');
+  }
+  set step(value) {
+    this.setAttribute('step', value);
+  }
+
+  get dashProps() {
+    return this._dashProps;
+  }
+  set dashProps(value) {
+    this._dashProps = value;
+  }
+
+  connectedCallback() {
+    this.render();
     this.drawDash();
-    const svg = this.renderRoot.querySelector('svg.dash');
-    this._sliderCursor = svg.querySelector('.slider-cursor');
-    this._sliderTracker = svg.querySelector('.slider-tracker');
+    this._nativeInput = this.shadowRoot.querySelector('input');
+    this._nativeInput.addEventListener('input', this._onInputHandler.bind(this));
+  }
+
+  disconnectedCallback() {
+    this._nativeInput.removeEventListener('input', this._onInputHandler.bind(this));
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -103,8 +129,7 @@ export class DashedSlider extends LitElement {
       <label for="range"><slot></slot></label>
       <div class="slider-container">
         <input type="range" id="range" min="${this.min}" max="${this.max}"
-          step="${this.step}" value="${this.value}"
-          @input="${e => this._onInputHandler(e)}" />
+          step="${this.step}" value="${this.value}" />
         <svg class="dash">
           <line class="slider-background" />
           <line class="slider-tracker" />
@@ -115,19 +140,25 @@ export class DashedSlider extends LitElement {
         </svg>
       </div>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   _onInputHandler(e) {
     this.value = parseFloat(e.target.value);
     const sliderBackgroundwidth = 192 - 2 * 6;
     const percentage = (this.value - this.min) / (this.max - this.min);
-    this._sliderCursor.style.transform = `translateX(${percentage * sliderBackgroundwidth}px)`;
-    this._sliderTracker.setAttribute('x2', percentage * sliderBackgroundwidth);
+    const svg = this.shadowRoot.querySelector('svg.dash');
+
+    const sliderCursor = svg.querySelector('.slider-cursor');
+    sliderCursor.style.transform = `translateX(${percentage * sliderBackgroundwidth}px)`;
+
+    const sliderTracker = svg.querySelector('.slider-tracker');
+    sliderTracker.setAttribute('x2', percentage * sliderBackgroundwidth);
   }
 
   drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
-    const { width, height } = this.renderRoot.querySelector('.slider-container').getBoundingClientRect();
+    const svg = this.shadowRoot.querySelector('svg.dash');
+    const { width, height } = this.shadowRoot.querySelector('.slider-container').getBoundingClientRect();
 
     const sliderCursor = svg.querySelector('.slider-cursor');
     const sliderCursorInner = sliderCursor.querySelector('.slider-cursor-inner');
@@ -158,4 +189,4 @@ export class DashedSlider extends LitElement {
     sliderTracker.setAttribute('x2', `${percentage * sliderBackgroundwidth}`);
   }
 }
-customElements.define(DashedSlider.is, DashedSlider);
+customElements.define('dashed-slider', DashedSlider);

@@ -1,35 +1,44 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedCircle } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedFab extends LitElement {
-  static get is() {
-    return 'dashed-fab';
-  }
-
-  static get properties() {
-    return {
-      disabled: Boolean,
-      ariaLabel: String,
-      dashProps: Object
-    };
-  }
-
+export class DashedFab extends HTMLElement {
   constructor() {
     super();
-    this.disabled = false;
-    this.ariaLabel = '';
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 2, dashLength: 4, dashRatio: 0.5 };
+    this._firstRender = true;
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    this._icon = this.renderRoot.querySelector('slot[name="icon"]').assignedNodes()[0];
-    if (this._icon && this._icon.localName === 'dashed-icon') {
+  get ariaLabel() {
+    return this.hasAttribute('aria-label');
+  }
+  set ariaLabel(value) {
+    Boolean(value) ? this.setAttribute('aria-label', value) : this.removeAttribute('aria-label');
+  }
+
+  get dashProps() {
+    return this._dashProps;
+  }
+  set dashProps(value) {
+    this._dashProps = value;
+  }
+
+  connectedCallback() {
+    this.render();
+    this.updateIcon();
+    this._firstRender = false;
+  }
+
+  updateIcon() {
+    this._icon = this.shadowRoot.querySelector('slot[name="icon"]').assignedNodes()[0];
+    if (this._icon && this._icon.constructor.name === 'DashedIcon') {
       this._icon.addEventListener('iconloaded', this.drawDash.bind(this));
     } else {
       this.drawDash();
@@ -43,7 +52,8 @@ export class DashedFab extends LitElement {
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -107,10 +117,11 @@ export class DashedFab extends LitElement {
         </svg>
       </div>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
+    const svg = this.shadowRoot.querySelector('svg.dash');
     const [width, height] = [48, 48];
 
     const circles = svg.querySelector('.circles');
@@ -128,4 +139,4 @@ export class DashedFab extends LitElement {
     circles.style.transform = `translate(4px, 4px)`;
   }
 }
-customElements.define(DashedFab.is, DashedFab);
+customElements.define('dashed-fab', DashedFab);

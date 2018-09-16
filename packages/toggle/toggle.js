@@ -1,38 +1,42 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedToggle extends LitElement {
-  static get is() {
-    return 'dashed-toggle';
-  }
-
-  static get properties() {
-    return {
-      disabled: Boolean,
-      checked: Boolean,
-      dashProps: Object
-    };
-  }
-
+export class DashedToggle extends HTMLElement {
   constructor() {
     super();
-    this.disabled = false;
-    this.checked = false;
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 2, dashLength: 4, dashRatio: 0.5 };
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
+  get checked() {
+    return this.hasAttribute('checked');
+  }
+  set checked(value) {
+    Boolean(value) ? this.setAttribute('checked', '') : this.removeAttribute('checked');
+  }
+
+  get dashProps() {
+    return this._dashProps;
+  }
+  set dashProps(value) {
+    this._dashProps = value;
+  }
+
+  connectedCallback() {
+    this.render();
     this.drawDash();
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -100,10 +104,11 @@ export class DashedToggle extends LitElement {
       </div>
       <label for="toggle"><slot></slot></label>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
+    const svg = this.shadowRoot.querySelector('svg.dash');
     const toggleBackground = svg.querySelector('.toggle-background');
     const [width, height] = [48, 24];
     const [widthDelta, heightDelta] = [6, 10];
@@ -123,4 +128,4 @@ export class DashedToggle extends LitElement {
     toggleSwitcher.setAttribute('r', `${(height - this.dashProps.dashWidth) / 2}`);
   }
 }
-customElements.define(DashedToggle.is, DashedToggle);
+customElements.define('dashed-toggle', DashedToggle);

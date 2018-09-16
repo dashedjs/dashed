@@ -1,10 +1,11 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedLine } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedLink extends LitElement {
-  static get is() {
-    return 'dashed-link';
+export class DashedLink extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
+    this.dashProps = { dashWidth: 4, dashLength: 8, dashRatio: 0.2 };
   }
 
   static get properties() {
@@ -15,24 +16,35 @@ export class DashedLink extends LitElement {
     };
   }
 
-  constructor() {
-    super();
-    this.disabled = false;
-    this.role = '';
-    this.dashProps = { dashWidth: 4, dashLength: 8, dashRatio: 0.2 };
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get role() {
+    return this.getAttribute('role');
+  }
+  set role(value) {
+    this.setAttribute('role', '');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
+  get dashProps() {
+    return this._dashProps;
+  }
+  set dashProps(value) {
+    this._dashProps = value;
+  }
+
+  connectedCallback() {
+    this.render();
     this.drawDash();
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -69,10 +81,11 @@ export class DashedLink extends LitElement {
         </svg>
       </a>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
+    const svg = this.shadowRoot.querySelector('svg.dash');
     const borderBottom = svg.querySelector('.border-bottom');
     const { width, height } = this.getBoundingClientRect();
 
@@ -84,4 +97,4 @@ export class DashedLink extends LitElement {
     background.setAttribute('height', `${height - this.dashProps.dashWidth / 2}`);
   }
 }
-customElements.define(DashedLink.is, DashedLink);
+customElements.define('dashed-link', DashedLink);

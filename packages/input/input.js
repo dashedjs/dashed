@@ -1,38 +1,35 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedInput extends LitElement {
-  static get is() {
-    return 'dashed-input';
-  }
-
-  static get properties() {
-    return {
-      disabled: Boolean,
-      checked: Boolean,
-      dashProps: Object
-    };
-  }
-
+export class DashedInput extends HTMLElement {
   constructor() {
     super();
-    this.disabled = false;
-    this.checked = false;
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 1, dashLength: 6, dashRatio: 0.15 };
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
+  get dashProps() {
+    return this._dashProps;
+  }
+  set dashProps(value) {
+    this._dashProps = value;
+  }
+
+  connectedCallback() {
+    this.render();
     this.drawDash();
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -75,12 +72,13 @@ export class DashedInput extends LitElement {
         </svg>
       </div>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
+    const svg = this.shadowRoot.querySelector('svg.dash');
     const border = svg.querySelector('.border');
-    const { width, height } = this.renderRoot.querySelector('.input-container').getBoundingClientRect();
+    const { width, height } = this.shadowRoot.querySelector('.input-container').getBoundingClientRect();
     const borderRadius = 5;
 
     const hostProps = { width, height, borderRadius };
@@ -88,4 +86,4 @@ export class DashedInput extends LitElement {
     drawDashedRect(border, hostProps, this.dashProps);
   }
 }
-customElements.define(DashedInput.is, DashedInput);
+customElements.define('dashed-input', DashedInput);

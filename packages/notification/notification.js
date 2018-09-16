@@ -1,34 +1,16 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedNotification extends LitElement {
-  static get is() {
-    return 'dashed-notification';
-  }
-
-  static get properties() {
-    return {
-      dashProps: Object
-    };
-  }
-
+export class DashedNotification extends HTMLElement {
   constructor() {
     super();
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 2, dashLength: 10, dashRatio: 0.1 };
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
-  }
-
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    this.drawDash();
-  }
-
   connectedCallback() {
-    super.connectedCallback();
+    this.render();
+    this.drawDash();
     window.addEventListener('resize', this.drawDash.bind(this));
   }
 
@@ -37,7 +19,8 @@ export class DashedNotification extends LitElement {
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -94,10 +77,11 @@ export class DashedNotification extends LitElement {
         </svg>
       </div>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
+    const svg = this.shadowRoot.querySelector('svg.dash');
     const border = svg.querySelector('.border');
     const { width, height } = this.getBoundingClientRect();
     const borderRadius = this.rounded ? (height - this.dashProps.dashWidth) / 2 : 0;
@@ -106,4 +90,4 @@ export class DashedNotification extends LitElement {
     drawDashedRect(border, hostProps, this.dashProps);
   }
 }
-customElements.define(DashedNotification.is, DashedNotification);
+customElements.define('dashed-notification', DashedNotification);

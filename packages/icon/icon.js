@@ -1,48 +1,79 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { until } from 'lit-html/directives/until.js';
-
-export class DashedIcon extends LitElement {
-  static get is() {
-    return 'dashed-icon';
-  }
-
-  static get properties() {
-    return {
-      name: String,
-      src: String,
-      size: Number,
-      ariaLabel: String,
-      ariaLabelledBy: String
-    };
-  }
-
+export class DashedIcon extends HTMLElement {
   constructor() {
     super();
-    this.name = '';
-    this.src = '';
-    this.size = 24;
-    this.ariaLabel = '';
-    this.ariaLabelledBy = '';
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
+    this._firstRender = true;
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get name() {
+    return this.getAttribute('name');
+  }
+  set name(value) {
+    this.setAttribute('name', value);
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
+  get src() {
+    return this.getAttribute('src');
+  }
+  set src(value) {
+    this.setAttribute('src', value);
+  }
+
+  get size() {
+    return this.getAttribute('size');
+  }
+  set size(value) {
+    this.setAttribute('size', value);
+  }
+
+  get ariaLabel() {
+    return this.hasAttribute('aria-label');
+  }
+  set ariaLabel(value) {
+    this.setAttribute('aria-label', value);
+  }
+
+  get ariaLabelledBy() {
+    return this.hasAttribute('aria-labelledby');
+  }
+  set ariaLabelledBy(value) {
+    this.setAttribute('aria-labelledby', value);
+  }
+
+  get dashProps() {
+    return this._dashProps;
+  }
+  set dashProps(value) {
+    this._dashProps = value;
+  }
+
+  connectedCallback() {
+    this.render();
     const observer = new MutationObserver(mutations => {
       if (mutations[0].type === 'childList') this.dispatchEvent(new CustomEvent('iconloaded'));
     });
     try {
-      observer.observe(this.renderRoot, { childList: true }); // Chrome
+      observer.observe(this.shadowRoot, { childList: true }); // Chrome
     } catch (e) {
       observer.observe(this, { childList: true }); // Firefox & Edge
     }
+    this._firstRender = false;
   }
 
-  render() {
-    return html`
+  static get observedAttributes() {
+    return ['name', 'src', 'size'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (!this._firstRender) {
+      this.drawDash();
+    }
+  }
+
+  async render() {
+    const icon = await this.fetchIcon();
+    const template = document.createElement('template');
+    template.innerHTML = `
       <style>
         :host {
           display: inline-flex;
@@ -80,16 +111,19 @@ export class DashedIcon extends LitElement {
           height: 100%;
         }
       </style>
-      ${until(this.fetchIcon(this.name, this.src), '')}
+      <span>${icon}</span>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
-  fetchIcon(name, src) {
-    const iconUrl = name ? `/node_modules/@dashedjs/dashed-icons/${name}.svg` : src;
-    return fetch(iconUrl)
-      .then(res => res.text())
-      .then(icon => html`<span .innerHTML="${icon}"></span>`)
-      .catch(e => console.error(e));
+  fetchIcon() {
+    const iconUrl = this.name ? `/node_modules/@dashedjs/dashed-icons/${this.name}.svg` : this.src;
+    return fetch(iconUrl).then(res => {
+      if (res.status !== 200) {
+        throw new Error(`Error code ${res.status}, failed to load icon: ${iconUrl}`);
+      }
+      return res.text();
+    });
   }
 }
-customElements.define(DashedIcon.is, DashedIcon);
+customElements.define('dashed-icon', DashedIcon);

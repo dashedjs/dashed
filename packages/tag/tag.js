@@ -1,33 +1,39 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedTag extends LitElement {
-  static get is() {
-    return 'dashed-tag';
-  }
-
-  static get properties() {
-    return {
-      disabled: Boolean,
-      dashProps: Object
-    };
-  }
-
+export class DashedTag extends HTMLElement {
   constructor() {
     super();
-    this.disabled = false;
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 1, dashLength: 6, dashRatio: 0.2 };
+    this._firstRender = true;
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    this._icon = this.renderRoot.querySelector('slot[name="icon"]').assignedNodes()[0];
-    if (this._icon && this._icon.localName === 'dashed-icon') {
+  get dashProps() {
+    return this._dashProps;
+  }
+  set dashProps(value) {
+    this._dashProps = value;
+  }
+
+  connectedCallback() {
+    this.render();
+    this.updateIcon();
+    this._firstRender = false;
+    this._nativeButton = this.shadowRoot.querySelector('button');
+    this._nativeButton.addEventListener('click', this._toggleTag.bind(this));
+  }
+
+  updateIcon() {
+    this._icon = this.shadowRoot.querySelector('slot[name="icon"]').assignedNodes()[0];
+    if (this._icon && this._icon.constructor.name === 'DashedIcon') {
       this._icon.addEventListener('iconloaded', this.drawDash.bind(this));
     } else {
       this.drawDash();
@@ -38,10 +44,12 @@ export class DashedTag extends LitElement {
     if (this._icon) {
       this._icon.removeEventListener('iconloaded', this.drawDash.bind(this));
     }
+    this._nativeButton.remove('click', this._toggleTag.bind(this));
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -77,7 +85,7 @@ export class DashedTag extends LitElement {
           padding-left: 4px;
         }
       </style>
-      <button type="button" @click="${e => this._toggleTag(e)}">
+      <button type="button">
         <slot></slot>
         <slot name="icon"></slot>
         <svg class="dash">
@@ -85,15 +93,15 @@ export class DashedTag extends LitElement {
         </svg>
       </button>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   _toggleTag(e) {
-    const button = this.renderRoot.querySelector('button');
-    button.classList.toggle('active');
+    this._nativeButton.classList.toggle('active');
   }
 
   drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
+    const svg = this.shadowRoot.querySelector('svg.dash');
     const border = svg.querySelector('.border');
     const { width, height } = this.getBoundingClientRect();
     const borderRadius = (height - this.dashProps.dashWidth) / 2;
@@ -102,4 +110,4 @@ export class DashedTag extends LitElement {
     drawDashedRect(border, hostProps, this.dashProps);
   }
 }
-customElements.define(DashedTag.is, DashedTag);
+customElements.define('dashed-tag', DashedTag);

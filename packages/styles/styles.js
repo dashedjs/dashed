@@ -1,6 +1,4 @@
-import { html } from '@polymer/lit-element/lit-element.js';
-
-export const dashedStyles = html`
+export const dashedStyles = `
   <style title="Common styles">
     :host{
       --dashed-primary-color: rgba(54, 54, 231, 1);

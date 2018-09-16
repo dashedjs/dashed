@@ -1,38 +1,42 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedCircle } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedRadio extends LitElement {
-  static get is() {
-    return 'dashed-radio';
-  }
-
-  static get properties() {
-    return {
-      disabled: Boolean,
-      checked: Boolean,
-      dashProps: Object
-    };
-  }
-
+export class DashedRadio extends HTMLElement {
   constructor() {
     super();
-    this.disabled = false;
-    this.checked = false;
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 2, dashLength: 4, dashRatio: 0.5 };
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
+  get checked() {
+    return this.hasAttribute('checked');
+  }
+  set checked(value) {
+    Boolean(value) ? this.setAttribute('checked', '') : this.removeAttribute('checked');
+  }
+
+  get dashProps() {
+    return this._dashProps;
+  }
+  set dashProps(value) {
+    this._dashProps = value;
+  }
+
+  connectedCallback() {
+    this.render();
     this.drawDash();
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -85,10 +89,11 @@ export class DashedRadio extends LitElement {
       </div>
       <label for="radio"><slot></slot></label>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
+    const svg = this.shadowRoot.querySelector('svg.dash');
     const [width, height] = [24, 24];
 
     const outerCircle = svg.querySelector('.outer-circle');
@@ -101,4 +106,4 @@ export class DashedRadio extends LitElement {
     innerCircle.setAttribute('r', '5');
   }
 }
-customElements.define(DashedRadio.is, DashedRadio);
+customElements.define('dashed-radio', DashedRadio);

@@ -1,12 +1,7 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedLine } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedSelect extends LitElement {
-  static get is() {
-    return 'dashed-select';
-  }
-
+export class DashedSelect extends HTMLElement {
   static get properties() {
     return {
       disabled: Boolean,
@@ -17,22 +12,39 @@ export class DashedSelect extends LitElement {
 
   constructor() {
     super();
-    this.disabled = false;
-    this.value = '';
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 2, dashLength: 10, dashRatio: 0.3 };
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
+  get value() {
+    return this.getAttribute('value');
+  }
+  set value(value) {
+    this.setAttribute('value', value);
+  }
+
+  get dashProps() {
+    return this._dashProps;
+  }
+  set dashProps(value) {
+    this._dashProps = value;
+  }
+
+  connectedCallback() {
+    this.render();
     this.drawDash();
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -88,12 +100,13 @@ export class DashedSelect extends LitElement {
         </svg>
       </div>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
+    const svg = this.shadowRoot.querySelector('svg.dash');
     const borderBottom = svg.querySelector('.border-bottom');
-    const { width, height } = this.renderRoot.querySelector('.select-container').getBoundingClientRect();
+    const { width, height } = this.shadowRoot.querySelector('.select-container').getBoundingClientRect();
 
     const hostProps = { width, height };
     drawDashedLine(borderBottom, hostProps, this.dashProps);
@@ -107,4 +120,4 @@ export class DashedSelect extends LitElement {
     background.setAttribute('height', `${height - this.dashProps.dashWidth / 2}`);
   }
 }
-customElements.define(DashedSelect.is, DashedSelect);
+customElements.define('dashed-select', DashedSelect);

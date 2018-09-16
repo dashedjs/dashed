@@ -1,27 +1,14 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedFooter extends LitElement {
-  static get is() {
-    return 'dashed-footer';
-  }
-
+export class DashedFooter extends HTMLElement {
   constructor() {
     super();
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 2, dashLength: 20, dashRatio: 0.1 };
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
-  }
-
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    this.drawDash();
-  }
-
   connectedCallback() {
-    super.connectedCallback();
+    this.drawDash();
     window.addEventListener('resize', this.drawDash.bind(this));
   }
 
@@ -30,7 +17,8 @@ export class DashedFooter extends LitElement {
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -92,10 +80,11 @@ export class DashedFooter extends LitElement {
         </svg>
       </div>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   drawDash() {
     // console.log('Method not implemented.');
   }
 }
-customElements.define(DashedFooter.is, DashedFooter);
+customElements.define('dashed-footer', DashedFooter);

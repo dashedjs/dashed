@@ -1,34 +1,23 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedCard extends LitElement {
-  static get is() {
-    return 'dashed-card';
-  }
-
-  static get properties() {
-    return {
-      dashProps: Object
-    };
-  }
-
+export class DashedCard extends HTMLElement {
   constructor() {
     super();
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 2, dashLength: 20, dashRatio: 0.1 };
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get dashProps() {
+    return this._dashProps;
   }
-
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    this.drawDash();
+  set dashProps(value) {
+    this._dashProps = value;
   }
 
   connectedCallback() {
-    super.connectedCallback();
+    this.render();
+    this.drawDash();
     window.addEventListener('resize', this.drawDash.bind(this));
   }
 
@@ -37,7 +26,8 @@ export class DashedCard extends LitElement {
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -98,10 +88,11 @@ export class DashedCard extends LitElement {
         </svg>
       </div>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
+    const svg = this.shadowRoot.querySelector('svg.dash');
     const border = svg.querySelector('.border');
     const { width, height } = this.getBoundingClientRect();
     const borderRadius = 16;
@@ -110,4 +101,4 @@ export class DashedCard extends LitElement {
     drawDashedRect(border, hostProps, this.dashProps);
   }
 }
-customElements.define(DashedCard.is, DashedCard);
+customElements.define('dashed-card', DashedCard);
