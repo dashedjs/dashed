@@ -1,8 +1,6 @@
 import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { drawDashedLine } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
-// import { DashedIcon } from '@dashedjs/dashed-icon/icon.js';
-import { menuIcon, closeIcon, githubIcon } from '@dashedjs/dashed-icons/icons.js';
 
 export class DashedHeader extends LitElement {
   static get is() {
@@ -27,7 +25,7 @@ export class DashedHeader extends LitElement {
       { text: 'Playground', href: '#' }
     ];
     this.dashProps = { dashWidth: 1, dashLength: 4, dashRatio: 1 };
-    console.log({ menuIcon });
+    console.log({ dashedStyles });
   }
 
   createRenderRoot() {
@@ -182,7 +180,7 @@ export class DashedHeader extends LitElement {
           aria-expanded="false"
           aria-controls="menu"
           aria-label="Menu button">
-            ${menuIcon}
+            <dashed-icon name="menu"></dashed-icon>
         </button>
         <a href="#">
           <img class="logo" src="/src/assets/img/logo.png" alt="Dashedjs logo">
@@ -202,7 +200,9 @@ export class DashedHeader extends LitElement {
             })}
           </ul>
         </nav>
-        <button role="search" aria-label="search button">${githubIcon}</button>
+        <button role="search" aria-label="search button">
+          <dashed-icon name="github"></dashed-icon>
+        </button>
       </header>
       <svg class="dash" filter="url(#shadow2)">
         <rect class="background" />

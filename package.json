@@ -17,7 +17,7 @@
   "private": true,
   "files": [
     "dist",
-    "lib"
+    "packages"
   ],
   "repository": {
     "type": "git",
@@ -26,8 +26,9 @@
   "keywords": [
     "webcomponents",
     "customElements",
-    "vanilla javascript",
-    "charts"
+    "ui components",
+    "design system",
+    "vanilla javascript"
   ],
   "author": "Fidèle Palouki",
   "license": "MIT",
