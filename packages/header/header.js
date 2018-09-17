@@ -3,10 +3,6 @@ import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 import { menuIcon, closeIcon, githubIcon } from '@dashedjs/dashed-icons/icons.js';
 
 export class DashedHeader extends HTMLElement {
-  static get is() {
-    return 'dashed-header';
-  }
-
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
