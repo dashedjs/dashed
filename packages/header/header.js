@@ -185,7 +185,7 @@ export class DashedHeader extends LitElement {
             ${menuIcon}
         </button>
         <a href="#">
-          <img class="logo" src="./img/logo.png" alt="Dashedjs logo">
+          <img class="logo" src="/src/assets/img/logo.png" alt="Dashedjs logo">
           <h1 class="logo-text"></h1>
         </a>
         <div></div>
