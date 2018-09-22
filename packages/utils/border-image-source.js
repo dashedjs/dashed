@@ -17,5 +17,5 @@ export function borderImageSource(dashWidth, dashLength, dashSpacing, borderRadi
               fill='none'
               d='M${dashWidth/2} ${dashWidth + borderRadius - dashSpacing/2}a${borderRadius} ${borderRadius} 0 0 1 ${dashWidth/2 + borderRadius - dashSpacing/2} ${-borderRadius - dashWidth/2 + dashSpacing/2}m${dashLength + 2 * dashSpacing} 0a${borderRadius} ${borderRadius} 0 0 1 ${borderRadius + dashWidth/2 - dashSpacing/2} ${dashWidth/2 + borderRadius - dashSpacing/2}m0 ${dashLength + 2*dashSpacing}a${borderRadius} ${borderRadius} 0 0 1 ${-dashWidth/2 - borderRadius + dashSpacing/2} ${borderRadius + dashWidth/2 - dashSpacing/2}m${-dashLength - 2* dashSpacing} 0a${borderRadius} ${borderRadius} 0 0 1 ${-borderRadius - dashWidth/2 + dashSpacing/2} ${-dashWidth/2 - borderRadius + dashSpacing/2}'/>`
           : ''}
-    </svg>")`.replace(/\n|\t/gm, '');
+    </svg>")`.replace(/\n|\r|\t/gm, '');
 }
