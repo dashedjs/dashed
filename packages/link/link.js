@@ -73,7 +73,7 @@ export class DashedLink extends HTMLElement {
           width: 100%;
         }
       </style>
-      <a href="#" @click="${e => console.log(e)}">
+      <a href="#">
         <slot></slot>
         <svg class="dash">
           <rect class="background" />

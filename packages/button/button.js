@@ -71,6 +71,7 @@ export class DashedButton extends HTMLElement {
           cursor: pointer;
           outline: none;
           position: relative;
+          font-size: 14px;
         }
 
         :host(:hover) {
@@ -90,7 +91,8 @@ export class DashedButton extends HTMLElement {
           border: none;
           outline: none;
           padding: 4px 12px;
-          font-size: 14px;
+          // font-size: 14px;
+          font-size: inherit;
           position: relative;
           transition: color 50ms ease-in-out;
         }
