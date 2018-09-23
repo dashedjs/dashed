@@ -1,4 +1,4 @@
-import { drawDashedLine } from '@dashedjs/dashed-utils/utils.js';
+import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 import { menuIcon, closeIcon, githubIcon } from '@dashedjs/dashed-icons/icons.js';
 
@@ -11,7 +11,10 @@ export class DashedHeader extends HTMLElement {
       { text: 'Components', href: '#' },
       { text: 'Playground', href: '#' }
     ];
-    this.dashProps = { dashWidth: 1, dashLength: 4, dashRatio: 1 };
+
+    this.dashWidth = '1';
+    this.dashLength = '4';
+    this.dashSpacing = '4';
   }
 
   get navItems() {
@@ -42,16 +45,29 @@ export class DashedHeader extends HTMLElement {
     this._iconRight = value;
   }
 
-  get dashProps() {
-    return this._dashProps;
+  get dashWidth() {
+    return this.getAttribute('dash-width');
   }
-  set dashProps(value) {
-    this._dashProps = value;
+  set dashWidth(value) {
+    this.setAttribute('dash-width', value);
+  }
+
+  get dashLength() {
+    return this.getAttribute('dash-length');
+  }
+  set dashLength(value) {
+    this.setAttribute('dash-length', value);
+  }
+
+  get dashSpacing() {
+    return this.getAttribute('dash-spacing');
+  }
+  set dashSpacing(value) {
+    this.setAttribute('dash-spacing', value);
   }
 
   connectedCallback() {
     this.render();
-    this.drawDash();
     this._menuButton = this.shadowRoot.querySelector('#menubutton');
     this._menuButton.addEventListener('click', this._toggleMenu.bind(this));
     this._nav = this.shadowRoot.querySelector('nav');
@@ -63,7 +79,6 @@ export class DashedHeader extends HTMLElement {
     this._mediaQueryChange(this._mediaQueryList);
 
     document.addEventListener('click', this._closeMenu.bind(this));
-    window.addEventListener('resize', this.drawDash.bind(this));
   }
 
   disconnectedCallback() {
@@ -72,7 +87,6 @@ export class DashedHeader extends HTMLElement {
     this._mediaQueryList.removeListener(this._mediaQueryChange.bind(this));
 
     document.removeEventListener('click', this._closeMenu.bind(this));
-    window.removeEventListener('resize', this.drawDash.bind(this));
   }
 
   render() {
@@ -99,6 +113,20 @@ export class DashedHeader extends HTMLElement {
           height: var(--dashed-header-height);
           display: grid;
           grid-template-columns: max-content max-content auto max-content;
+  
+          border-bottom: ${this.dashWidth}px solid;
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing)};
+        }
+
+        header::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: var(--dashed-primary-light-color);
+          z-index: -1;
         }
 
         button {
@@ -227,28 +255,8 @@ export class DashedHeader extends HTMLElement {
           <dashed-icon name="github"></dashed-icon>
         </button>
       </header>
-      <svg class="dash" filter="url(#shadow2)">
-        <rect class="background" />
-        <line class="border-bottom" />
-        <filter id="shadow2">
-          <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.9" />
-        </filter>
-      </svg>
     `;
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-  }
-
-  drawDash() {
-    const svg = this.shadowRoot.querySelector('svg.dash');
-    const borderBottom = svg.querySelector('.border-bottom');
-    const { width, height } = this.getBoundingClientRect();
-
-    const hostProps = { width, height };
-    drawDashedLine(borderBottom, hostProps, this.dashProps);
-
-    const background = svg.querySelector('.background');
-    background.setAttribute('width', `${width}`);
-    background.setAttribute('height', `${height - this.dashProps.dashWidth / 2}`);
   }
 
   _toggleMenu(e) {

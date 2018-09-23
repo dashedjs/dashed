@@ -1,11 +1,13 @@
-import { drawDashedLine } from '@dashedjs/dashed-utils/utils.js';
+import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
 export class DashedLink extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.dashProps = { dashWidth: 4, dashLength: 8, dashRatio: 0.2 };
+    this.dashWidth = '1.5';
+    this.dashLength = '8';
+    this.dashSpacing = '2';
   }
 
   static get properties() {
@@ -30,16 +32,29 @@ export class DashedLink extends HTMLElement {
     this.setAttribute('role', '');
   }
 
-  get dashProps() {
-    return this._dashProps;
+  get dashWidth() {
+    return this.getAttribute('dash-width');
   }
-  set dashProps(value) {
-    this._dashProps = value;
+  set dashWidth(value) {
+    this.setAttribute('dash-width', value);
+  }
+
+  get dashLength() {
+    return this.getAttribute('dash-length');
+  }
+  set dashLength(value) {
+    this.setAttribute('dash-length', value);
+  }
+
+  get dashSpacing() {
+    return this.getAttribute('dash-spacing');
+  }
+  set dashSpacing(value) {
+    this.setAttribute('dash-spacing', value);
   }
 
   connectedCallback() {
     this.render();
-    this.drawDash();
   }
 
   render() {
@@ -48,16 +63,16 @@ export class DashedLink extends HTMLElement {
       ${dashedStyles}
       <style>
         :host {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
+          display: inline-block;
           cursor: pointer;
           outline: none;
           position: relative;
+          font-size: 16px;
         }
 
-        :host(:hover) link {
-          color: var(--dashed-danger-color);
+        :host(:hover) {
+          color: var(--dashed-primary-color);
+          --dashed-fill-color: var(--dashed-primary-light-color);
         }
 
         a {
@@ -65,36 +80,22 @@ export class DashedLink extends HTMLElement {
           cursor: inherit;
           text-align: center;
           text-decoration: none;
+          color: inherit;
           outline: none;
           padding-bottom: 4px;
-          font-size: 16px;
+          font-size: inherit;
           position: relative;
           transition: color 50ms ease-in-out;
-          width: 100%;
+
+          border-bottom: ${this.dashWidth}px solid;
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing)};
         }
       </style>
       <a href="#">
         <slot></slot>
-        <svg class="dash">
-          <rect class="background" />
-          <line class="border-bottom" />
-        </svg>
       </a>
     `;
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-  }
-
-  drawDash() {
-    const svg = this.shadowRoot.querySelector('svg.dash');
-    const borderBottom = svg.querySelector('.border-bottom');
-    const { width, height } = this.getBoundingClientRect();
-
-    const hostProps = { width, height };
-    drawDashedLine(borderBottom, hostProps, this.dashProps);
-
-    const background = svg.querySelector('.background');
-    background.setAttribute('width', `${width}`);
-    background.setAttribute('height', `${height - this.dashProps.dashWidth / 2}`);
   }
 }
 customElements.define('dashed-link', DashedLink);

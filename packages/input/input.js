@@ -1,11 +1,14 @@
-import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
+import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
 export class DashedInput extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.dashProps = { dashWidth: 1, dashLength: 6, dashRatio: 0.15 };
+    this.borderRadius = '5';
+    this.dashWidth = '1';
+    this.dashLength = '6';
+    this.dashSpacing = '0.9';
   }
 
   get disabled() {
@@ -15,16 +18,36 @@ export class DashedInput extends HTMLElement {
     Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  get dashProps() {
-    return this._dashProps;
+  get borderRadius() {
+    return this.getAttribute('border-radius');
   }
-  set dashProps(value) {
-    this._dashProps = value;
+  set borderRadius(value) {
+    this.setAttribute('border-radius', value);
+  }
+
+  get dashWidth() {
+    return this.getAttribute('dash-width');
+  }
+  set dashWidth(value) {
+    this.setAttribute('dash-width', value);
+  }
+
+  get dashLength() {
+    return this.getAttribute('dash-length');
+  }
+  set dashLength(value) {
+    this.setAttribute('dash-length', value);
+  }
+
+  get dashSpacing() {
+    return this.getAttribute('dash-spacing');
+  }
+  set dashSpacing(value) {
+    this.setAttribute('dash-spacing', value);
   }
 
   connectedCallback() {
     this.render();
-    this.drawDash();
   }
 
   render() {
@@ -33,8 +56,6 @@ export class DashedInput extends HTMLElement {
       ${dashedStyles}
       <style>
         :host {
-          --dashed-input-dimension: 24px;
-
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -48,9 +69,9 @@ export class DashedInput extends HTMLElement {
         .input-container {
           display: inline-block;
           position: relative;
-          outline: none;
-          /* width: 100%; */
-          /* height: 100%; */
+
+          border: ${this.dashWidth}px solid;
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
         }
 
         input {
@@ -59,7 +80,6 @@ export class DashedInput extends HTMLElement {
           box-sizing: border-box;
           border: none;
           outline: none;
-          /* max-width: 100%; */
           height: 100%;
           background: var(--dashed-fill-color);
         }
@@ -67,23 +87,9 @@ export class DashedInput extends HTMLElement {
       <label for="input"><slot></slot></label>
       <div class="input-container">
         <input id="input" />
-        <svg class="dash">
-          <rect class="border" />
-        </svg>
       </div>
     `;
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-  }
-
-  drawDash() {
-    const svg = this.shadowRoot.querySelector('svg.dash');
-    const border = svg.querySelector('.border');
-    const { width, height } = this.shadowRoot.querySelector('.input-container').getBoundingClientRect();
-    const borderRadius = 5;
-
-    const hostProps = { width, height, borderRadius };
-
-    drawDashedRect(border, hostProps, this.dashProps);
   }
 }
 customElements.define('dashed-input', DashedInput);

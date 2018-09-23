@@ -1,19 +1,13 @@
-import { drawDashedLine } from '@dashedjs/dashed-utils/utils.js';
+import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
 export class DashedSelect extends HTMLElement {
-  static get properties() {
-    return {
-      disabled: Boolean,
-      value: String,
-      dashProps: Object
-    };
-  }
-
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.dashProps = { dashWidth: 2, dashLength: 10, dashRatio: 0.3 };
+    this.dashWidth = '2';
+    this.dashLength = '10';
+    this.dashSpacing = '3.33';
   }
 
   get disabled() {
@@ -30,16 +24,29 @@ export class DashedSelect extends HTMLElement {
     this.setAttribute('value', value);
   }
 
-  get dashProps() {
-    return this._dashProps;
+  get dashWidth() {
+    return this.getAttribute('dash-width');
   }
-  set dashProps(value) {
-    this._dashProps = value;
+  set dashWidth(value) {
+    this.setAttribute('dash-width', value);
+  }
+
+  get dashLength() {
+    return this.getAttribute('dash-length');
+  }
+  set dashLength(value) {
+    this.setAttribute('dash-length', value);
+  }
+
+  get dashSpacing() {
+    return this.getAttribute('dash-spacing');
+  }
+  set dashSpacing(value) {
+    this.setAttribute('dash-spacing', value);
   }
 
   connectedCallback() {
     this.render();
-    this.drawDash();
   }
 
   render() {
@@ -48,24 +55,31 @@ export class DashedSelect extends HTMLElement {
       ${dashedStyles}
       <style>
         :host {
-          --dashed-select-min-width: 96px;
-          --dashed-select-min-height: 24px;
-
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
+          display: inline-block;
           position: relative;
           cursor: inherit;
           outline: none;
-          min-width: var(--dashed-select-min-width);
-          min-height: var(--dashed-select-min-height);
         }
 
         .select-container {
+          min-width: 96px;
+          min-height: 24px;
           display: inline-block;
           position: relative;
+
+          border-bottom: ${this.dashWidth}px solid;
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing)};
+        }
+
+        .select-container::before {
+          content: "";
+          z-index: -1;
+          position: absolute;
+          top: 0;
+          left: 0;
           width: 100%;
           height: 100%;
+          background: var(--dashed-primary-light-color);
         }
 
         select {
@@ -84,6 +98,7 @@ export class DashedSelect extends HTMLElement {
   
         svg.dash .caret {
           stroke: var(--dashed-primary-color);
+          stroke-width: ${parseFloat(this.dashWidth)};
         }
       </style>
       <label for="select"><slot></slot></label>
@@ -94,30 +109,11 @@ export class DashedSelect extends HTMLElement {
           <option value="2">Option 2</option>
         </select>
         <svg class="dash">
-          <rect class="background" />
-          <path class="caret" />
-          <line class="border-bottom" />
+          <path class="caret" d="M0 ${8}l4 4l4 -4" transform="translate(${96 - 12}, 0)" />
         </svg>
       </div>
     `;
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-  }
-
-  drawDash() {
-    const svg = this.shadowRoot.querySelector('svg.dash');
-    const borderBottom = svg.querySelector('.border-bottom');
-    const { width, height } = this.shadowRoot.querySelector('.select-container').getBoundingClientRect();
-
-    const hostProps = { width, height };
-    drawDashedLine(borderBottom, hostProps, this.dashProps);
-
-    const caret = svg.querySelector('.caret');
-    caret.setAttribute('stroke-width', `${this.dashProps.dashWidth * 1.8}`);
-    caret.setAttribute('d', `M${width - 12} ${8}l4 4l4 -4`);
-
-    const background = svg.querySelector('.background');
-    background.setAttribute('width', `${width}`);
-    background.setAttribute('height', `${height - this.dashProps.dashWidth / 2}`);
   }
 }
 customElements.define('dashed-select', DashedSelect);

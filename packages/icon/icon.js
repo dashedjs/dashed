@@ -2,7 +2,6 @@ export class DashedIcon extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this._firstRender = true;
   }
 
   get name() {
@@ -40,34 +39,12 @@ export class DashedIcon extends HTMLElement {
     this.setAttribute('aria-labelledby', value);
   }
 
-  get dashProps() {
-    return this._dashProps;
-  }
-  set dashProps(value) {
-    this._dashProps = value;
-  }
-
   connectedCallback() {
     this.render();
-    const observer = new MutationObserver(mutations => {
-      if (mutations[0].type === 'childList') this.dispatchEvent(new CustomEvent('iconloaded'));
-    });
-    try {
-      observer.observe(this.shadowRoot, { childList: true }); // Chrome
-    } catch (e) {
-      observer.observe(this, { childList: true }); // Firefox & Edge
-    }
-    this._firstRender = false;
   }
 
   static get observedAttributes() {
     return ['name', 'src', 'size'];
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (!this._firstRender) {
-      this.drawDash();
-    }
   }
 
   async render() {

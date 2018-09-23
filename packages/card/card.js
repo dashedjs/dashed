@@ -1,28 +1,46 @@
-import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
+import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
 export class DashedCard extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.dashProps = { dashWidth: 2, dashLength: 20, dashRatio: 0.1 };
+    this.borderRadius = '16';
+    this.dashWidth = '2';
+    this.dashLength = '20';
+    this.dashSpacing = '2';
   }
 
-  get dashProps() {
-    return this._dashProps;
+  get borderRadius() {
+    return this.getAttribute('border-radius');
   }
-  set dashProps(value) {
-    this._dashProps = value;
+  set borderRadius(value) {
+    this.setAttribute('border-radius', value);
+  }
+
+  get dashWidth() {
+    return this.getAttribute('dash-width');
+  }
+  set dashWidth(value) {
+    this.setAttribute('dash-width', value);
+  }
+
+  get dashLength() {
+    return this.getAttribute('dash-length');
+  }
+  set dashLength(value) {
+    this.setAttribute('dash-length', value);
+  }
+
+  get dashSpacing() {
+    return this.getAttribute('dash-spacing');
+  }
+  set dashSpacing(value) {
+    this.setAttribute('dash-spacing', value);
   }
 
   connectedCallback() {
     this.render();
-    this.drawDash();
-    window.addEventListener('resize', this.drawDash.bind(this));
-  }
-
-  disconnectedCallback() {
-    window.removeEventListener('resize', this.drawDash.bind(this));
   }
 
   render() {
@@ -31,25 +49,32 @@ export class DashedCard extends HTMLElement {
       ${dashedStyles}
       <style>
         :host {
-          --dashed-card-min-width: 256px;
-          --dashed-card-max-width: 512px;
-
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
+          display: inline-block;
           position: relative;
           cursor: inherit;
           outline: none;
-          min-width: var(--dashed-card-min-width);
-          max-width: var(--dashed-card-max-width);
         }
 
         .card {
           display: inline-block;
           position: relative;
+          min-width: 256px;
+          padding: 10px;
+
+          border: ${this.dashWidth}px solid;
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
+        }
+
+        .card::before {
+          z-index: -1;
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
           width: 100%;
           height: 100%;
-          padding: 10px;
+          border-radius: ${this.borderRadius}px;
+          background: var(--dashed-primary-light-color);
         }
 
         .card__title {
@@ -80,25 +105,9 @@ export class DashedCard extends HTMLElement {
           <button class="card__footer__button">button1</button>
           <button class="card__footer__button">button2</button>
         </div>
-        <svg class="dash" filter="url(#shadow2)">
-          <rect class="border" />
-          <filter id="shadow2">
-            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.3" />
-          </filter>
-        </svg>
       </div>
     `;
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-  }
-
-  drawDash() {
-    const svg = this.shadowRoot.querySelector('svg.dash');
-    const border = svg.querySelector('.border');
-    const { width, height } = this.getBoundingClientRect();
-    const borderRadius = 16;
-
-    const hostProps = { width, height, borderRadius };
-    drawDashedRect(border, hostProps, this.dashProps);
   }
 }
 customElements.define('dashed-card', DashedCard);

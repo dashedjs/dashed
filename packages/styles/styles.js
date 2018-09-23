@@ -15,7 +15,7 @@ export const dashedStyles = `
       z-index: 1;
     }
 
-    :host(:focus) svg.dash {
+    :host(:focus) > * {
       outline: 1px solid var(--dashed-outline-color);
       outline-offset: 1px;
     }

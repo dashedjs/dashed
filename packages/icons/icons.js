@@ -1,5 +1,3 @@
-import { html } from '@polymer/lit-element/lit-element.js';
-
 export const menuIcon = `
   <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" class="icon menu-icon">
     <path d="M2 6h20 M2 12h20 M2 18h20" stroke-width="2" stroke-dasharray="6 1"/>

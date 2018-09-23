@@ -1,4 +1,4 @@
-import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
+import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
 export class DashedNotification extends HTMLElement {
@@ -6,16 +6,14 @@ export class DashedNotification extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 2, dashLength: 10, dashRatio: 0.1 };
+    this.borderRadius = '0';
+    this.dashWidth = '1';
+    this.dashLength = '10';
+    this.dashSpacing = '4';
   }
 
   connectedCallback() {
     this.render();
-    this.drawDash();
-    window.addEventListener('resize', this.drawDash.bind(this));
-  }
-
-  disconnectedCallback() {
-    window.removeEventListener('resize', this.drawDash.bind(this));
   }
 
   render() {
@@ -24,31 +22,27 @@ export class DashedNotification extends HTMLElement {
       ${dashedStyles}
       <style>
         :host {
-          --dashed-notification-min-width: 256px;
-          --dashed-notification-max-width: 512px;
-          --dashed-notification-min-height: 48px;
-          --dashed-notification-padding: 8px;
-
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
+          display: inline-block;
           position: relative;
           cursor: inherit;
           outline: none;
-          min-height: var(--dashed-notification-min-height);
-          min-width: var(--dashed-notification-min-width);
-          max-width: var(--dashed-notification-max-width);
         }
 
         .notification {
+          box-sizing: border-box;
+          min-height: 48px;
+          min-width: 128px;
+          max-width: 100%;
+          white-space: normal;
           display: grid;
           grid-template-columns: 32px auto 32px;
           justify-items: center;
           align-items: center;
           position: relative;
-          width: 100%;
-          height: 100%;
-          padding: var(--dashed-notification-padding);
+          padding: 4px;
+
+          border: ${this.dashWidth}px solid;
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
         }
 
         .notification__icon {
@@ -72,22 +66,9 @@ export class DashedNotification extends HTMLElement {
         <span class="notification__icon">ico</span>
         <div class="notification__message">Here is an example of notification.</div>
         <button class="notification__button">x</button>
-        <svg class="dash">
-          <rect class="border" />
-        </svg>
       </div>
     `;
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-  }
-
-  drawDash() {
-    const svg = this.shadowRoot.querySelector('svg.dash');
-    const border = svg.querySelector('.border');
-    const { width, height } = this.getBoundingClientRect();
-    const borderRadius = this.rounded ? (height - this.dashProps.dashWidth) / 2 : 0;
-
-    const hostProps = { width, height, borderRadius };
-    drawDashedRect(border, hostProps, this.dashProps);
   }
 }
 customElements.define('dashed-notification', DashedNotification);

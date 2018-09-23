@@ -1,4 +1,4 @@
-import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
+import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
 export class DashedToggle extends HTMLElement {
@@ -6,6 +6,10 @@ export class DashedToggle extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 2, dashLength: 4, dashRatio: 0.5 };
+    this.borderRadius = '12';
+    this.dashWidth = '2';
+    this.dashLength = '8';
+    this.dashSpacing = '2';
   }
 
   get disabled() {
@@ -22,28 +26,47 @@ export class DashedToggle extends HTMLElement {
     Boolean(value) ? this.setAttribute('checked', '') : this.removeAttribute('checked');
   }
 
-  get dashProps() {
-    return this._dashProps;
+  get borderRadius() {
+    return this.getAttribute('border-radius');
   }
-  set dashProps(value) {
-    this._dashProps = value;
+  set borderRadius(value) {
+    this.setAttribute('border-radius', value);
+  }
+
+  get dashWidth() {
+    return this.getAttribute('dash-width');
+  }
+  set dashWidth(value) {
+    this.setAttribute('dash-width', value);
+  }
+
+  get dashLength() {
+    return this.getAttribute('dash-length');
+  }
+  set dashLength(value) {
+    this.setAttribute('dash-length', value);
+  }
+
+  get dashSpacing() {
+    return this.getAttribute('dash-spacing');
+  }
+  set dashSpacing(value) {
+    this.setAttribute('dash-spacing', value);
   }
 
   connectedCallback() {
     this.render();
-    this.drawDash();
   }
 
   render() {
+    const [widthDelta, heightDelta] = [6, 10];
+    const dashWidth = parseFloat(this.dashWidth);
+
     const template = document.createElement('template');
     template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
-          --dashed-toggle-width: 48px;
-          --dashed-toggle-height: 24px;
-          --dashed-dash-width: 2px;
-
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -56,8 +79,8 @@ export class DashedToggle extends HTMLElement {
         .toggle-container {
           display: inline-flex;
           position: relative;
-          width: var(--dashed-toggle-width);
-          height: var(--dashed-toggle-height);
+          width: 48px;
+          height: 24px;
         }
 
         label {
@@ -69,16 +92,38 @@ export class DashedToggle extends HTMLElement {
 
         input[type="checkbox"] {
           margin: 0;
-          width: var(--dashed-toggle-width);
-          height: var(--dashed-toggle-height);
+          width: 48px;
+          height: 24px;
           cursor: pointer;
           opacity: 0;
         }
-  
-        svg.dash .toggle-background {
-          stroke: var(--dashed-primary-color);
-          fill: var(--dashed-fill-color);
+
+        span.toggle-background {
+          box-sizing: border-box;
+          z-index: -1;
+          display: inline-block;
+          position: absolute;
+          top: ${heightDelta / 2}px;
+          left: ${widthDelta / 2}px;
+          width: ${48 - widthDelta}px;
+          height: ${24 - heightDelta}px;
+
+          border: ${this.dashWidth}px solid;
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
         }
+
+        
+        span.toggle-background::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: ${this.borderRadius}px;
+          background: var(--dashed-primary-light-color);
+        }
+
   
         svg.dash .toggle-switcher {
           fill: var(--dashed-primary-color);
@@ -87,45 +132,20 @@ export class DashedToggle extends HTMLElement {
         }
 
         input[type="checkbox"]:checked ~ svg.dash .toggle-switcher {
-          transform: translateX(var(--dashed-toggle-height));
+          transform: translateX(24px);
           fill: var(--dashed-danger-color);
-        }
-
-        input[type="checkbox"]:not(:checked) ~ svg.dash .toggle-switcher {
-          transform: translateX(- var(--dashed-toggle-height));
         }
       </style>
       <div class="toggle-container">
         <input type="checkbox" id="toggle" />
-        <svg class="dash">
-          <rect class="toggle-background" />
-          <circle class="toggle-switcher" />
+        <span class="toggle-background"></span>
+        <svg class="dash" stroke-width="${this.dashWidth}">
+          <circle class="toggle-switcher" cx="12" cy="12" r="${(24 - dashWidth) / 2}" />
         </svg>
       </div>
       <label for="toggle"><slot></slot></label>
     `;
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-  }
-
-  drawDash() {
-    const svg = this.shadowRoot.querySelector('svg.dash');
-    const toggleBackground = svg.querySelector('.toggle-background');
-    const [width, height] = [48, 24];
-    const [widthDelta, heightDelta] = [6, 10];
-    const toggleBackgroundBorderRadius = (height - heightDelta - this.dashProps.dashWidth) / 2;
-    const hostProps = {
-      width: width - widthDelta,
-      height: height - heightDelta,
-      borderRadius: toggleBackgroundBorderRadius
-    };
-    drawDashedRect(toggleBackground, hostProps, this.dashProps);
-    toggleBackground.setAttribute('transform', `translate(${widthDelta / 2} ${heightDelta / 2})`);
-
-    const toggleSwitcher = svg.querySelector('.toggle-switcher');
-    toggleSwitcher.setAttribute('stroke-width', `${this.dashProps.dashWidth}`);
-    toggleSwitcher.setAttribute('cx', `${height / 2}`);
-    toggleSwitcher.setAttribute('cy', `${height / 2}`);
-    toggleSwitcher.setAttribute('r', `${(height - this.dashProps.dashWidth) / 2}`);
   }
 }
 customElements.define('dashed-toggle', DashedToggle);

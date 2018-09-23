@@ -8,12 +8,7 @@ export class DashedFooter extends HTMLElement {
   }
 
   connectedCallback() {
-    this.drawDash();
-    window.addEventListener('resize', this.drawDash.bind(this));
-  }
-
-  disconnectedCallback() {
-    window.removeEventListener('resize', this.drawDash.bind(this));
+    this.render();
   }
 
   render() {
@@ -72,19 +67,9 @@ export class DashedFooter extends HTMLElement {
           <button class="footer__footer__button">button1</button>
           <button class="footer__footer__button">button2</button>
         </div>
-        <svg class="dash" filter="url(#shadow2)">
-          <rect class="border" />
-          <filter id="shadow2">
-            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.3" />
-          </filter>
-        </svg>
       </div>
     `;
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-  }
-
-  drawDash() {
-    // console.log('Method not implemented.');
   }
 }
 customElements.define('dashed-footer', DashedFooter);
