@@ -1,43 +1,61 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
+import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedInput extends LitElement {
-  static get is() {
-    return 'dashed-input';
-  }
-
-  static get properties() {
-    return {
-      disabled: Boolean,
-      checked: Boolean,
-      dashProps: Object
-    };
-  }
-
+export class DashedInput extends HTMLElement {
   constructor() {
     super();
-    this.disabled = false;
-    this.checked = false;
-    this.dashProps = { dashWidth: 1, dashLength: 6, dashRatio: 0.15 };
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
+    this.borderRadius = '5';
+    this.dashWidth = '1';
+    this.dashLength = '6';
+    this.dashSpacing = '0.9';
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    this.drawDash();
+  get borderRadius() {
+    return this.getAttribute('border-radius');
+  }
+  set borderRadius(value) {
+    this.setAttribute('border-radius', value);
+  }
+
+  get dashWidth() {
+    return this.getAttribute('dash-width');
+  }
+  set dashWidth(value) {
+    this.setAttribute('dash-width', value);
+  }
+
+  get dashLength() {
+    return this.getAttribute('dash-length');
+  }
+  set dashLength(value) {
+    this.setAttribute('dash-length', value);
+  }
+
+  get dashSpacing() {
+    return this.getAttribute('dash-spacing');
+  }
+  set dashSpacing(value) {
+    this.setAttribute('dash-spacing', value);
+  }
+
+  connectedCallback() {
+    this.render();
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
-          --dashed-input-dimension: 24px;
-
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -51,9 +69,9 @@ export class DashedInput extends LitElement {
         .input-container {
           display: inline-block;
           position: relative;
-          outline: none;
-          /* width: 100%; */
-          /* height: 100%; */
+
+          border: ${this.dashWidth}px solid;
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
         }
 
         input {
@@ -62,7 +80,6 @@ export class DashedInput extends LitElement {
           box-sizing: border-box;
           border: none;
           outline: none;
-          /* max-width: 100%; */
           height: 100%;
           background: var(--dashed-fill-color);
         }
@@ -70,22 +87,9 @@ export class DashedInput extends LitElement {
       <label for="input"><slot></slot></label>
       <div class="input-container">
         <input id="input" />
-        <svg class="dash">
-          <rect class="border" />
-        </svg>
       </div>
     `;
-  }
-
-  drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
-    const border = svg.querySelector('.border');
-    const { width, height } = this.renderRoot.querySelector('.input-container').getBoundingClientRect();
-    const borderRadius = 5;
-
-    const hostProps = { width, height, borderRadius };
-
-    drawDashedRect(border, hostProps, this.dashProps);
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
-customElements.define(DashedInput.is, DashedInput);
+customElements.define('dashed-input', DashedInput);

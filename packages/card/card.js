@@ -1,65 +1,80 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
+import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedCard extends LitElement {
-  static get is() {
-    return 'dashed-card';
-  }
-
-  static get properties() {
-    return {
-      dashProps: Object
-    };
-  }
-
+export class DashedCard extends HTMLElement {
   constructor() {
     super();
-    this.dashProps = { dashWidth: 2, dashLength: 20, dashRatio: 0.1 };
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
+    this.borderRadius = '16';
+    this.dashWidth = '2';
+    this.dashLength = '20';
+    this.dashSpacing = '2';
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get borderRadius() {
+    return this.getAttribute('border-radius');
+  }
+  set borderRadius(value) {
+    this.setAttribute('border-radius', value);
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    this.drawDash();
+  get dashWidth() {
+    return this.getAttribute('dash-width');
+  }
+  set dashWidth(value) {
+    this.setAttribute('dash-width', value);
+  }
+
+  get dashLength() {
+    return this.getAttribute('dash-length');
+  }
+  set dashLength(value) {
+    this.setAttribute('dash-length', value);
+  }
+
+  get dashSpacing() {
+    return this.getAttribute('dash-spacing');
+  }
+  set dashSpacing(value) {
+    this.setAttribute('dash-spacing', value);
   }
 
   connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener('resize', this.drawDash.bind(this));
-  }
-
-  disconnectedCallback() {
-    window.removeEventListener('resize', this.drawDash.bind(this));
+    this.render();
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
-          --dashed-card-min-width: 256px;
-          --dashed-card-max-width: 512px;
-
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
+          display: inline-block;
           position: relative;
           cursor: inherit;
           outline: none;
-          min-width: var(--dashed-card-min-width);
-          max-width: var(--dashed-card-max-width);
         }
 
         .card {
           display: inline-block;
           position: relative;
+          min-width: 256px;
+          padding: 10px;
+
+          border: ${this.dashWidth}px solid;
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
+        }
+
+        .card::before {
+          z-index: -1;
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
           width: 100%;
           height: 100%;
-          padding: 10px;
+          border-radius: ${this.borderRadius}px;
+          background: var(--dashed-primary-light-color);
         }
 
         .card__title {
@@ -90,24 +105,9 @@ export class DashedCard extends LitElement {
           <button class="card__footer__button">button1</button>
           <button class="card__footer__button">button2</button>
         </div>
-        <svg class="dash" filter="url(#shadow2)">
-          <rect class="border" />
-          <filter id="shadow2">
-            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.3" />
-          </filter>
-        </svg>
       </div>
     `;
-  }
-
-  drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
-    const border = svg.querySelector('.border');
-    const { width, height } = this.getBoundingClientRect();
-    const borderRadius = 16;
-
-    const hostProps = { width, height, borderRadius };
-    drawDashedRect(border, hostProps, this.dashProps);
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
-customElements.define(DashedCard.is, DashedCard);
+customElements.define('dashed-card', DashedCard);

@@ -1,51 +1,69 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
+import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedButton extends LitElement {
-  static get is() {
-    return 'dashed-button';
-  }
-
-  static get properties() {
-    return {
-      disabled: Boolean,
-      role: String,
-      rounded: Boolean,
-      dashProps: Object
-    };
-  }
-
+export class DashedButton extends HTMLElement {
   constructor() {
     super();
-    this.disabled = false;
-    this.role = '';
-    this.rounded = false;
-    this.dashProps = { dashWidth: 2, dashLength: 8, dashRatio: 0.3 };
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
+    this.borderRadius = '0';
+    this.dashWidth = '2';
+    this.dashLength = '8';
+    this.dashSpacing = '2.4';
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    this._icon = this.renderRoot.querySelector('slot[name="icon"]').assignedNodes()[0];
-    if (this._icon && this._icon.localName === 'dashed-icon') {
-      this._icon.addEventListener('iconloaded', this.drawDash.bind(this));
-    } else {
-      this.drawDash();
-    }
+  get rounded() {
+    return this.hasAttribute('rounded');
+  }
+  set rounded(value) {
+    Boolean(value) ? this.setAttribute('rounded', '') : this.removeAttribute('rounded');
   }
 
-  disconnectedCallback() {
-    if (this._icon) {
-      this._icon.removeEventListener('iconloaded', this.drawDash.bind(this));
-    }
+  get borderRadius() {
+    return this.getAttribute('border-radius');
+  }
+  set borderRadius(value) {
+    this.setAttribute('border-radius', value);
+  }
+
+  get dashWidth() {
+    return this.getAttribute('dash-width');
+  }
+  set dashWidth(value) {
+    this.setAttribute('dash-width', value);
+  }
+
+  get dashLength() {
+    return this.getAttribute('dash-length');
+  }
+  set dashLength(value) {
+    this.setAttribute('dash-length', value);
+  }
+
+  get dashSpacing() {
+    return this.getAttribute('dash-spacing');
+  }
+  set dashSpacing(value) {
+    this.setAttribute('dash-spacing', value);
+  }
+
+  connectedCallback() {
+    this.render();
+  }
+
+  static get observedAttributes() {
+    return ['rounded'];
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -53,6 +71,7 @@ export class DashedButton extends LitElement {
           cursor: pointer;
           outline: none;
           position: relative;
+          font-size: 14px;
         }
 
         :host(:hover) {
@@ -69,12 +88,25 @@ export class DashedButton extends LitElement {
           background: none;
           cursor: inherit;
           color: inherit;
-          border: none;
           outline: none;
           padding: 4px 12px;
-          font-size: 14px;
+          font-size: inherit;
           position: relative;
           transition: color 50ms ease-in-out;
+
+          border: ${this.dashWidth}px solid;
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
+        }
+
+        button::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: ${this.borderRadius}px;
+          background: var(--dashed-primary-light-color);
         }
 
         :host ::slotted([slot="icon"]) {
@@ -85,21 +117,9 @@ export class DashedButton extends LitElement {
       <button type="button">
         <slot name="icon"></slot>
         <slot></slot>
-        <svg class="dash">
-          <rect class="border" />
-        </svg>
       </button>
     `;
-  }
-
-  drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
-    const border = svg.querySelector('.border');
-    const { width, height } = this.getBoundingClientRect();
-    const borderRadius = this.rounded ? (height - this.dashProps.dashWidth) / 2 : 0;
-
-    const hostProps = { width, height, borderRadius };
-    drawDashedRect(border, hostProps, this.dashProps);
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
-customElements.define(DashedButton.is, DashedButton);
+customElements.define('dashed-button', DashedButton);

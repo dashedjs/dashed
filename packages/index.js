@@ -15,4 +15,4 @@ export { DashedSlider } from './slider/slider.js';
 export { dashedStyles } from './styles/styles.js';
 export { DashedTag } from './tag/tag.js';
 export { DashedToggle } from './toggle/toggle.js';
-export { drawDashedCircle, drawDashedLine, drawDashedRect } from './utils/utils.js';
+export { borderImage } from './utils/utils.js';

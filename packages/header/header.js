@@ -1,60 +1,97 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { drawDashedLine } from '@dashedjs/dashed-utils/utils.js';
+import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
+import { menuIcon, closeIcon, githubIcon } from '@dashedjs/dashed-icons/icons.js';
 
-export class DashedHeader extends LitElement {
-  static get is() {
-    return 'dashed-header';
-  }
-
-  static get properties() {
-    return {
-      navItems: Array,
-      logo: String,
-      iconLeft: String,
-      iconRight: String,
-      dashProps: Object
-    };
-  }
-
+export class DashedHeader extends HTMLElement {
   constructor() {
     super();
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.navItems = [
       { text: 'Getting started', href: '#' },
       { text: 'Components', href: '#' },
       { text: 'Playground', href: '#' }
     ];
-    this.dashProps = { dashWidth: 1, dashLength: 4, dashRatio: 1 };
-    console.log({ dashedStyles });
+
+    this.dashWidth = '1';
+    this.dashLength = '4';
+    this.dashSpacing = '4';
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open' });
+  get navItems() {
+    return this._navItems;
+  }
+  set navItems(value) {
+    this._navItems = value;
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    this.drawDash();
-    this._menuButton = this.renderRoot.querySelector('#menubutton');
-    this._nav = this.renderRoot.querySelector('nav');
+  get logo() {
+    return this._logo;
+  }
+  set logo(value) {
+    this._logo = value;
+  }
+
+  get iconLeft() {
+    return this._iconLeft;
+  }
+  set iconLeft(value) {
+    this._iconLeft = value;
+  }
+
+  get iconRight() {
+    return this._iconRight;
+  }
+  set iconRight(value) {
+    this._iconRight = value;
+  }
+
+  get dashWidth() {
+    return this.getAttribute('dash-width');
+  }
+  set dashWidth(value) {
+    this.setAttribute('dash-width', value);
+  }
+
+  get dashLength() {
+    return this.getAttribute('dash-length');
+  }
+  set dashLength(value) {
+    this.setAttribute('dash-length', value);
+  }
+
+  get dashSpacing() {
+    return this.getAttribute('dash-spacing');
+  }
+  set dashSpacing(value) {
+    this.setAttribute('dash-spacing', value);
+  }
+
+  connectedCallback() {
+    this.render();
+    this._menuButton = this.shadowRoot.querySelector('#menubutton');
+    this._menuButton.addEventListener('click', this._toggleMenu.bind(this));
+    this._nav = this.shadowRoot.querySelector('nav');
+    this._menuItems = [...this._nav.querySelectorAll('a[role="menuitem"]')];
+    this._menuItems.forEach(menuitem => menuitem.addEventListener('click', this._activateLink.bind(this)));
 
     this._mediaQueryList = window.matchMedia('screen and (min-width: 600px)');
     this._mediaQueryList.addListener(this._mediaQueryChange.bind(this));
     this._mediaQueryChange(this._mediaQueryList);
 
     document.addEventListener('click', this._closeMenu.bind(this));
-    window.addEventListener('resize', this.drawDash.bind(this));
   }
 
   disconnectedCallback() {
+    this._menuButton.removeEventListener('click', this._toggleMenu.bind(this));
+    this._menuItems.forEach(menuitem => menuitem.removeEventListener('click', this._activateLink.bind(this)));
     this._mediaQueryList.removeListener(this._mediaQueryChange.bind(this));
 
     document.removeEventListener('click', this._closeMenu.bind(this));
-    window.removeEventListener('resize', this.drawDash.bind(this));
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -76,6 +113,20 @@ export class DashedHeader extends LitElement {
           height: var(--dashed-header-height);
           display: grid;
           grid-template-columns: max-content max-content auto max-content;
+  
+          border-bottom: ${this.dashWidth}px solid;
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing)};
+        }
+
+        header::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: var(--dashed-primary-light-color);
+          z-index: -1;
         }
 
         button {
@@ -176,7 +227,6 @@ export class DashedHeader extends LitElement {
       </style>
       <header>
         <button id="menubutton"
-          @click="${e => this._toggleMenu(e)}"
           aria-expanded="false"
           aria-controls="menu"
           aria-label="Menu button">
@@ -189,42 +239,24 @@ export class DashedHeader extends LitElement {
         <div></div>
         <nav class="sidebar" role="navigation">
           <ul id="menu" role="menu" aria-labelledby="menubutton">
-            ${this.navItems.map(navItem => {
-              return html`
+            ${this.navItems
+              .map(navItem => {
+                return `
                 <li role="none">
-                  <a role="menuitem" href="${navItem.href}"
-                  @click="${e => this._activateLink(e)}">
+                  <a role="menuitem" href="${navItem.href}">
                   ${navItem.text}
                   </a>
                 </li>`;
-            })}
+              })
+              .join(' ')}
           </ul>
         </nav>
         <button role="search" aria-label="search button">
           <dashed-icon name="github"></dashed-icon>
         </button>
       </header>
-      <svg class="dash" filter="url(#shadow2)">
-        <rect class="background" />
-        <line class="border-bottom" />
-        <filter id="shadow2">
-          <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.9" />
-        </filter>
-      </svg>
     `;
-  }
-
-  drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
-    const borderBottom = svg.querySelector('.border-bottom');
-    const { width, height } = this.getBoundingClientRect();
-
-    const hostProps = { width, height };
-    drawDashedLine(borderBottom, hostProps, this.dashProps);
-
-    const background = svg.querySelector('.background');
-    background.setAttribute('width', `${width}`);
-    background.setAttribute('height', `${height - this.dashProps.dashWidth / 2}`);
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   _toggleMenu(e) {
@@ -250,7 +282,7 @@ export class DashedHeader extends LitElement {
   }
 
   _activateLink(e) {
-    const oldActive = this.renderRoot.querySelector('.active');
+    const oldActive = this.shadowRoot.querySelector('.active');
     if (oldActive) {
       oldActive.classList.remove('active');
     }
@@ -271,4 +303,4 @@ export class DashedHeader extends LitElement {
     }
   }
 }
-customElements.define(DashedHeader.is, DashedHeader);
+customElements.define('dashed-header', DashedHeader);

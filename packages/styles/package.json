@@ -18,7 +18,5 @@
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "@polymer/lit-element": "^0.6.0-dev.6"
-  }
+  "dependencies": {}
 }

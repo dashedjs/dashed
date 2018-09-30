@@ -23,7 +23,6 @@
     "@dashedjs/dashed-icon": "^0.0.1",
     "@dashedjs/dashed-icons": "^0.0.1",
     "@dashedjs/dashed-styles": "^0.0.1",
-    "@dashedjs/dashed-utils": "^0.0.1",
-    "@polymer/lit-element": "^0.6.0-dev.6"
+    "@dashedjs/dashed-utils": "^0.0.1"
   }
 }

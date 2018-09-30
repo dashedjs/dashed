@@ -1,6 +1,4 @@
-import { html } from '@polymer/lit-element/lit-element.js';
-
-export const dashedStyles = html`
+export const dashedStyles = `
   <style title="Common styles">
     :host{
       --dashed-primary-color: rgba(54, 54, 231, 1);
@@ -17,7 +15,7 @@ export const dashedStyles = html`
       z-index: 1;
     }
 
-    :host(:focus) svg.dash {
+    :host(:focus) > * {
       outline: 1px solid var(--dashed-outline-color);
       outline-offset: 1px;
     }

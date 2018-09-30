@@ -1,36 +1,19 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedFooter extends LitElement {
-  static get is() {
-    return 'dashed-footer';
-  }
-
+export class DashedFooter extends HTMLElement {
   constructor() {
     super();
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 2, dashLength: 20, dashRatio: 0.1 };
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
-  }
-
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    this.drawDash();
-  }
-
   connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener('resize', this.drawDash.bind(this));
-  }
-
-  disconnectedCallback() {
-    window.removeEventListener('resize', this.drawDash.bind(this));
+    this.render();
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
@@ -84,18 +67,9 @@ export class DashedFooter extends LitElement {
           <button class="footer__footer__button">button1</button>
           <button class="footer__footer__button">button2</button>
         </div>
-        <svg class="dash" filter="url(#shadow2)">
-          <rect class="border" />
-          <filter id="shadow2">
-            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.3" />
-          </filter>
-        </svg>
       </div>
     `;
-  }
-
-  drawDash() {
-    // console.log('Method not implemented.');
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
-customElements.define(DashedFooter.is, DashedFooter);
+customElements.define('dashed-footer', DashedFooter);

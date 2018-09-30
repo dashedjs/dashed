@@ -1,48 +1,73 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { drawDashedRect } from '@dashedjs/dashed-utils/utils.js';
+import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedCheckbox extends LitElement {
-  static get is() {
-    return 'dashed-checkbox';
-  }
-
-  static get properties() {
-    return {
-      disabled: Boolean,
-      checked: String,
-      dashProps: Object
-    };
-  }
-
+export class DashedCheckbox extends HTMLElement {
   constructor() {
     super();
-    this.disabled = false;
-    this.checked = false;
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
     this.dashProps = { dashWidth: 2, dashLength: 4, dashRatio: 0.5 };
+    this.borderRadius = '0';
+    this.dashWidth = '2';
+    this.dashLength = '4';
+    this.dashSpacing = '2';
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    this.drawDash();
+  get checked() {
+    return this.hasAttribute('checked');
+  }
+  set checked(value) {
+    Boolean(value) ? this.setAttribute('checked', '') : this.removeAttribute('checked');
+  }
+
+  get borderRadius() {
+    return this.getAttribute('border-radius');
+  }
+  set borderRadius(value) {
+    this.setAttribute('border-radius', value);
+  }
+
+  get dashWidth() {
+    return this.getAttribute('dash-width');
+  }
+  set dashWidth(value) {
+    this.setAttribute('dash-width', value);
+  }
+
+  get dashLength() {
+    return this.getAttribute('dash-length');
+  }
+  set dashLength(value) {
+    this.setAttribute('dash-length', value);
+  }
+
+  get dashSpacing() {
+    return this.getAttribute('dash-spacing');
+  }
+  set dashSpacing(value) {
+    this.setAttribute('dash-spacing', value);
+  }
+
+  connectedCallback() {
+    this.render();
   }
 
   render() {
-    return html`
+    const template = document.createElement('template');
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
+          display: inline-block;
           position: relative;
           cursor: inherit;
           outline: none;
-          min-width: 48px;
         }
 
         .checkbox-container {
@@ -50,6 +75,20 @@ export class DashedCheckbox extends LitElement {
           position: relative;
           width: 24px;
           height: 24px;
+
+          border: ${this.dashWidth}px solid;
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
+        }
+
+        .checkbox-container::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: ${this.borderRadius}px;
+          background: var(--dashed-primary-light-color);
         }
 
         input[type="checkbox"] {
@@ -61,6 +100,7 @@ export class DashedCheckbox extends LitElement {
 
         svg.dash .checkmark {
           stroke: var(--dashed-danger-color);
+          stroke-width: ${parseFloat(this.dashWidth) * 1.8};
         }
 
         input[type="checkbox"]:not(:checked) ~ svg.dash .checkmark {
@@ -74,26 +114,12 @@ export class DashedCheckbox extends LitElement {
       <div class="checkbox-container">
         <input type="checkbox" id="checkbox" />
         <svg class="dash">
-          <rect class="border" />
-          <path class="checkmark" />
+          <path class="checkmark" d='M6 12l4 4l8 -8' />
         </svg>
       </div>
       <label for="checkbox"><slot></slot></label>
     `;
-  }
-
-  drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
-    const border = svg.querySelector('.border');
-    const [width, height] = [24, 24];
-    const borderRadius = 0;
-
-    const hostProps = { width, height, borderRadius };
-    drawDashedRect(border, hostProps, this.dashProps);
-
-    const checkmark = svg.querySelector('.checkmark');
-    checkmark.setAttribute('stroke-width', `${this.dashProps.dashWidth * 1.8}`);
-    checkmark.setAttribute('d', 'M6 12l4 4l8 -8');
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
-customElements.define(DashedCheckbox.is, DashedCheckbox);
+customElements.define('dashed-checkbox', DashedCheckbox);

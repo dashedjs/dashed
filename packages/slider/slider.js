@@ -1,61 +1,99 @@
-import { LitElement, html } from '@polymer/lit-element/lit-element.js';
-import { drawDashedLine } from '@dashedjs/dashed-utils/utils.js';
+import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedSlider extends LitElement {
-  static get is() {
-    return 'dashed-slider';
-  }
-
-  static get properties() {
-    return {
-      disabled: Boolean,
-      min: Number,
-      max: Number,
-      value: Number,
-      step: Number,
-      dashProps: Object
-    };
-  }
-
+export class DashedSlider extends HTMLElement {
   constructor() {
     super();
-    this.disabled = false;
-    this.min = 0;
-    this.max = 100;
-    this.value = 0;
-    this.step = 1;
-    this.dashProps = { dashWidth: 2, dashLength: 2, dashRatio: 0.5 };
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
+    this.min = '0';
+    this.max = '100';
+    this.value = '30';
+    this.step = '1';
+    this.dashWidth = '2';
+    this.dashLength = '2';
+    this.dashSpacing = '1';
   }
 
-  createRenderRoot() {
-    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(value) {
+    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
-  firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    this.drawDash();
-    const svg = this.renderRoot.querySelector('svg.dash');
-    this._sliderCursor = svg.querySelector('.slider-cursor');
-    this._sliderTracker = svg.querySelector('.slider-tracker');
+  get min() {
+    return this.getAttribute('min');
+  }
+  set min(value) {
+    this.setAttribute('min', value);
+  }
+
+  get max() {
+    return this.getAttribute('max');
+  }
+  set max(value) {
+    this.setAttribute('max', value);
+  }
+
+  get value() {
+    return this.getAttribute('value');
+  }
+  set value(value) {
+    this.setAttribute('value', value);
+  }
+
+  get step() {
+    return this.hasAttribute('step');
+  }
+  set step(value) {
+    this.setAttribute('step', value);
+  }
+
+  get dashWidth() {
+    return this.getAttribute('dash-width');
+  }
+  set dashWidth(value) {
+    this.setAttribute('dash-width', value);
+  }
+
+  get dashLength() {
+    return this.getAttribute('dash-length');
+  }
+  set dashLength(value) {
+    this.setAttribute('dash-length', value);
+  }
+
+  get dashSpacing() {
+    return this.getAttribute('dash-spacing');
+  }
+  set dashSpacing(value) {
+    this.setAttribute('dash-spacing', value);
+  }
+
+  connectedCallback() {
+    this.render();
+    this._nativeInput = this.shadowRoot.querySelector('input');
+    this._nativeInput.addEventListener('input', this._onInputHandler.bind(this));
+  }
+
+  disconnectedCallback() {
+    this._nativeInput.removeEventListener('input', this._onInputHandler.bind(this));
   }
 
   render() {
-    return html`
+    const [min, max, value] = [this.min, this.max, this.value].map(str => parseFloat(str));
+    const percentage = `${((value - min) / (max - min)) * 100}%`;
+    const template = document.createElement('template');
+    // prettier-ignore
+    template.innerHTML = `
       ${dashedStyles}
       <style>
         :host {
-          --dashed-slider-width: 192px;
-          --dashed-slider-height: 24px;
-          --dashed-slider-cursor-radius: 6px;
-          --dashed-dash-width: 2px;
-
-          display: inline-flex;
-          align-items: center;
+          --dashed-background-width: 100%;
+          display: inline-block;
           position: relative;
           cursor: inherit;
           outline: none;
-          min-width: var(--dashed-slider-width);
         }
 
         :host(:focus) svg.dash .slider-cursor-focus-ring {
@@ -67,15 +105,20 @@ export class DashedSlider extends LitElement {
           justify-content: center;
           align-items: center;
           position: relative;
-          width: var(--dashed-slider-width);
-          height: var(--dashed-slider-height);
+          min-width: 192px;
+          height: 24px;
         }
 
         input[type="range"] {
           margin: 0;
-          width: calc(100% - var(--dashed-slider-cursor-radius));
+          width: calc(100% - 8px);
           cursor: pointer;
           opacity: 0;
+        }
+
+        svg.dash {
+          box-sizing: border-box;
+          padding: 0 8px;
         }
   
         svg.dash .slider-background {
@@ -102,60 +145,36 @@ export class DashedSlider extends LitElement {
       </style>
       <label for="range"><slot></slot></label>
       <div class="slider-container">
-        <input type="range" id="range" min="${this.min}" max="${this.max}"
-          step="${this.step}" value="${this.value}"
-          @input="${e => this._onInputHandler(e)}" />
-        <svg class="dash">
-          <line class="slider-background" />
-          <line class="slider-tracker" />
-          <g class="slider-cursor">
-            <circle class="slider-cursor-focus-ring" />
-            <circle class="slider-cursor-inner" />
+        <input type="range" id="range"
+          min="${this.min}" max="${this.max}" step="${this.step}" value="${this.value}" />
+        <svg class="dash" stroke-width="${this.dashWidth}">
+          <line class="slider-background" x2="100%" y2="0"  transform="translate(0, 12)"
+            stroke-dasharray="${this.dashLength} ${this.dashSpacing}" />
+          <line class="slider-tracker" x2="${percentage}" y2="0"  transform="translate(0, 12)"
+            stroke-dasharray="${this.dashLength} ${this.dashSpacing}" />
+          <g class="slider-cursor" style="transform: translate(calc(${percentage} - 6px), 0)">
+            <circle class="slider-cursor-focus-ring" cx="6" cy="12" r="9" />
+            <circle class="slider-cursor-inner" cx="6" cy="12" r="6"  />
           </g>
         </svg>
       </div>
     `;
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   _onInputHandler(e) {
     this.value = parseFloat(e.target.value);
-    const sliderBackgroundwidth = 192 - 2 * 6;
-    const percentage = (this.value - this.min) / (this.max - this.min);
-    this._sliderCursor.style.transform = `translateX(${percentage * sliderBackgroundwidth}px)`;
-    this._sliderTracker.setAttribute('x2', percentage * sliderBackgroundwidth);
-  }
 
-  drawDash() {
-    const svg = this.renderRoot.querySelector('svg.dash');
-    const { width, height } = this.renderRoot.querySelector('.slider-container').getBoundingClientRect();
+    const [min, max, value] = [this.min, this.max, this.value].map(str => parseFloat(str));
+    const percentage = `${((value - min) / (max - min)) * 100}%`;
+
+    const svg = this.shadowRoot.querySelector('svg.dash');
 
     const sliderCursor = svg.querySelector('.slider-cursor');
-    const sliderCursorInner = sliderCursor.querySelector('.slider-cursor-inner');
-    const sliderCursorInnerRadius = 6;
-    sliderCursorInner.setAttribute('stroke-width', `${this.dashProps.dashWidth}`);
-    sliderCursorInner.setAttribute('cx', `${sliderCursorInnerRadius}`);
-    sliderCursorInner.setAttribute('cy', `${height / 2}`);
-    sliderCursorInner.setAttribute('r', `${sliderCursorInnerRadius}`);
-    const sliderCursorFocusRing = sliderCursor.querySelector('.slider-cursor-focus-ring');
-    sliderCursorFocusRing.setAttribute('stroke-width', `${this.dashProps.dashWidth}`);
-    sliderCursorFocusRing.setAttribute('cx', `${sliderCursorInnerRadius}`);
-    sliderCursorFocusRing.setAttribute('cy', `${height / 2}`);
-    sliderCursorFocusRing.setAttribute('r', `${sliderCursorInnerRadius * 1.5}`);
-
-    const sliderBackground = svg.querySelector('.slider-background');
-    const sliderBackgroundwidth = width - 2 * sliderCursorInnerRadius;
-    const hostProps = { width: sliderBackgroundwidth, height };
-    let dashProps = { ...this.dashProps };
-    drawDashedLine(sliderBackground, hostProps, dashProps);
-    sliderBackground.setAttribute('transform', `translate(${sliderCursorInnerRadius} ${-height / 2})`);
+    sliderCursor.style.transform = `translateX(calc(${percentage} - 6px))`;
 
     const sliderTracker = svg.querySelector('.slider-tracker');
-    drawDashedLine(sliderTracker, hostProps, dashProps);
-    sliderTracker.setAttribute('transform', `translate(${sliderCursorInnerRadius} ${-height / 2})`);
-
-    const percentage = (this.value - this.min) / (this.max - this.min);
-    sliderCursor.style.transform = `translateX(${percentage * sliderBackgroundwidth}px)`;
-    sliderTracker.setAttribute('x2', `${percentage * sliderBackgroundwidth}`);
+    sliderTracker.setAttribute('x2', percentage);
   }
 }
-customElements.define(DashedSlider.is, DashedSlider);
+customElements.define('dashed-slider', DashedSlider);
