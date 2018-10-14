@@ -111,6 +111,7 @@ export class DashedFab extends HTMLElement {
           height: 100%;
           border-radius: ${this.borderRadius}px;
           background: var(--dashed-primary-light-color);
+          box-shadow: var(--dashed-shadow-6dp);
         }
 
         button::after {

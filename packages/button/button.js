@@ -5,7 +5,7 @@ export class DashedButton extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.borderRadius = '0';
+    this.borderRadius = '16';
     this.dashWidth = '2';
     this.dashLength = '8';
     this.dashSpacing = '2.4';
