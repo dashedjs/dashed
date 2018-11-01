@@ -5,10 +5,6 @@ export class DashedRadio extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.borderRadius = '12';
-    this.dashWidth = '2';
-    this.dashLength = '4';
-    this.dashSpacing = '2';
   }
 
   get disabled() {
@@ -26,28 +22,28 @@ export class DashedRadio extends HTMLElement {
   }
 
   get borderRadius() {
-    return this.getAttribute('border-radius');
+    return parseFloat(this.getAttribute('border-radius')) || 12;
   }
   set borderRadius(value) {
     this.setAttribute('border-radius', value);
   }
 
   get dashWidth() {
-    return this.getAttribute('dash-width');
+    return parseFloat(this.getAttribute('dash-width')) || 2;
   }
   set dashWidth(value) {
     this.setAttribute('dash-width', value);
   }
 
   get dashLength() {
-    return this.getAttribute('dash-length');
+    return parseFloat(this.getAttribute('dash-length')) || 4;
   }
   set dashLength(value) {
     this.setAttribute('dash-length', value);
   }
 
   get dashSpacing() {
-    return this.getAttribute('dash-spacing');
+    return parseFloat(this.getAttribute('dash-spacing')) || 2;
   }
   set dashSpacing(value) {
     this.setAttribute('dash-spacing', value);

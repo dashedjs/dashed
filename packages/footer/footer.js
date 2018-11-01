@@ -4,7 +4,6 @@ export class DashedFooter extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.dashProps = { dashWidth: 2, dashLength: 20, dashRatio: 0.1 };
   }
 
   connectedCallback() {

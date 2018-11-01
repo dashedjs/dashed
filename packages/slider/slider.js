@@ -5,13 +5,6 @@ export class DashedSlider extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.min = '0';
-    this.max = '100';
-    this.value = '30';
-    this.step = '1';
-    this.dashWidth = '2';
-    this.dashLength = '2';
-    this.dashSpacing = '1';
   }
 
   get disabled() {
@@ -22,49 +15,49 @@ export class DashedSlider extends HTMLElement {
   }
 
   get min() {
-    return this.getAttribute('min');
+    return parseFloat(this.getAttribute('min')) || 0;
   }
   set min(value) {
     this.setAttribute('min', value);
   }
 
   get max() {
-    return this.getAttribute('max');
+    return parseFloat(this.getAttribute('max')) || 100;
   }
   set max(value) {
     this.setAttribute('max', value);
   }
 
   get value() {
-    return this.getAttribute('value');
+    return parseFloat(this.getAttribute('value')) || 30;
   }
   set value(value) {
     this.setAttribute('value', value);
   }
 
   get step() {
-    return this.hasAttribute('step');
+    return parseFloat(this.hasAttribute('step')) || 1;
   }
   set step(value) {
     this.setAttribute('step', value);
   }
 
   get dashWidth() {
-    return this.getAttribute('dash-width');
+    return parseFloat(this.getAttribute('dash-width')) || 2;
   }
   set dashWidth(value) {
     this.setAttribute('dash-width', value);
   }
 
   get dashLength() {
-    return this.getAttribute('dash-length');
+    return parseFloat(this.getAttribute('dash-length')) || 2;
   }
   set dashLength(value) {
     this.setAttribute('dash-length', value);
   }
 
   get dashSpacing() {
-    return this.getAttribute('dash-spacing');
+    return parseFloat(this.getAttribute('dash-spacing')) || 1;
   }
   set dashSpacing(value) {
     this.setAttribute('dash-spacing', value);

@@ -5,49 +5,45 @@ export class DashedButton extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.borderRadius = '16';
-    this.dashWidth = '2';
-    this.dashLength = '8';
-    this.dashSpacing = '2.4';
   }
 
   get disabled() {
-    return this.hasAttribute('disabled');
+    return this.hasAttribute('disabled') || false;
   }
   set disabled(value) {
     Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
   get rounded() {
-    return this.hasAttribute('rounded');
+    return this.hasAttribute('rounded') || false;
   }
   set rounded(value) {
     Boolean(value) ? this.setAttribute('rounded', '') : this.removeAttribute('rounded');
   }
 
   get borderRadius() {
-    return this.getAttribute('border-radius');
+    return parseFloat(this.getAttribute('border-radius')) || 0;
   }
   set borderRadius(value) {
     this.setAttribute('border-radius', value);
   }
 
   get dashWidth() {
-    return this.getAttribute('dash-width');
+    return parseFloat(this.getAttribute('dash-width')) || 2;
   }
   set dashWidth(value) {
     this.setAttribute('dash-width', value);
   }
 
   get dashLength() {
-    return this.getAttribute('dash-length');
+    return parseFloat(this.getAttribute('dash-length')) || 8;
   }
   set dashLength(value) {
     this.setAttribute('dash-length', value);
   }
 
   get dashSpacing() {
-    return this.getAttribute('dash-spacing');
+    return parseFloat(this.getAttribute('dash-spacing')) || 2.4;
   }
   set dashSpacing(value) {
     this.setAttribute('dash-spacing', value);
@@ -58,7 +54,11 @@ export class DashedButton extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['rounded'];
+    return ['border-radius', 'rounded', 'dash-width', 'dash-length', 'dash-spacing'];
+  }
+
+  attributeChangedCallback(oldvalue, newValue, attribute) {
+    this.render();
   }
 
   render() {
@@ -67,11 +67,12 @@ export class DashedButton extends HTMLElement {
       ${dashedStyles}
       <style>
         :host {
+          --padding: 4px 12px;
+          --font-size: 14px;
           display: inline-block;
           cursor: pointer;
           outline: none;
           position: relative;
-          font-size: 14px;
         }
 
         :host(:hover) {
@@ -89,7 +90,7 @@ export class DashedButton extends HTMLElement {
           cursor: inherit;
           color: inherit;
           outline: none;
-          padding: 4px 12px;
+          padding: var(--padding);
           font-size: inherit;
           position: relative;
           transition: color 50ms ease-in-out;

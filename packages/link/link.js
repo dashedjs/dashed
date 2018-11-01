@@ -5,9 +5,6 @@ export class DashedLink extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.dashWidth = '1.5';
-    this.dashLength = '8';
-    this.dashSpacing = '2';
   }
 
   static get properties() {
@@ -33,21 +30,21 @@ export class DashedLink extends HTMLElement {
   }
 
   get dashWidth() {
-    return this.getAttribute('dash-width');
+    return parseFloat(this.getAttribute('dash-width')) || 1.5;
   }
   set dashWidth(value) {
     this.setAttribute('dash-width', value);
   }
 
   get dashLength() {
-    return this.getAttribute('dash-length');
+    return parseFloat(this.getAttribute('dash-length')) || 8;
   }
   set dashLength(value) {
     this.setAttribute('dash-length', value);
   }
 
   get dashSpacing() {
-    return this.getAttribute('dash-spacing');
+    return parseFloat(this.getAttribute('dash-spacing')) || 2;
   }
   set dashSpacing(value) {
     this.setAttribute('dash-spacing', value);

@@ -11,10 +11,6 @@ export class DashedHeader extends HTMLElement {
       { text: 'Components', href: '#' },
       { text: 'Playground', href: '#' }
     ];
-
-    this.dashWidth = '1';
-    this.dashLength = '4';
-    this.dashSpacing = '4';
   }
 
   get navItems() {
@@ -46,21 +42,21 @@ export class DashedHeader extends HTMLElement {
   }
 
   get dashWidth() {
-    return this.getAttribute('dash-width');
+    return parseFloat(this.getAttribute('dash-width')) || 1;
   }
   set dashWidth(value) {
     this.setAttribute('dash-width', value);
   }
 
   get dashLength() {
-    return this.getAttribute('dash-length');
+    return parseFloat(this.getAttribute('dash-length')) || 4;
   }
   set dashLength(value) {
     this.setAttribute('dash-length', value);
   }
 
   get dashSpacing() {
-    return this.getAttribute('dash-spacing');
+    return parseFloat(this.getAttribute('dash-spacing')) || 4;
   }
   set dashSpacing(value) {
     this.setAttribute('dash-spacing', value);

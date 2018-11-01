@@ -5,10 +5,6 @@ export class DashedInput extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.borderRadius = '5';
-    this.dashWidth = '1';
-    this.dashLength = '6';
-    this.dashSpacing = '0.9';
   }
 
   get disabled() {
@@ -19,28 +15,28 @@ export class DashedInput extends HTMLElement {
   }
 
   get borderRadius() {
-    return this.getAttribute('border-radius');
+    return parseFloat(this.getAttribute('border-radius')) || 5;
   }
   set borderRadius(value) {
     this.setAttribute('border-radius', value);
   }
 
   get dashWidth() {
-    return this.getAttribute('dash-width');
+    return parseFloat(this.getAttribute('dash-width')) || 1;
   }
   set dashWidth(value) {
     this.setAttribute('dash-width', value);
   }
 
   get dashLength() {
-    return this.getAttribute('dash-length');
+    return parseFloat(this.getAttribute('dash-length')) || 6;
   }
   set dashLength(value) {
     this.setAttribute('dash-length', value);
   }
 
   get dashSpacing() {
-    return this.getAttribute('dash-spacing');
+    return parseFloat(this.getAttribute('dash-spacing')) || 0.9;
   }
   set dashSpacing(value) {
     this.setAttribute('dash-spacing', value);

@@ -1,7 +1,6 @@
-export function borderImage(dashWidth, dashLength, dashSpacing, borderRadius = '0') {
-  const [width, length, spacing, radius] = [dashWidth, dashLength, dashSpacing, borderRadius].map(str =>
-    parseFloat(str)
-  );
+export function borderImage(dashWidth, dashLength, dashSpacing, borderRadius = 0) {
+  const [width, length, spacing, radius] = [dashWidth, dashLength, dashSpacing, borderRadius];
+
   let borderImageRepeat = 'round';
   let borderImageSlice;
   let borderImageWidth;

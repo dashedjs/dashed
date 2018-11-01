@@ -27,28 +27,28 @@ export class DashedToggle extends HTMLElement {
   }
 
   get borderRadius() {
-    return this.getAttribute('border-radius');
+    return parseFloat(this.getAttribute('border-radius')) || 12;
   }
   set borderRadius(value) {
     this.setAttribute('border-radius', value);
   }
 
   get dashWidth() {
-    return this.getAttribute('dash-width');
+    return parseFloat(this.getAttribute('dash-width')) || 2;
   }
   set dashWidth(value) {
     this.setAttribute('dash-width', value);
   }
 
   get dashLength() {
-    return this.getAttribute('dash-length');
+    returnparseFloat(this.getAttribute('dash-length')) || 8;
   }
   set dashLength(value) {
     this.setAttribute('dash-length', value);
   }
 
   get dashSpacing() {
-    return this.getAttribute('dash-spacing');
+    returnparseFloat(this.getAttribute('dash-spacing')) || 2;
   }
   set dashSpacing(value) {
     this.setAttribute('dash-spacing', value);

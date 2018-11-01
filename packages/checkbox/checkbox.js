@@ -5,11 +5,6 @@ export class DashedCheckbox extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.dashProps = { dashWidth: 2, dashLength: 4, dashRatio: 0.5 };
-    this.borderRadius = '0';
-    this.dashWidth = '2';
-    this.dashLength = '4';
-    this.dashSpacing = '2';
   }
 
   get disabled() {
@@ -27,28 +22,28 @@ export class DashedCheckbox extends HTMLElement {
   }
 
   get borderRadius() {
-    return this.getAttribute('border-radius');
+    return parseFloat(this.getAttribute('border-radius')) || 0;
   }
   set borderRadius(value) {
     this.setAttribute('border-radius', value);
   }
 
   get dashWidth() {
-    return this.getAttribute('dash-width');
+    return parseFloat(this.getAttribute('dash-width')) || 2;
   }
   set dashWidth(value) {
     this.setAttribute('dash-width', value);
   }
 
   get dashLength() {
-    return this.getAttribute('dash-length');
+    return parseFloat(this.getAttribute('dash-length')) || 4;
   }
   set dashLength(value) {
     this.setAttribute('dash-length', value);
   }
 
   get dashSpacing() {
-    return this.getAttribute('dash-spacing');
+    return parseFloat(this.getAttribute('dash-spacing')) || 2;
   }
   set dashSpacing(value) {
     this.setAttribute('dash-spacing', value);
@@ -100,7 +95,7 @@ export class DashedCheckbox extends HTMLElement {
 
         svg.dash .checkmark {
           stroke: var(--dashed-danger-color);
-          stroke-width: ${parseFloat(this.dashWidth) * 1.8};
+          stroke-width: ${this.dashWidth * 1.8};
         }
 
         input[type="checkbox"]:not(:checked) ~ svg.dash .checkmark {

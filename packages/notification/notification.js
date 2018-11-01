@@ -5,11 +5,34 @@ export class DashedNotification extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.dashProps = { dashWidth: 2, dashLength: 10, dashRatio: 0.1 };
-    this.borderRadius = '0';
-    this.dashWidth = '1';
-    this.dashLength = '10';
-    this.dashSpacing = '4';
+  }
+
+  get borderRadius() {
+    return parseFloat(this.getAttribute('border-radius')) || 0;
+  }
+  set borderRadius(value) {
+    this.setAttribute('border-radius', value);
+  }
+
+  get dashWidth() {
+    return parseFloat(this.getAttribute('dash-width')) || 1;
+  }
+  set dashWidth(value) {
+    this.setAttribute('dash-width', value);
+  }
+
+  get dashLength() {
+    return parseFloat(this.getAttribute('dash-length')) || 10;
+  }
+  set dashLength(value) {
+    this.setAttribute('dash-length', value);
+  }
+
+  get dashSpacing() {
+    return parseFloat(this.getAttribute('dash-spacing')) || 4;
+  }
+  set dashSpacing(value) {
+    this.setAttribute('dash-spacing', value);
   }
 
   connectedCallback() {
