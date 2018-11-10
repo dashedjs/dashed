@@ -20,6 +20,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@dashedjs/dashed-base": "^0.0.1",
     "@dashedjs/dashed-icon": "^0.0.1",
     "@dashedjs/dashed-icons": "^0.0.1",
     "@dashedjs/dashed-styles": "^0.0.1",

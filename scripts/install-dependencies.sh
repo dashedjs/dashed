@@ -2,33 +2,46 @@
 
 set -e
 
-sharedPackages=`ls packages`
-for sharedPackage in ${sharedPackages[@]}; do
-  if [[ ${sharedPackage} == utils || ${sharedPackage} == styles || ${sharedPackage} == icons ]]; then
-    cd packages/${sharedPackage}
+packages=`ls packages`
+echo ${packages[@]}
+
+for package in ${packages[@]}; do
+  if [[ ${package} == utils || ${package} == styles || ${package} == icons ]]; then
+    cd packages/${package}
     npm link
     cd ../..
   fi
 done
 
-packagesFolders=`ls packages`
-echo ${packageFolders[@]}
-for packageFolder in ${packagesFolders[@]}; do
-  if [[ ${packageFolder} == utils || ${packageFolder} == styles || ${packageFolder} == icons || ${packageFolder} == index.js ]]; then
-    echo "skipping ${packageFolder}"
-  elif [[ ${packageFolder} == icon ]]; then
-    cd packages/${packageFolder}
+for package in ${packages[@]}; do
+  if [[ ${package} == base ]]; then
+    cd packages/${package}
+    npm link @dashedjs/dashed-styles
+    npm link @dashedjs/dashed-utils
+    npm link
+    cd ../../
+  elif [[ ${package} == icon ]]; then
+    cd packages/${package}
     npm link @dashedjs/dashed-icons
     npm link
     cd ../../
-  elif [[ ${packageFolder} == header ]]; then
-    cd packages/${packageFolder}
-    npm link @dashedjs/dashed-icon @dashedjs/dashed-icons @dashedjs/dashed-utils @dashedjs/dashed-styles
+    echo skipping icon
+  fi
+done
+
+for package in ${packages[@]}; do
+  echo "into package ===> ${package}"
+  if [[ ${package} == utils || ${package} == styles || ${package} == icons ||  ${package} == base || ${package} == index.js ]]; then
+    echo "skipping ${package}"
+  elif [[ ${package} == header ]]; then
+    cd packages/${package}
+    npm link @dashedjs/dashed-icon @dashedjs/dashed-icons @dashedjs/dashed-utils @dashedjs/dashed-styles @dashedjs/dashed-base
     npm link
     cd ../../
+    echo skipping header
   else
-    cd packages/${packageFolder}
-    npm link @dashedjs/dashed-utils @dashedjs/dashed-styles
+    cd packages/${package}
+    npm link @dashedjs/dashed-base  @dashedjs/dashed-utils @dashedjs/dashed-styles
     npm link
     cd ../../
   fi 

@@ -54,11 +54,11 @@ export class DashedButton extends HTMLElement {
     const colorAttr = this.getAttribute('dash-color') ? this.getAttribute('dash-color') : 'primary';
     if (colorAttrList.includes(colorAttr)) {
       // hack since CSS variables are not supported inside an svg borderImage
-      // const colorValueRegex = new RegExp(`--color-${colorAttr}\: (\#*\\w+);`);
-      // const colorValue = dashedStyles.match(colorValueRegex)[1];
-      // return colorValue;
+      const colorValueRegex = new RegExp(`--color-${colorAttr}\: (\#*\\w+);`);
+      const colorValue = dashedStyles.match(colorValueRegex)[1];
+      return colorValue;
 
-      return `var(--color-${colorAttr})`;
+      // return `var(--color-${colorAttr})`;
     }
     return colorAttr;
   }
