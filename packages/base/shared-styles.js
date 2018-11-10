@@ -1,5 +1,5 @@
-export const dashedStyles = String.raw`
-  <style title="Common styles">
+export const sharedStyles = String.raw`
+  <style title="Shared styles">
     :host{
       --color-primary: #3636e7;
       --color-primary-light: #3636e726;

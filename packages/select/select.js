@@ -1,17 +1,12 @@
-import { borderImage } from '@dashedjs/dashed-utils/utils.js';
-import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
+import { DashedBase, borderImage, sharedStyles } from '@dashedjs/dashed-base/base.js';
 
-export class DashedSelect extends HTMLElement {
+export class DashedSelect extends DashedBase {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  get disabled() {
-    return this.hasAttribute('disabled');
-  }
-  set disabled(value) {
-    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
+  static get observedAttributes() {
+    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
   }
 
   get value() {
@@ -21,42 +16,26 @@ export class DashedSelect extends HTMLElement {
     this.setAttribute('value', value);
   }
 
-  get dashWidth() {
-    return parseFloat(this.getAttribute('dash-width')) || 2;
-  }
-  set dashWidth(value) {
-    this.setAttribute('dash-width', value);
-  }
-
-  get dashLength() {
-    return parseFloat(this.getAttribute('dash-length')) || 10;
-  }
-  set dashLength(value) {
-    this.setAttribute('dash-length', value);
-  }
-
-  get dashSpacing() {
-    return parseFloat(this.getAttribute('dash-spacing')) || 3.33;
-  }
-  set dashSpacing(value) {
-    this.setAttribute('dash-spacing', value);
-  }
-
-  get dashColor() {
-    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
-  }
-  set dashColor(value) {
-    this.setAttribute('dash-color', value);
-  }
-
   connectedCallback() {
     this.render();
   }
 
+  attributeChangedCallback(attr, oldVal, newVal) {
+    this.render();
+  }
+
   render() {
+    const [borderRadius = 0, dashWidth = 2, dashLength = 10, dashSpacing = 3.33] = [
+      this.borderRadius,
+      this.dashWidth,
+      this.dashLength,
+      this.dashSpacing
+    ].map(attr => (attr ? parseFloat(attr) : undefined));
+    const dashColor = this.dashColor.replace('#', '%23'); // Using unescaped '#' characters in a data URI body is deprecated
+
     const template = document.createElement('template');
     template.innerHTML = `
-      ${dashedStyles}
+      ${sharedStyles}
       <style>
         :host {
           display: inline-block;
@@ -71,8 +50,8 @@ export class DashedSelect extends HTMLElement {
           display: inline-block;
           position: relative;
 
-          border-bottom: ${this.dashWidth}px solid;
-          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.dashColor)};
+          border-bottom: ${dashWidth}px solid;
+          border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
         }
 
         .select-container::before {
@@ -89,6 +68,7 @@ export class DashedSelect extends HTMLElement {
         select {
           border: none;
           outline: none;
+          padding-left: 4px;
           padding-right: 12px;
           margin-bottom: 4px;
           background: transparent;
@@ -117,6 +97,9 @@ export class DashedSelect extends HTMLElement {
         </svg>
       </div>
     `;
+    while (this.shadowRoot.firstChild) {
+      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
+    }
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }

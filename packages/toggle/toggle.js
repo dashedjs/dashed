@@ -1,22 +1,12 @@
-import { borderImage } from '@dashedjs/dashed-utils/utils.js';
-import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
+import { DashedBase, borderImage, sharedStyles } from '@dashedjs/dashed-base/base.js';
 
-export class DashedToggle extends HTMLElement {
+export class DashedToggle extends DashedBase {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open', delegatesFocus: true });
-    this.dashProps = { dashWidth: 2, dashLength: 4, dashRatio: 0.5 };
-    this.borderRadius = '12';
-    this.dashWidth = '2';
-    this.dashLength = '8';
-    this.dashSpacing = '2';
   }
 
-  get disabled() {
-    return this.hasAttribute('disabled');
-  }
-  set disabled(value) {
-    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
+  static get observedAttributes() {
+    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
   }
 
   get checked() {
@@ -26,52 +16,29 @@ export class DashedToggle extends HTMLElement {
     Boolean(value) ? this.setAttribute('checked', '') : this.removeAttribute('checked');
   }
 
-  get borderRadius() {
-    return parseFloat(this.getAttribute('border-radius')) || 12;
-  }
-  set borderRadius(value) {
-    this.setAttribute('border-radius', value);
-  }
-
-  get dashWidth() {
-    return parseFloat(this.getAttribute('dash-width')) || 2;
-  }
-  set dashWidth(value) {
-    this.setAttribute('dash-width', value);
-  }
-
-  get dashLength() {
-    returnparseFloat(this.getAttribute('dash-length')) || 8;
-  }
-  set dashLength(value) {
-    this.setAttribute('dash-length', value);
-  }
-
-  get dashSpacing() {
-    returnparseFloat(this.getAttribute('dash-spacing')) || 2;
-  }
-  set dashSpacing(value) {
-    this.setAttribute('dash-spacing', value);
-  }
-
-  get dashColor() {
-    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
-  }
-  set dashColor(value) {
-    this.setAttribute('dash-color', value);
-  }
-
   connectedCallback() {
     this.render();
   }
 
+  attributeChangedCallback(attr, oldVal, newVal) {
+    this.render();
+  }
+
   render() {
+    const [borderRadius = 12, dashWidth = 2, dashLength = 8, dashSpacing = 2] = [
+      this.borderRadius,
+      this.dashWidth,
+      this.dashLength,
+      this.dashSpacing
+    ].map(attr => (attr ? parseFloat(attr) : undefined));
+    const dashColor = this.dashColor.replace('#', '%23'); // Using unescaped '#' characters in a data URI body is deprecated
+
     const [widthDelta, heightDelta] = [6, 10];
-    const dashWidth = parseFloat(this.dashWidth);
+    // const dashWidth = parseFloat(this.dashWidth);
 
     const template = document.createElement('template');
     template.innerHTML = `
-      ${dashedStyles}
+      ${sharedStyles}
       <style>
         :host {
           display: inline-flex;
@@ -91,10 +58,7 @@ export class DashedToggle extends HTMLElement {
         }
 
         label {
-          display: inline-flex;
-          align-items: center;
-          width: 100%;
-          height: 100%;
+          padding-left: 4px;
         }
 
         input[type="checkbox"] {
@@ -115,14 +79,8 @@ export class DashedToggle extends HTMLElement {
           width: ${48 - widthDelta}px;
           height: ${24 - heightDelta}px;
 
-          border: ${this.dashWidth}px solid;
-          border-image: ${borderImage(
-            this.dashWidth,
-            this.dashLength,
-            this.dashSpacing,
-            this.dashColor,
-            this.borderRadius
-          )};
+          border: ${dashWidth}px solid;
+          border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
         }
 
         
@@ -133,7 +91,7 @@ export class DashedToggle extends HTMLElement {
           left: 0;
           width: 100%;
           height: 100%;
-          border-radius: ${this.borderRadius}px;
+          border-radius: ${borderRadius}px;
           background: var(--color-primary-light);
         }
 
@@ -152,12 +110,15 @@ export class DashedToggle extends HTMLElement {
       <div class="toggle-container">
         <input type="checkbox" id="toggle" />
         <span class="toggle-background"></span>
-        <svg class="dash" stroke-width="${this.dashWidth}">
+        <svg class="dash" stroke-width="${dashWidth}">
           <circle class="toggle-switcher" cx="12" cy="12" r="${(24 - dashWidth) / 2}" />
         </svg>
       </div>
       <label for="toggle"><slot></slot></label>
     `;
+    while (this.shadowRoot.firstChild) {
+      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
+    }
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }

@@ -1,4 +1,4 @@
-export { DashedBase } from './base/base.js';
+export { DashedBase, borderImage, sharedStyles } from './base/base.js';
 export { DashedButton } from './button/button.js';
 export { DashedCard } from './card/card.js';
 export { DashedCheckbox } from './checkbox/checkbox.js';
@@ -14,7 +14,5 @@ export { DashedNotification } from './notification/notification.js';
 export { DashedRadio } from './radio/radio.js';
 export { DashedSelect } from './select/select.js';
 export { DashedSlider } from './slider/slider.js';
-export { dashedStyles } from './styles/styles.js';
 export { DashedTag } from './tag/tag.js';
 export { DashedToggle } from './toggle/toggle.js';
-export { borderImage } from './utils/utils.js';

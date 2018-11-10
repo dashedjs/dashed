@@ -1,55 +1,34 @@
-import { borderImage } from '@dashedjs/dashed-utils/utils.js';
-import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
+import { DashedBase, borderImage, sharedStyles } from '../base/base';
 
-export class DashedCard extends HTMLElement {
+export class DashedCard extends DashedBase {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  get borderRadius() {
-    return parseFloat(this.getAttribute('border-radius')) || 16;
-  }
-  set borderRadius(value) {
-    this.setAttribute('border-radius', value);
-  }
-
-  get dashWidth() {
-    return parseFloat(this.getAttribute('dash-width')) || 2;
-  }
-  set dashWidth(value) {
-    this.setAttribute('dash-width', value);
-  }
-
-  get dashLength() {
-    return parseFloat(this.getAttribute('dash-length')) || 20;
-  }
-  set dashLength(value) {
-    this.setAttribute('dash-length', value);
-  }
-
-  get dashSpacing() {
-    return parseFloat(this.getAttribute('dash-spacing')) || 2;
-  }
-  set dashSpacing(value) {
-    this.setAttribute('dash-spacing', value);
-  }
-
-  get dashColor() {
-    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
-  }
-  set dashColor(value) {
-    this.setAttribute('dash-color', value);
+  static get observedAttributes() {
+    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
   }
 
   connectedCallback() {
     this.render();
   }
 
+  attributeChangedCallback(attr, oldVal, newVal) {
+    this.render();
+  }
+
   render() {
+    const [borderRadius = 16, dashWidth = 2, dashLength = 20, dashSpacing = 2] = [
+      this.borderRadius,
+      this.dashWidth,
+      this.dashLength,
+      this.dashSpacing
+    ].map(attr => (attr ? parseFloat(attr) : undefined));
+    const dashColor = this.dashColor.replace('#', '%23'); // Using unescaped '#' characters in a data URI body is deprecated
+
     const template = document.createElement('template');
     template.innerHTML = `
-      ${dashedStyles}
+      ${sharedStyles}
       <style>
         :host {
           display: inline-block;
@@ -64,14 +43,8 @@ export class DashedCard extends HTMLElement {
           min-width: 256px;
           padding: 10px;
 
-          border: ${this.dashWidth}px solid;
-          border-image: ${borderImage(
-            this.dashWidth,
-            this.dashLength,
-            this.dashSpacing,
-            this.dashColor,
-            this.borderRadius
-          )};
+          border: ${dashWidth}px solid;
+          border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
         }
 
         .card::before {
@@ -82,7 +55,7 @@ export class DashedCard extends HTMLElement {
           left: 0;
           width: 100%;
           height: 100%;
-          border-radius: ${this.borderRadius}px;
+          border-radius: ${borderRadius}px;
           background: var(--color-primary-light);
         }
 
@@ -116,6 +89,9 @@ export class DashedCard extends HTMLElement {
         </div>
       </div>
     `;
+    while (this.shadowRoot.firstChild) {
+      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
+    }
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }

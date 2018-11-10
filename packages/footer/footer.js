@@ -1,19 +1,26 @@
-import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
+import { DashedBase, sharedStyles } from '@dashedjs/dashed-base';
 
-export class DashedFooter extends HTMLElement {
+export class DashedFooter extends DashedBase {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open', delegatesFocus: true });
+  }
+
+  static get observedAttributes() {
+    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
   }
 
   connectedCallback() {
     this.render();
   }
 
+  attributeChangedCallback(attr, oldVal, newVal) {
+    this.render();
+  }
+
   render() {
     const template = document.createElement('template');
     template.innerHTML = `
-      ${dashedStyles}
+      ${sharedStyles}
       <style>
         :host {
           --dashed-footer-min-width: 256px;
@@ -68,6 +75,9 @@ export class DashedFooter extends HTMLElement {
         </div>
       </div>
     `;
+    while (this.shadowRoot.firstChild) {
+      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
+    }
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }

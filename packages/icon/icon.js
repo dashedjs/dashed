@@ -4,6 +4,10 @@ export class DashedIcon extends HTMLElement {
     this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
+  static get observedAttributes() {
+    return ['name', 'src', 'size'];
+  }
+
   get name() {
     return this.getAttribute('name');
   }
@@ -43,8 +47,8 @@ export class DashedIcon extends HTMLElement {
     this.render();
   }
 
-  static get observedAttributes() {
-    return ['name', 'src', 'size'];
+  attributeChangedCallback(attr, oldVal, newVal) {
+    this.render();
   }
 
   async render() {
@@ -90,17 +94,26 @@ export class DashedIcon extends HTMLElement {
       </style>
       <span>${icon}</span>
     `;
+    while (this.shadowRoot.firstChild) {
+      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
+    }
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
-  fetchIcon() {
-    const iconUrl = this.name ? `/node_modules/@dashedjs/dashed-icons/${this.name}.svg` : this.src;
-    return fetch(iconUrl).then(res => {
+  async fetchIcon() {
+    // const iconUrl = this.name ? `/node_modules/@dashedjs/dashed-icons/${this.name}.svg` : this.src;
+    const iconUrl = this.name ? `/node_modules/@dashedjs/dashed-core/packages/icons/${this.name}.svg` : this.src;
+    console.log({ name: this.name, src: this.src, iconUrl });
+    try {
+      const res = await fetch(iconUrl);
       if (res.status !== 200) {
         throw new Error(`Error code ${res.status}, failed to load icon: ${iconUrl}`);
       }
       return res.text();
-    });
+    } catch (err) {
+      console.error(err);
+      return '';
+    }
   }
 }
 customElements.define('dashed-icon', DashedIcon);

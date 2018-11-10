@@ -1,6 +1,7 @@
-import { borderImage } from '@dashedjs/dashed-utils/utils.js';
-import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
+import { borderImage } from './border-image.js';
+import { sharedStyles } from './shared-styles.js';
 
+export { borderImage, sharedStyles };
 export class DashedBase extends HTMLElement {
   constructor() {
     super();
@@ -8,35 +9,35 @@ export class DashedBase extends HTMLElement {
   }
 
   get disabled() {
-    return this.hasAttribute('disabled') || false;
+    return this.hasAttribute('disabled');
   }
   set disabled(value) {
     Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
   get borderRadius() {
-    return parseFloat(this.getAttribute('border-radius')) || 0;
+    return this.getAttribute('border-radius');
   }
   set borderRadius(value) {
     this.setAttribute('border-radius', value);
   }
 
   get dashWidth() {
-    return parseFloat(this.getAttribute('dash-width')) || 2;
+    return this.getAttribute('dash-width');
   }
   set dashWidth(value) {
     this.setAttribute('dash-width', value);
   }
 
   get dashLength() {
-    return parseFloat(this.getAttribute('dash-length')) || 8;
+    return this.getAttribute('dash-length');
   }
   set dashLength(value) {
     this.setAttribute('dash-length', value);
   }
 
   get dashSpacing() {
-    return parseFloat(this.getAttribute('dash-spacing')) || 2.4;
+    return this.getAttribute('dash-spacing');
   }
   set dashSpacing(value) {
     this.setAttribute('dash-spacing', value);
@@ -48,7 +49,7 @@ export class DashedBase extends HTMLElement {
     if (colorAttrList.includes(colorAttr)) {
       // hack since CSS variables are not supported inside the border-image url()
       const colorValueRegex = new RegExp(`--color-${colorAttr}\: (\#*\\w+);`);
-      const colorValue = dashedStyles.match(colorValueRegex)[1];
+      const colorValue = sharedStyles.match(colorValueRegex)[1];
       return colorValue;
 
       // return `var(--color-${colorAttr})`;

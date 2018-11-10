@@ -1,62 +1,34 @@
-import { borderImage } from '@dashedjs/dashed-utils/utils.js';
-import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
+import { DashedBase, borderImage, sharedStyles } from '@dashedjs/dashed-base';
 
-export class DashedInput extends HTMLElement {
+export class DashedInput extends DashedBase {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  get disabled() {
-    return this.hasAttribute('disabled');
-  }
-  set disabled(value) {
-    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
-  }
-
-  get borderRadius() {
-    return parseFloat(this.getAttribute('border-radius')) || 5;
-  }
-  set borderRadius(value) {
-    this.setAttribute('border-radius', value);
-  }
-
-  get dashWidth() {
-    return parseFloat(this.getAttribute('dash-width')) || 1;
-  }
-  set dashWidth(value) {
-    this.setAttribute('dash-width', value);
-  }
-
-  get dashLength() {
-    return parseFloat(this.getAttribute('dash-length')) || 6;
-  }
-  set dashLength(value) {
-    this.setAttribute('dash-length', value);
-  }
-
-  get dashSpacing() {
-    return parseFloat(this.getAttribute('dash-spacing')) || 0.9;
-  }
-  set dashSpacing(value) {
-    this.setAttribute('dash-spacing', value);
-  }
-
-  get dashColor() {
-    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
-  }
-  set dashColor(value) {
-    this.setAttribute('dash-color', value);
+  static get observedAttributes() {
+    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
   }
 
   connectedCallback() {
     this.render();
   }
 
+  attributeChangedCallback(attr, oldVal, newVal) {
+    this.render();
+  }
+
   render() {
+    const [borderRadius = 5, dashWidth = 1, dashLength = 6, dashSpacing = 1] = [
+      this.borderRadius,
+      this.dashWidth,
+      this.dashLength,
+      this.dashSpacing
+    ].map(attr => (attr ? parseFloat(attr) : undefined));
+    const dashColor = this.dashColor.replace('#', '%23'); // Using unescaped '#' characters in a data URI body is deprecated
+
     const template = document.createElement('template');
     template.innerHTML = `
-      ${dashedStyles}
+      ${sharedStyles}
       <style>
         :host {
           display: inline-flex;
@@ -73,14 +45,8 @@ export class DashedInput extends HTMLElement {
           display: inline-block;
           position: relative;
 
-          border: ${this.dashWidth}px solid;
-          border-image: ${borderImage(
-            this.dashWidth,
-            this.dashLength,
-            this.dashSpacing,
-            this.dashColor,
-            this.borderRadius
-          )};
+          border: ${dashWidth}px solid;
+          border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
         }
 
         input {
@@ -90,6 +56,7 @@ export class DashedInput extends HTMLElement {
           border: none;
           outline: none;
           height: 100%;
+          border-radius: 2px;
           background: var(--color-fill);
         }
       </style>
@@ -98,6 +65,9 @@ export class DashedInput extends HTMLElement {
         <input id="input" />
       </div>
     `;
+    while (this.shadowRoot.firstChild) {
+      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
+    }
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }

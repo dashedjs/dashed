@@ -1,66 +1,40 @@
-import { borderImage } from '@dashedjs/dashed-utils/utils.js';
-import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
+import { DashedBase, sharedStyles } from '@dashedjs/dashed-base/base.js';
 
-export class DashedSlider extends HTMLElement {
+export class DashedSlider extends DashedBase {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  get disabled() {
-    return this.hasAttribute('disabled');
-  }
-  set disabled(value) {
-    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
+  static get observedAttributes() {
+    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
   }
 
   get min() {
-    return parseFloat(this.getAttribute('min')) || 0;
+    return this.getAttribute('min');
   }
   set min(value) {
     this.setAttribute('min', value);
   }
 
   get max() {
-    return parseFloat(this.getAttribute('max')) || 100;
+    return this.getAttribute('max');
   }
   set max(value) {
     this.setAttribute('max', value);
   }
 
   get value() {
-    return parseFloat(this.getAttribute('value')) || 30;
+    return this.getAttribute('value');
   }
   set value(value) {
     this.setAttribute('value', value);
   }
 
   get step() {
-    return parseFloat(this.hasAttribute('step')) || 1;
+    return this.getAttribute('step');
   }
   set step(value) {
     this.setAttribute('step', value);
-  }
-
-  get dashWidth() {
-    return parseFloat(this.getAttribute('dash-width')) || 2;
-  }
-  set dashWidth(value) {
-    this.setAttribute('dash-width', value);
-  }
-
-  get dashLength() {
-    return parseFloat(this.getAttribute('dash-length')) || 2;
-  }
-  set dashLength(value) {
-    this.setAttribute('dash-length', value);
-  }
-
-  get dashSpacing() {
-    return parseFloat(this.getAttribute('dash-spacing')) || 1;
-  }
-  set dashSpacing(value) {
-    this.setAttribute('dash-spacing', value);
   }
 
   connectedCallback() {
@@ -69,17 +43,32 @@ export class DashedSlider extends HTMLElement {
     this._nativeInput.addEventListener('input', this._onInputHandler.bind(this));
   }
 
+  attributeChangedCallback(attr, oldVal, newVal) {
+    this.render();
+  }
+
   disconnectedCallback() {
     this._nativeInput.removeEventListener('input', this._onInputHandler.bind(this));
   }
 
   render() {
-    const [min, max, value] = [this.min, this.max, this.value].map(str => parseFloat(str));
+    const [value = 30, min = 0, max = 100, step = 1] = [this.value, this.min, this.max, this.step].map(attr =>
+      attr ? parseFloat(attr) : undefined
+    );
     const percentage = `${((value - min) / (max - min)) * 100}%`;
+
+    const [borderRadius = 0, dashWidth = 2, dashLength = 2, dashSpacing = 1] = [
+      this.borderRadius,
+      this.dashWidth,
+      this.dashLength,
+      this.dashSpacing
+    ].map(attr => (attr ? parseFloat(attr) : undefined));
+    const dashColor = this.dashColor.replace('#', '%23'); // Using unescaped '#' characters in a data URI body is deprecated
+
     const template = document.createElement('template');
     // prettier-ignore
     template.innerHTML = `
-      ${dashedStyles}
+      ${sharedStyles}
       <style>
         :host {
           --dashed-background-width: 100%;
@@ -139,12 +128,12 @@ export class DashedSlider extends HTMLElement {
       <label for="range"><slot></slot></label>
       <div class="slider-container">
         <input type="range" id="range"
-          min="${this.min}" max="${this.max}" step="${this.step}" value="${this.value}" />
-        <svg class="dash" stroke-width="${this.dashWidth}">
+          min="${min}" max="${max}" step="${step}" value="${value}" />
+        <svg class="dash" stroke-width="${dashWidth}">
           <line class="slider-background" x2="100%" y2="0"  transform="translate(0, 12)"
-            stroke-dasharray="${this.dashLength} ${this.dashSpacing}" />
+            stroke-dasharray="${dashLength} ${dashSpacing}" />
           <line class="slider-tracker" x2="${percentage}" y2="0"  transform="translate(0, 12)"
-            stroke-dasharray="${this.dashLength} ${this.dashSpacing}" />
+            stroke-dasharray="${dashLength} ${dashSpacing}" />
           <g class="slider-cursor" style="transform: translate(calc(${percentage} - 6px), 0)">
             <circle class="slider-cursor-focus-ring" cx="6" cy="12" r="9" />
             <circle class="slider-cursor-inner" cx="6" cy="12" r="6"  />
@@ -152,13 +141,18 @@ export class DashedSlider extends HTMLElement {
         </svg>
       </div>
     `;
+    while (this.shadowRoot.firstChild) {
+      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
+    }
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   _onInputHandler(e) {
     this.value = parseFloat(e.target.value);
 
-    const [min, max, value] = [this.min, this.max, this.value].map(str => parseFloat(str));
+    const [value = 30, min = 0, max = 100] = [this.value, this.min, this.max].map(attr =>
+      attr ? parseFloat(attr) : undefined
+    );
     const percentage = `${((value - min) / (max - min)) * 100}%`;
 
     const svg = this.shadowRoot.querySelector('svg.dash');

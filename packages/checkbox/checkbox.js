@@ -1,17 +1,12 @@
-import { borderImage } from '@dashedjs/dashed-utils/utils.js';
-import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
+import { DashedBase, borderImage, sharedStyles } from '@dashedjs/dashed-base';
 
-export class DashedCheckbox extends HTMLElement {
+export class DashedCheckbox extends DashedBase {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  get disabled() {
-    return this.hasAttribute('disabled');
-  }
-  set disabled(value) {
-    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
+  static get observedAttributes() {
+    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
   }
 
   get checked() {
@@ -21,55 +16,38 @@ export class DashedCheckbox extends HTMLElement {
     Boolean(value) ? this.setAttribute('checked', '') : this.removeAttribute('checked');
   }
 
-  get borderRadius() {
-    return parseFloat(this.getAttribute('border-radius')) || 0;
-  }
-  set borderRadius(value) {
-    this.setAttribute('border-radius', value);
-  }
-
-  get dashWidth() {
-    return parseFloat(this.getAttribute('dash-width')) || 2;
-  }
-  set dashWidth(value) {
-    this.setAttribute('dash-width', value);
-  }
-
-  get dashLength() {
-    return parseFloat(this.getAttribute('dash-length')) || 4;
-  }
-  set dashLength(value) {
-    this.setAttribute('dash-length', value);
-  }
-
-  get dashSpacing() {
-    return parseFloat(this.getAttribute('dash-spacing')) || 2;
-  }
-  set dashSpacing(value) {
-    this.setAttribute('dash-spacing', value);
-  }
-
-  get dashColor() {
-    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
-  }
-  set dashColor(value) {
-    this.setAttribute('dash-color', value);
-  }
-
   connectedCallback() {
     this.render();
   }
 
+  attributeChangedCallback(attr, oldVal, newVal) {
+    this.render();
+  }
+
   render() {
+    const [borderRadius = 0, dashWidth = 2, dashLength = 4, dashSpacing = 2] = [
+      this.borderRadius,
+      this.dashWidth,
+      this.dashLength,
+      this.dashSpacing
+    ].map(attr => (attr ? parseFloat(attr) : undefined));
+    const dashColor = this.dashColor.replace('#', '%23'); // Using unescaped '#' characters in a data URI body is deprecated
+
     const template = document.createElement('template');
     template.innerHTML = `
-      ${dashedStyles}
+      ${sharedStyles}
       <style>
         :host {
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           position: relative;
           cursor: inherit;
           outline: none;
+        }
+
+        label {
+          padding-left: 8px;
         }
 
         .checkbox-container {
@@ -78,14 +56,8 @@ export class DashedCheckbox extends HTMLElement {
           width: 24px;
           height: 24px;
 
-          border: ${this.dashWidth}px solid;
-          border-image: ${borderImage(
-            this.dashWidth,
-            this.dashLength,
-            this.dashSpacing,
-            this.dashColor,
-            this.borderRadius
-          )};
+          border: ${dashWidth}px solid;
+          border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
         }
 
         .checkbox-container::before {
@@ -95,7 +67,7 @@ export class DashedCheckbox extends HTMLElement {
           left: 0;
           width: 100%;
           height: 100%;
-          border-radius: ${this.borderRadius}px;
+          border-radius: ${borderRadius}px;
           background: var(--color-primary-light);
         }
 
@@ -108,7 +80,7 @@ export class DashedCheckbox extends HTMLElement {
 
         svg.dash .checkmark {
           stroke: var(--color-danger);
-          stroke-width: ${this.dashWidth * 1.8};
+          stroke-width: ${dashWidth * 1.8};
         }
 
         input[type="checkbox"]:not(:checked) ~ svg.dash .checkmark {
@@ -127,6 +99,9 @@ export class DashedCheckbox extends HTMLElement {
       </div>
       <label for="checkbox"><slot></slot></label>
     `;
+    while (this.shadowRoot.firstChild) {
+      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
+    }
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }

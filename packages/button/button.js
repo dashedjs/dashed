@@ -1,17 +1,12 @@
-import { borderImage } from '@dashedjs/dashed-utils/utils.js';
-import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
+import { DashedBase, borderImage, sharedStyles } from '@dashedjs/dashed-base/base.js';
 
-export class DashedButton extends HTMLElement {
+export class DashedButton extends DashedBase {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
-  get disabled() {
-    return this.hasAttribute('disabled') || false;
-  }
-  set disabled(value) {
-    Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
+  static get observedAttributes() {
+    return ['rounded', 'border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
   }
 
   get rounded() {
@@ -21,67 +16,26 @@ export class DashedButton extends HTMLElement {
     Boolean(value) ? this.setAttribute('rounded', '') : this.removeAttribute('rounded');
   }
 
-  get borderRadius() {
-    return parseFloat(this.getAttribute('border-radius')) || 0;
-  }
-  set borderRadius(value) {
-    this.setAttribute('border-radius', value);
-  }
-
-  get dashWidth() {
-    return parseFloat(this.getAttribute('dash-width')) || 2;
-  }
-  set dashWidth(value) {
-    this.setAttribute('dash-width', value);
-  }
-
-  get dashLength() {
-    return parseFloat(this.getAttribute('dash-length')) || 8;
-  }
-  set dashLength(value) {
-    this.setAttribute('dash-length', value);
-  }
-
-  get dashSpacing() {
-    return parseFloat(this.getAttribute('dash-spacing')) || 2.4;
-  }
-  set dashSpacing(value) {
-    this.setAttribute('dash-spacing', value);
-  }
-
-  get dashColor() {
-    const colorAttrList = ['primary', 'secondary', 'success', 'danger', 'warn'];
-    const colorAttr = this.getAttribute('dash-color') ? this.getAttribute('dash-color') : 'primary';
-    if (colorAttrList.includes(colorAttr)) {
-      // hack since CSS variables are not supported inside an svg borderImage
-      const colorValueRegex = new RegExp(`--color-${colorAttr}\: (\#*\\w+);`);
-      const colorValue = dashedStyles.match(colorValueRegex)[1];
-      return colorValue;
-
-      // return `var(--color-${colorAttr})`;
-    }
-    return colorAttr;
-  }
-  set dashColor(value) {
-    this.setAttribute('dash-color', value);
-  }
-
   connectedCallback() {
     this.render();
   }
 
-  static get observedAttributes() {
-    return ['border-radius', 'rounded', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
-  }
-
-  attributeChangedCallback(oldvalue, newValue, attribute) {
+  attributeChangedCallback(attr, oldVal, newVal) {
     this.render();
   }
 
   render() {
+    const [borderRadius = 0, dashWidth = 2, dashLength = 8, dashSpacing = 2.4] = [
+      this.borderRadius,
+      this.dashWidth,
+      this.dashLength,
+      this.dashSpacing
+    ].map(attr => (attr ? parseFloat(attr) : undefined));
+    const dashColor = this.dashColor.replace('#', '%23'); // Using unescaped '#' characters in a data URI body is deprecated
+
     const template = document.createElement('template');
     template.innerHTML = `
-      ${dashedStyles}
+      ${sharedStyles}
       <style>
         :host {
           --padding: 4px 12px;
@@ -110,14 +64,8 @@ export class DashedButton extends HTMLElement {
           position: relative;
           transition: color 50ms ease-in-out;
 
-          border: ${this.dashWidth}px solid;
-          border-image: ${borderImage(
-            this.dashWidth,
-            this.dashLength,
-            this.dashSpacing,
-            this.dashColor,
-            this.borderRadius
-          )};
+          border: ${dashWidth}px solid;
+          border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
         }
 
         button::before {
@@ -127,7 +75,7 @@ export class DashedButton extends HTMLElement {
           left: 0;
           width: 100%;
           height: 100%;
-          border-radius: ${this.borderRadius}px;
+          border-radius: ${borderRadius}px;
           background: var(--color-primary-light);
         }
 
