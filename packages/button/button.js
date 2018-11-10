@@ -10,7 +10,7 @@ export class DashedButton extends DashedBase {
   }
 
   get rounded() {
-    return this.hasAttribute('rounded') || false;
+    return this.hasAttribute('rounded');
   }
   set rounded(value) {
     Boolean(value) ? this.setAttribute('rounded', '') : this.removeAttribute('rounded');
@@ -31,7 +31,7 @@ export class DashedButton extends DashedBase {
       this.dashLength,
       this.dashSpacing
     ].map(attr => (attr ? parseFloat(attr) : undefined));
-    const dashColor = this.dashColor.replace('#', '%23'); // Using unescaped '#' characters in a data URI body is deprecated
+    const dashColor = this.dashColor;
 
     const template = document.createElement('template');
     template.innerHTML = `
@@ -39,6 +39,7 @@ export class DashedButton extends DashedBase {
       <style>
         :host {
           --padding: 4px 12px;
+          --color: inherit;
           display: inline-block;
           cursor: pointer;
           outline: none;
@@ -50,16 +51,18 @@ export class DashedButton extends DashedBase {
         }
 
         button {
+          padding: var(--padding);
+          color: var(--color);
           min-width: 48px;
           min-height: 32px;
+          width: 100%;
+          height: 100%;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           background: none;
           cursor: inherit;
-          color: inherit;
           outline: none;
-          padding: var(--padding);
           font-size: inherit;
           position: relative;
           transition: color 50ms ease-in-out;
@@ -73,10 +76,11 @@ export class DashedButton extends DashedBase {
           position: absolute;
           top: 0;
           left: 0;
-          width: 100%;
-          height: 100%;
+          right: 0;
+          bottom: 0;
+          border: ${dashWidth}px;
           border-radius: ${borderRadius}px;
-          background: var(--color-primary-light);
+          // background: var(--color-primary-light);
         }
 
         :host ::slotted([slot="icon"]) {

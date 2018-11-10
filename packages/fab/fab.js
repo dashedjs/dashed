@@ -31,7 +31,7 @@ export class DashedFab extends DashedBase {
       this.dashLength,
       this.dashSpacing
     ].map(attr => (attr ? parseFloat(attr) : undefined));
-    const dashColor = this.dashColor.replace('#', '%23'); // Using unescaped '#' characters in a data URI body is deprecated
+    const dashColor = this.dashColor;
     const borderRadiusInner = borderRadius - 4;
 
     const template = document.createElement('template');
@@ -85,7 +85,7 @@ export class DashedFab extends DashedBase {
           height: 100%;
           border-radius: ${borderRadius}px;
           background: var(--color-primary-light);
-          box-shadow: var(--shadow-6dp);
+          box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.4);
         }
 
         button::after {

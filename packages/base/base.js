@@ -2,10 +2,18 @@ import { borderImage } from './border-image.js';
 import { sharedStyles } from './shared-styles.js';
 
 export { borderImage, sharedStyles };
+
 export class DashedBase extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
+    this.customProperties = new Map([
+      ['primary', '#3636e7'],
+      ['secondary', '#ce8207'],
+      ['success', '#1f8d57'],
+      ['danger', '#fa3232'],
+      ['warn', '#cd9a1a']
+    ]);
   }
 
   get disabled() {
@@ -44,17 +52,15 @@ export class DashedBase extends HTMLElement {
   }
 
   get dashColor() {
-    const colorAttrList = ['primary', 'secondary', 'success', 'danger', 'warn'];
-    const colorAttr = this.getAttribute('dash-color') ? this.getAttribute('dash-color') : 'primary';
-    if (colorAttrList.includes(colorAttr)) {
-      // hack since CSS variables are not supported inside the border-image url()
-      const colorValueRegex = new RegExp(`--color-${colorAttr}\: (\#*\\w+);`);
-      const colorValue = sharedStyles.match(colorValueRegex)[1];
-      return colorValue;
-
-      // return `var(--color-${colorAttr})`;
+    const dashColor = this.getAttribute('dash-color') || '';
+    if ([...this.customProperties.keys()].includes(dashColor)) {
+      // Hack to get the color since CSS variables are not supported inside the border-image url().
+      // One can also get it from this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue(`--color-${dashColor}`)
+      // But the latter method requires a first render
+      const colorValue = this.customProperties.get(`${dashColor}`);
+      return colorValue.replace('#', '%23'); // Using unescaped '#' characters in a data URI body is deprecated
     }
-    return colorAttr;
+    return dashColor.replace('#', '%23');
   }
   set dashColor(value) {
     this.setAttribute('dash-color', value);

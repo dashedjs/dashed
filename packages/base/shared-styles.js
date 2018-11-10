@@ -1,3 +1,23 @@
+// const customProperties = new Map([
+//   ['--color-primary', '#3636e7'],
+//   ['--color-primary-light', ' #3636e726'],
+//   ['--color-secondary', '#ce8207'],
+//   ['--color-secondary-light', '#e39248bf'],
+//   ['--color-success', '#1f8d57'],
+//   ['--color-success-light', '#1f8d5726'],
+//   ['--color-danger', '#fa3232'],
+//   ['--color-danger-light', '#fa323226'],
+//   ['--color-warn', '#cd9a1a'],
+//   ['--color-warn-light', '#cbab59ad'],
+//   ['--color-outline', '#8181c1'],
+//   ['--color-fill', 'var(--color-primary-light)'][('--font-small', '0.8rem')],
+
+//   ['--font-medium', '1rem'],
+//   ['--font-large', '1.5rem'],
+//   ['--font-xlarge', '2rem'],
+
+// ]);
+
 export const sharedStyles = String.raw`
   <style title="Shared styles">
     :host{
@@ -13,11 +33,6 @@ export const sharedStyles = String.raw`
       --color-warn-light: #cbab59ad;
       --color-outline: #8181c1;
       --color-fill: var(--color-primary-light);
-      
-      --shadow-2dp: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-      --shadow-3dp: 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 1px 8px 0 rgba(0, 0, 0, 0.12), 0 3px 3px -2px rgba(0, 0, 0, 0.4);
-      --shadow-4dp: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
-      --shadow-6dp: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.4);
 
       --font-small: 0.8rem;
       --font-medium: 1rem;
@@ -38,6 +53,9 @@ export const sharedStyles = String.raw`
       outline-offset: 1px;
     }
 
+    :host([dash-color]) {
+      color: attr(dash-color);
+    }
     :host([dash-color="primary"]) {
       color: var(--color-primary);
     }

@@ -31,7 +31,7 @@ export class DashedRadio extends DashedBase {
       this.dashLength,
       this.dashSpacing
     ].map(attr => (attr ? parseFloat(attr) : undefined));
-    const dashColor = this.dashColor.replace('#', '%23'); // Using unescaped '#' characters in a data URI body is deprecated
+    const dashColor = this.dashColor
 
     const template = document.createElement('template');
     template.innerHTML = `
