@@ -49,6 +49,13 @@ export class DashedRadio extends HTMLElement {
     this.setAttribute('dash-spacing', value);
   }
 
+  get dashColor() {
+    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
+  }
+  set dashColor(value) {
+    this.setAttribute('dash-color', value);
+  }
+
   connectedCallback() {
     this.render();
   }
@@ -74,7 +81,13 @@ export class DashedRadio extends HTMLElement {
           height: 24px;
 
           border: ${this.dashWidth}px solid;
-          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
+          border-image: ${borderImage(
+            this.dashWidth,
+            this.dashLength,
+            this.dashSpacing,
+            this.dashColor,
+            this.borderRadius
+          )};
         }
 
         .radio-container::before {
@@ -86,7 +99,7 @@ export class DashedRadio extends HTMLElement {
           height: 100%;
 
           border-radius: ${this.borderRadius}px;
-          background: var(--dashed-primary-light-color);
+          background: var(--color-primary-light);
         }
 
         input[type="radio"] {
@@ -97,7 +110,7 @@ export class DashedRadio extends HTMLElement {
         }
   
         svg.dash .inner-circle {
-          fill: var(--dashed-danger-color);
+          fill: var(--color-danger);
         }
 
         input[type="radio"]:not(:checked) ~ svg.dash .inner-circle {

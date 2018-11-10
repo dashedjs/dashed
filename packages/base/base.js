@@ -1,21 +1,28 @@
 import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
 
-export class DashedTag extends HTMLElement {
+export class DashedBase extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
   get disabled() {
-    return this.hasAttribute('disabled');
+    return this.hasAttribute('disabled') || false;
   }
   set disabled(value) {
     Boolean(value) ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
   }
 
+  get rounded() {
+    return this.hasAttribute('rounded') || false;
+  }
+  set rounded(value) {
+    Boolean(value) ? this.setAttribute('rounded', '') : this.removeAttribute('rounded');
+  }
+
   get borderRadius() {
-    return parseFloat(this.getAttribute('border-radius')) || 16;
+    return parseFloat(this.getAttribute('border-radius')) || 0;
   }
   set borderRadius(value) {
     this.setAttribute('border-radius', value);
@@ -36,14 +43,24 @@ export class DashedTag extends HTMLElement {
   }
 
   get dashSpacing() {
-    return parseFloat(this.getAttribute('dash-spacing')) || 4;
+    return parseFloat(this.getAttribute('dash-spacing')) || 2.4;
   }
   set dashSpacing(value) {
     this.setAttribute('dash-spacing', value);
   }
 
   get dashColor() {
-    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
+    const colorAttrList = ['primary', 'secondary', 'success', 'danger', 'warn'];
+    const colorAttr = this.getAttribute('dash-color') ? this.getAttribute('dash-color') : 'primary';
+    if (colorAttrList.includes(colorAttr)) {
+      // hack since CSS variables are not supported inside an svg borderImage
+      // const colorValueRegex = new RegExp(`--color-${colorAttr}\: (\#*\\w+);`);
+      // const colorValue = dashedStyles.match(colorValueRegex)[1];
+      // return colorValue;
+
+      return `var(--color-${colorAttr})`;
+    }
+    return colorAttr;
   }
   set dashColor(value) {
     this.setAttribute('dash-color', value);
@@ -51,12 +68,14 @@ export class DashedTag extends HTMLElement {
 
   connectedCallback() {
     this.render();
-    this._nativeButton = this.shadowRoot.querySelector('button');
-    this._nativeButton.addEventListener('click', this._toggleTag.bind(this));
   }
 
-  disconnectedCallback() {
-    this._nativeButton.remove('click', this._toggleTag.bind(this));
+  static get observedAttributes() {
+    return ['border-radius', 'rounded', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
+  }
+
+  attributeChangedCallback(oldvalue, newValue, attribute) {
+    this.render();
   }
 
   render() {
@@ -65,21 +84,20 @@ export class DashedTag extends HTMLElement {
       ${dashedStyles}
       <style>
         :host {
+          --padding: 4px 12px;
           display: inline-block;
           cursor: pointer;
           outline: none;
           position: relative;
-          font-size: 12px;
         }
 
         :host(:hover) {
-          color: var(--color-primary);
           --color-fill: var(--color-primary-light);
         }
 
         button {
-          min-width: 32px;
-          min-height: 24px;
+          min-width: 48px;
+          min-height: 32px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -87,7 +105,7 @@ export class DashedTag extends HTMLElement {
           cursor: inherit;
           color: inherit;
           outline: none;
-          padding: 4px 10px;
+          padding: var(--padding);
           font-size: inherit;
           position: relative;
           transition: color 50ms ease-in-out;
@@ -101,7 +119,7 @@ export class DashedTag extends HTMLElement {
             this.borderRadius
           )};
         }
-        
+
         button::before {
           content: "";
           position: absolute;
@@ -113,26 +131,20 @@ export class DashedTag extends HTMLElement {
           background: var(--color-primary-light);
         }
 
-        button.active {
-          color: var(--color-danger);
-        }
-
-        :host ::slotted(dashed-icon[slot="icon"]),
-        :host ::slotted(svg) {
+        :host ::slotted([slot="icon"]) {
           stroke: currentColor;
-          padding-left: 4px;
+          padding-right: 4px;
         }
       </style>
       <button type="button">
-        <slot></slot>
         <slot name="icon"></slot>
+        <slot></slot>
       </button>
     `;
+    while (this.shadowRoot.firstChild) {
+      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
+    }
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
-
-  _toggleTag(e) {
-    this._nativeButton.classList.toggle('active');
-  }
 }
-customElements.define('dashed-tag', DashedTag);
+customElements.define('dashed-base', DashedBase);

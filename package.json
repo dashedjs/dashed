@@ -11,6 +11,7 @@
     "start": "polyserve --npm --module-resolution=node",
     "bootstrap": "lerna bootstrap --hoist",
     "install:dependencies": "bash scripts/install-dependencies.sh",
+    "remove:dist-folders": "bash scripts/remove-dist-folders.sh",
     "lint": "eslint .",
     "build": "gulp build"
   },

@@ -53,6 +53,13 @@ export class DashedFab extends HTMLElement {
     this.setAttribute('dash-spacing', value);
   }
 
+  get dashColor() {
+    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
+  }
+  set dashColor(value) {
+    this.setAttribute('dash-color', value);
+  }
+
   connectedCallback() {
     this.render();
   }
@@ -72,7 +79,7 @@ export class DashedFab extends HTMLElement {
         }
 
         :host(:hover) button {
-          color: var(--dashed-danger-color);
+          color: var(--color-danger);
         }
 
         .button-container {
@@ -98,7 +105,13 @@ export class DashedFab extends HTMLElement {
           transition: color 50ms ease-in-out;
 
           border: ${this.dashWidth}px solid;
-          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
+          border-image: ${borderImage(
+            this.dashWidth,
+            this.dashLength,
+            this.dashSpacing,
+            this.dashColor,
+            this.borderRadius
+          )};
         }
 
         button::before {
@@ -110,8 +123,8 @@ export class DashedFab extends HTMLElement {
           width: 100%;
           height: 100%;
           border-radius: ${this.borderRadius}px;
-          background: var(--dashed-primary-light-color);
-          box-shadow: var(--dashed-shadow-6dp);
+          background: var(--color-primary-light);
+          box-shadow: var(--shadow-6dp);
         }
 
         button::after {
@@ -123,7 +136,13 @@ export class DashedFab extends HTMLElement {
           right: 4px;
 
           border: ${this.dashWidth}px solid;
-          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, borderRadiusInner)};
+          border-image: ${borderImage(
+            this.dashWidth,
+            this.dashLength,
+            this.dashSpacing,
+            this.dashColor,
+            borderRadiusInner
+          )};
         }
       </style>
       <div class="button-container">

@@ -1,7 +1,8 @@
-export function borderImage(dashWidth, dashLength, dashSpacing, borderRadius = 0) {
-  const [width, length, spacing, radius] = [dashWidth, dashLength, dashSpacing, borderRadius];
+export function borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius = 0) {
+  const [width, length, spacing, color, radius] = [dashWidth, dashLength, dashSpacing, dashColor, borderRadius];
+  console.log({ dashColor });
 
-  let borderImageRepeat = 'round';
+  const borderImageRepeat = 'round';
   let borderImageSlice;
   let borderImageWidth;
   let borderImageSource;
@@ -17,7 +18,7 @@ export function borderImage(dashWidth, dashLength, dashSpacing, borderRadius = 0
         height='${spacing + length + 2*width}'
         viewBox='0 0 ${spacing + length + 2*width} ${spacing + length + 2*width}'
         stroke-width='${width}'
-        stroke='blue'>
+        stroke='${color}'>
           <path
             stroke-width='${width}'
             d='M${width + spacing/2} ${width/2}h${length}m${spacing/2 + width/2} ${width/2 + spacing/2}v${length}m${-width/2 - spacing/2} ${spacing/2 + width/2}h${-length}m${-spacing/2 - width/2} ${-width/2 - spacing/2}v${-length}'/>
@@ -33,7 +34,7 @@ export function borderImage(dashWidth, dashLength, dashSpacing, borderRadius = 0
         height='${spacing + length + width + 2*radius}'
         viewBox='0 0 ${spacing + length + width + 2*radius} ${spacing + length + width + 2*radius}'
         stroke-width='${width}'
-        stroke='blue'>
+        stroke='${color}'>
           <path
             d='M${width/2 + radius + spacing/2} ${width/2}h${length}m${spacing/2 + radius} ${radius + spacing/2}v${length}m${-radius - spacing/2} ${spacing/2 + radius}h${-length}m${-spacing/2 - radius} ${-radius - spacing/2}v${-length}' />
           <path

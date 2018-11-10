@@ -49,12 +49,29 @@ export class DashedButton extends HTMLElement {
     this.setAttribute('dash-spacing', value);
   }
 
+  get dashColor() {
+    const colorAttrList = ['primary', 'secondary', 'success', 'danger', 'warn'];
+    const colorAttr = this.getAttribute('dash-color') ? this.getAttribute('dash-color') : 'primary';
+    if (colorAttrList.includes(colorAttr)) {
+      // hack since CSS variables are not supported inside an svg borderImage
+      // const colorValueRegex = new RegExp(`--color-${colorAttr}\: (\#*\\w+);`);
+      // const colorValue = dashedStyles.match(colorValueRegex)[1];
+      // return colorValue;
+
+      return `var(--color-${colorAttr})`;
+    }
+    return colorAttr;
+  }
+  set dashColor(value) {
+    this.setAttribute('dash-color', value);
+  }
+
   connectedCallback() {
     this.render();
   }
 
   static get observedAttributes() {
-    return ['border-radius', 'rounded', 'dash-width', 'dash-length', 'dash-spacing'];
+    return ['border-radius', 'rounded', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
   }
 
   attributeChangedCallback(oldvalue, newValue, attribute) {
@@ -68,7 +85,6 @@ export class DashedButton extends HTMLElement {
       <style>
         :host {
           --padding: 4px 12px;
-          --font-size: 14px;
           display: inline-block;
           cursor: pointer;
           outline: none;
@@ -76,8 +92,7 @@ export class DashedButton extends HTMLElement {
         }
 
         :host(:hover) {
-          color: var(--dashed-primary-color);
-          --dashed-fill-color: var(--dashed-primary-light-color);
+          --color-fill: var(--color-primary-light);
         }
 
         button {
@@ -96,7 +111,13 @@ export class DashedButton extends HTMLElement {
           transition: color 50ms ease-in-out;
 
           border: ${this.dashWidth}px solid;
-          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
+          border-image: ${borderImage(
+            this.dashWidth,
+            this.dashLength,
+            this.dashSpacing,
+            this.dashColor,
+            this.borderRadius
+          )};
         }
 
         button::before {
@@ -107,7 +128,7 @@ export class DashedButton extends HTMLElement {
           width: 100%;
           height: 100%;
           border-radius: ${this.borderRadius}px;
-          background: var(--dashed-primary-light-color);
+          background: var(--color-primary-light);
         }
 
         :host ::slotted([slot="icon"]) {
@@ -120,6 +141,9 @@ export class DashedButton extends HTMLElement {
         <slot></slot>
       </button>
     `;
+    while (this.shadowRoot.firstChild) {
+      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
+    }
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }

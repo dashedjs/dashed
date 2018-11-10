@@ -35,6 +35,13 @@ export class DashedCard extends HTMLElement {
     this.setAttribute('dash-spacing', value);
   }
 
+  get dashColor() {
+    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
+  }
+  set dashColor(value) {
+    this.setAttribute('dash-color', value);
+  }
+
   connectedCallback() {
     this.render();
   }
@@ -58,7 +65,13 @@ export class DashedCard extends HTMLElement {
           padding: 10px;
 
           border: ${this.dashWidth}px solid;
-          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
+          border-image: ${borderImage(
+            this.dashWidth,
+            this.dashLength,
+            this.dashSpacing,
+            this.dashColor,
+            this.borderRadius
+          )};
         }
 
         .card::before {
@@ -70,7 +83,7 @@ export class DashedCard extends HTMLElement {
           width: 100%;
           height: 100%;
           border-radius: ${this.borderRadius}px;
-          background: var(--dashed-primary-light-color);
+          background: var(--color-primary-light);
         }
 
         .card__title {

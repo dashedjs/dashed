@@ -49,6 +49,13 @@ export class DashedCheckbox extends HTMLElement {
     this.setAttribute('dash-spacing', value);
   }
 
+  get dashColor() {
+    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
+  }
+  set dashColor(value) {
+    this.setAttribute('dash-color', value);
+  }
+
   connectedCallback() {
     this.render();
   }
@@ -72,7 +79,13 @@ export class DashedCheckbox extends HTMLElement {
           height: 24px;
 
           border: ${this.dashWidth}px solid;
-          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
+          border-image: ${borderImage(
+            this.dashWidth,
+            this.dashLength,
+            this.dashSpacing,
+            this.dashColor,
+            this.borderRadius
+          )};
         }
 
         .checkbox-container::before {
@@ -83,7 +96,7 @@ export class DashedCheckbox extends HTMLElement {
           width: 100%;
           height: 100%;
           border-radius: ${this.borderRadius}px;
-          background: var(--dashed-primary-light-color);
+          background: var(--color-primary-light);
         }
 
         input[type="checkbox"] {
@@ -94,7 +107,7 @@ export class DashedCheckbox extends HTMLElement {
         }
 
         svg.dash .checkmark {
-          stroke: var(--dashed-danger-color);
+          stroke: var(--color-danger);
           stroke-width: ${this.dashWidth * 1.8};
         }
 

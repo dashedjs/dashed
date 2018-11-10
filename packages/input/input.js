@@ -42,6 +42,13 @@ export class DashedInput extends HTMLElement {
     this.setAttribute('dash-spacing', value);
   }
 
+  get dashColor() {
+    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
+  }
+  set dashColor(value) {
+    this.setAttribute('dash-color', value);
+  }
+
   connectedCallback() {
     this.render();
   }
@@ -67,7 +74,13 @@ export class DashedInput extends HTMLElement {
           position: relative;
 
           border: ${this.dashWidth}px solid;
-          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
+          border-image: ${borderImage(
+            this.dashWidth,
+            this.dashLength,
+            this.dashSpacing,
+            this.dashColor,
+            this.borderRadius
+          )};
         }
 
         input {
@@ -77,7 +90,7 @@ export class DashedInput extends HTMLElement {
           border: none;
           outline: none;
           height: 100%;
-          background: var(--dashed-fill-color);
+          background: var(--color-fill);
         }
       </style>
       <label for="input"><slot></slot></label>

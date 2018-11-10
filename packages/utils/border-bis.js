@@ -1,4 +1,4 @@
-export function borderImage(dashWidth, dashLength, dashSpacing, borderRadius = '0') {
+export function borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius = '0') {
   const [width, length, spacing, radius] = [dashWidth, dashLength, dashSpacing, borderRadius].map(str =>
     parseFloat(str)
   );

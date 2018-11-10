@@ -54,6 +54,13 @@ export class DashedToggle extends HTMLElement {
     this.setAttribute('dash-spacing', value);
   }
 
+  get dashColor() {
+    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
+  }
+  set dashColor(value) {
+    this.setAttribute('dash-color', value);
+  }
+
   connectedCallback() {
     this.render();
   }
@@ -109,7 +116,13 @@ export class DashedToggle extends HTMLElement {
           height: ${24 - heightDelta}px;
 
           border: ${this.dashWidth}px solid;
-          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.borderRadius)};
+          border-image: ${borderImage(
+            this.dashWidth,
+            this.dashLength,
+            this.dashSpacing,
+            this.dashColor,
+            this.borderRadius
+          )};
         }
 
         
@@ -121,19 +134,19 @@ export class DashedToggle extends HTMLElement {
           width: 100%;
           height: 100%;
           border-radius: ${this.borderRadius}px;
-          background: var(--dashed-primary-light-color);
+          background: var(--color-primary-light);
         }
 
   
         svg.dash .toggle-switcher {
-          fill: var(--dashed-primary-color);
+          fill: var(--color-primary);
           transition: transform 100ms ease-in-out;
           will-change: transform;
         }
 
         input[type="checkbox"]:checked ~ svg.dash .toggle-switcher {
           transform: translateX(24px);
-          fill: var(--dashed-danger-color);
+          fill: var(--color-danger);
         }
       </style>
       <div class="toggle-container">

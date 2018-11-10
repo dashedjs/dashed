@@ -115,11 +115,11 @@ export class DashedSlider extends HTMLElement {
         }
   
         svg.dash .slider-background {
-          stroke: var(--dashed-primary-color);
+          stroke: var(--color-primary);
         }
   
         svg.dash .slider-tracker {
-          stroke: var(--dashed-danger-color);
+          stroke: var(--color-danger);
           opacity: 0.8;
         }
 
@@ -128,7 +128,7 @@ export class DashedSlider extends HTMLElement {
         }
 
         svg.dash .slider-cursor-inner {
-          fill: var(--dashed-danger-color);
+          fill: var(--color-danger);
         }
 
         svg.dash .slider-cursor-focus-ring {

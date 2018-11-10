@@ -1,6 +1,6 @@
 import { borderImage } from '@dashedjs/dashed-utils/utils.js';
 import { dashedStyles } from '@dashedjs/dashed-styles/styles.js';
-import { menuIcon, closeIcon, githubIcon } from '@dashedjs/dashed-icons/icons.js';
+import { iconMenu, iconClose, iconGithub } from '@dashedjs/dashed-icons/icons.js';
 
 export class DashedHeader extends HTMLElement {
   constructor() {
@@ -62,6 +62,13 @@ export class DashedHeader extends HTMLElement {
     this.setAttribute('dash-spacing', value);
   }
 
+  get dashColor() {
+    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
+  }
+  set dashColor(value) {
+    this.setAttribute('dash-color', value);
+  }
+
   connectedCallback() {
     this.render();
     this._menuButton = this.shadowRoot.querySelector('#menubutton');
@@ -94,7 +101,7 @@ export class DashedHeader extends HTMLElement {
           --dashed-header-height: 56px;
           --dashed-lightgrey: lightgrey;
           --dashed-transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-          --dashed-shadow-2:
+          --shadow-2:
             0 2px 2px 0 rgba(10, 9, 9, 0.14),
             0 1px 5px 0 rgba(0, 0, 0, 0.12),
             0 3px 1px -2px rgba(0, 0, 0, 0.2);
@@ -111,7 +118,7 @@ export class DashedHeader extends HTMLElement {
           grid-template-columns: max-content max-content auto max-content;
   
           border-bottom: ${this.dashWidth}px solid;
-          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing)};
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.dashColor)};
         }
 
         header::before {
@@ -121,7 +128,7 @@ export class DashedHeader extends HTMLElement {
           left: 0;
           width: 100%;
           height: 100%;
-          background: var(--dashed-primary-light-color);
+          background: var(--color-primary-light);
           z-index: -1;
         }
 
@@ -147,7 +154,7 @@ export class DashedHeader extends HTMLElement {
           height: 100%;
           background: var(--dashed-lightgrey);
           transition: var(--dashed-transition);
-          box-shadow: var(--dashed-shadow-2);
+          box-shadow: var(--shadow-2);
           transform: translate3d(-100%, 0, 0);
           will-change: transform;
           z-index: 2;
@@ -195,8 +202,8 @@ export class DashedHeader extends HTMLElement {
         svg.icon {
           width: 24px;
           height: 24px;
-          fill: var(--dashed-primary-color);
-          stroke: var(--dashed-primary-color);
+          fill: var(--color-primary);
+          stroke: var(--color-primary);
         }
 
         svg.github-icon {

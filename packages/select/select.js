@@ -42,6 +42,13 @@ export class DashedSelect extends HTMLElement {
     this.setAttribute('dash-spacing', value);
   }
 
+  get dashColor() {
+    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
+  }
+  set dashColor(value) {
+    this.setAttribute('dash-color', value);
+  }
+
   connectedCallback() {
     this.render();
   }
@@ -65,7 +72,7 @@ export class DashedSelect extends HTMLElement {
           position: relative;
 
           border-bottom: ${this.dashWidth}px solid;
-          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing)};
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.dashColor)};
         }
 
         .select-container::before {
@@ -76,7 +83,7 @@ export class DashedSelect extends HTMLElement {
           left: 0;
           width: 100%;
           height: 100%;
-          background: var(--dashed-primary-light-color);
+          background: var(--color-primary-light);
         }
 
         select {
@@ -94,7 +101,7 @@ export class DashedSelect extends HTMLElement {
         }
   
         svg.dash .caret {
-          stroke: var(--dashed-primary-color);
+          stroke: var(--color-primary);
           stroke-width: ${parseFloat(this.dashWidth)};
         }
       </style>

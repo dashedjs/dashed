@@ -50,6 +50,13 @@ export class DashedLink extends HTMLElement {
     this.setAttribute('dash-spacing', value);
   }
 
+  get dashColor() {
+    return this.shadowRoot.styleSheets[0].rules[0].style.getPropertyValue('--color-warn');
+  }
+  set dashColor(value) {
+    this.setAttribute('dash-color', value);
+  }
+
   connectedCallback() {
     this.render();
   }
@@ -68,8 +75,8 @@ export class DashedLink extends HTMLElement {
         }
 
         :host(:hover) {
-          color: var(--dashed-primary-color);
-          --dashed-fill-color: var(--dashed-primary-light-color);
+          color: var(--color-primary);
+          --color-fill: var(--color-primary-light);
         }
 
         a {
@@ -85,7 +92,7 @@ export class DashedLink extends HTMLElement {
           transition: color 50ms ease-in-out;
 
           border-bottom: ${this.dashWidth}px solid;
-          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing)};
+          border-image: ${borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.dashColor)};
         }
       </style>
       <a href="#">
