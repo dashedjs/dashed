@@ -39,15 +39,23 @@ export class DashedSlider extends DashedBase {
 
   connectedCallback() {
     this.render();
-    this._nativeInput = this.shadowRoot.querySelector('input');
-    this._nativeInput.addEventListener('input', this._onInputHandler.bind(this));
+    this.addListeners();
   }
 
-  attributeChangedCallback(attr, oldVal, newVal) {
+  attributeChangedCallback(attr, newVal, oldVal) {
     this.render();
   }
 
   disconnectedCallback() {
+    this.removeListeners();
+  }
+
+  addListeners() {
+    this._nativeInput = this.shadowRoot.querySelector('input');
+    this._nativeInput.addEventListener('input', this._onInputHandler.bind(this));
+  }
+
+  removeListeners() {
     this._nativeInput.removeEventListener('input', this._onInputHandler.bind(this));
   }
 
@@ -63,7 +71,7 @@ export class DashedSlider extends DashedBase {
       this.dashLength,
       this.dashSpacing
     ].map(attr => (attr ? parseFloat(attr) : undefined));
-    const dashColor = this.dashColor
+    const dashColor = this.dashColor;
 
     const template = document.createElement('template');
     // prettier-ignore

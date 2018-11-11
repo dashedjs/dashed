@@ -13,7 +13,7 @@ export class DashedCard extends DashedBase {
     this.render();
   }
 
-  attributeChangedCallback(attr, oldVal, newVal) {
+  attributeChangedCallback(attr, newVal, oldVal) {
     this.render();
   }
 

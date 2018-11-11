@@ -1,7 +1,9 @@
 import { borderImage } from './border-image.js';
 import { sharedStyles } from './shared-styles.js';
 
-export { borderImage, sharedStyles };
+const html = String.raw; // Used only for code highligthing in VS Code with the lit-html extension
+
+export { borderImage, sharedStyles, html };
 
 export class DashedBase extends HTMLElement {
   constructor() {
@@ -60,7 +62,7 @@ export class DashedBase extends HTMLElement {
       const colorValue = this.customProperties.get(`${dashColor}`);
       return colorValue.replace('#', '%23'); // Using unescaped '#' characters in a data URI body is deprecated
     }
-    return dashColor.replace('#', '%23');
+    return dashColor.replace('#', '%23') || 'primary';
   }
   set dashColor(value) {
     this.setAttribute('dash-color', value);

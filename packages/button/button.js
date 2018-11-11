@@ -20,7 +20,7 @@ export class DashedButton extends DashedBase {
     this.render();
   }
 
-  attributeChangedCallback(attr, oldVal, newVal) {
+  attributeChangedCallback(attr, newVal, oldVal) {
     this.render();
   }
 
@@ -72,7 +72,7 @@ export class DashedButton extends DashedBase {
         }
 
         button::before {
-          content: "";
+          content: '';
           position: absolute;
           top: 0;
           left: 0;
@@ -83,15 +83,12 @@ export class DashedButton extends DashedBase {
           // background: var(--color-primary-light);
         }
 
-        :host ::slotted([slot="icon"]) {
+        :host ::slotted([slot='icon']) {
           stroke: currentColor;
           padding-right: 4px;
         }
       </style>
-      <button type="button">
-        <slot name="icon"></slot>
-        <slot></slot>
-      </button>
+      <button type="button"><slot name="icon"></slot> <slot></slot></button>
     `;
     while (this.shadowRoot.firstChild) {
       this.shadowRoot.removeChild(this.shadowRoot.firstChild);

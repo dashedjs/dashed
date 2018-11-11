@@ -18,5 +18,7 @@
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "lit-html": "^0.13.0"
+  }
 }

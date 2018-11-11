@@ -11,15 +11,23 @@ export class DashedTag extends DashedBase {
 
   connectedCallback() {
     this.render();
-    this._nativeButton = this.shadowRoot.querySelector('button');
-    this._nativeButton.addEventListener('click', this._toggleTag.bind(this));
+    this.addListeners();
   }
 
-  attributeChangedCallback(attr, oldVal, newVal) {
+  attributeChangedCallback(attr, newVal, oldVal) {
     this.render();
   }
 
   disconnectedCallback() {
+    this.removeListeners();
+  }
+
+  addListeners() {
+    this._nativeButton = this.shadowRoot.querySelector('button');
+    this._nativeButton.addEventListener('click', this._toggleTag.bind(this));
+  }
+
+  removeListeners() {
     this._nativeButton.remove('click', this._toggleTag.bind(this));
   }
 
@@ -30,7 +38,7 @@ export class DashedTag extends DashedBase {
       this.dashLength,
       this.dashSpacing
     ].map(attr => (attr ? parseFloat(attr) : undefined));
-    const dashColor = this.dashColor
+    const dashColor = this.dashColor;
 
     const template = document.createElement('template');
     template.innerHTML = `

@@ -5,6 +5,7 @@ const terser = require('rollup-plugin-terser');
 const replace = require('rollup-plugin-replace');
 
 const packages = [
+  'base',
   'button',
   'card',
   'checkbox',
@@ -19,10 +20,8 @@ const packages = [
   'radio',
   'select',
   'slider',
-  'styles',
   'tag',
-  'toggle',
-  'utils'
+  'toggle'
 ];
 
 gulp.task('build', gulp.parallel(buildSeries, buildBundle));
@@ -59,6 +58,7 @@ async function buildSeries() {
       input: `packages/${package}/${package}.js`,
       plugins: [
         resolve(),
+        replace({ values: { hello: '' } }),
         terser.terser({
           module: true,
           mangle: {

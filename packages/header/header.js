@@ -1,14 +1,8 @@
-import { DashedBase, borderImage, sharedStyles } from '@dashedjs/dashed-base';
-import { iconMenu, iconClose, iconGithub } from '@dashedjs/dashed-icons/icons.js';
+import { DashedBase, borderImage, sharedStyles, html } from '@dashedjs/dashed-base';
 
 export class DashedHeader extends DashedBase {
   constructor() {
     super();
-    this.navItems = [
-      { text: 'Getting started', href: '#' },
-      { text: 'Components', href: '#' },
-      { text: 'Playground', href: '#' }
-    ];
   }
 
   static get observedAttributes() {
@@ -16,40 +10,61 @@ export class DashedHeader extends DashedBase {
   }
 
   get navItems() {
-    return this._navItems;
+    return this._navItems || [];
   }
   set navItems(value) {
     this._navItems = value;
+    this.render();
+    this.addListeners();
   }
 
-  get logo() {
-    return this._logo;
+  get logoSrc() {
+    return this.getAttribute('logo-src') || '';
   }
-  set logo(value) {
-    this._logo = value;
+  set logoSrc(value) {
+    this.setAttribute('logo-src', value);
   }
 
-  get iconLeft() {
-    return this._iconLeft;
+  get logoText() {
+    return this.getAttribute('logo-text') || '';
   }
-  set iconLeft(value) {
-    this._iconLeft = value;
+  set logoText(value) {
+    this.setAttribute('logo-text', value);
   }
 
   get iconRight() {
-    return this._iconRight;
+    return this.getAttribute('icon-right');
   }
   set iconRight(value) {
-    this._iconRight = value;
+    this.setAttribute('icon-right', value);
   }
 
   connectedCallback() {
     this.render();
+    this.addListeners();
+  }
+
+  disconnectedCallback() {
+    this.removeListeners();
+  }
+
+  attributeChangedCallback(attr, newVal, oldVal) {
+    this.render();
+    this.addListeners();
+  }
+
+  addListeners() {
     this._menuButton = this.shadowRoot.querySelector('#menubutton');
     this._menuButton.addEventListener('click', this._toggleMenu.bind(this));
     this._nav = this.shadowRoot.querySelector('nav');
-    this._menuItems = [...this._nav.querySelectorAll('a[role="menuitem"]')];
-    this._menuItems.forEach(menuitem => menuitem.addEventListener('click', this._activateLink.bind(this)));
+    this._navItemLinks = [...this._nav.querySelectorAll('a[role="menuitem"]')];
+    this._navItemLinks.forEach((navItemLink, i) => {
+      navItemLink.addEventListener('click', this._activateLink.bind(this));
+      if (this.navItems[i].onclick) {
+        console.log('function = ', this.navItems[i].onclick.bind(this));
+        navItemLink.addEventListener('click', this.navItems[i].onclick.bind(this));
+      }
+    });
 
     this._mediaQueryList = window.matchMedia('screen and (min-width: 600px)');
     this._mediaQueryList.addListener(this._mediaQueryChange.bind(this));
@@ -58,16 +73,12 @@ export class DashedHeader extends DashedBase {
     document.addEventListener('click', this._closeMenu.bind(this));
   }
 
-  disconnectedCallback() {
+  removeListeners() {
     this._menuButton.removeEventListener('click', this._toggleMenu.bind(this));
-    this._menuItems.forEach(menuitem => menuitem.removeEventListener('click', this._activateLink.bind(this)));
+    this._navItemLinks.forEach(menuitem => menuitem.removeEventListener('click', this._activateLink.bind(this)));
     this._mediaQueryList.removeListener(this._mediaQueryChange.bind(this));
 
     document.removeEventListener('click', this._closeMenu.bind(this));
-  }
-
-  attributeChangedCallback(attr, oldVal, newVal) {
-    this.render();
   }
 
   render() {
@@ -77,54 +88,58 @@ export class DashedHeader extends DashedBase {
       this.dashLength,
       this.dashSpacing
     ].map(attr => (attr ? parseFloat(attr) : undefined));
-    const dashColor = this.dashColor
+    const dashColor = this.dashColor;
 
     const template = document.createElement('template');
-    template.innerHTML = `
+    template.innerHTML = html`
       ${sharedStyles}
       <style>
         :host {
-          --dashed-header-height: 56px;
-          --dashed-lightgrey: lightgrey;
-          --dashed-transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-          --shadow-2:
-            0 2px 2px 0 rgba(10, 9, 9, 0.14),
-            0 1px 5px 0 rgba(0, 0, 0, 0.12),
+          --height: 56px;
+          --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+          --topbar-background: var(--color-primary-light);
+          --sidebar-background: lightgrey;
+          --topbar-box-shadow: 0px 2px 2px -2px rgba(0, 0, 0, 0.7);
+          --sidebar-box-shadow: 0 2px 2px 0 rgba(10, 9, 9, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12),
             0 3px 1px -2px rgba(0, 0, 0, 0.2);
-          --dashed-header-shadow: 0px 2px 2px -2px rgba(0, 0, 0, 0.7);
 
           display: block;
           position: sticky;
           top: 0;
+          outline: none;
         }
 
         header {
-          height: var(--dashed-header-height);
+          height: var(--height);
           display: grid;
           grid-template-columns: max-content max-content auto max-content;
-  
+          align-items: center;
+
           border-bottom: ${dashWidth}px solid;
           border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
         }
 
         header::before {
-          content: "";
+          content: '';
           position: absolute;
           top: 0;
           left: 0;
           width: 100%;
           height: 100%;
-          background: var(--color-primary-light);
+          background: var(--topbar-background);
           z-index: -1;
         }
 
         button {
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           background: none;
           cursor: pointer;
           border: 0;
-          outline: 0;
-          padding: 8px 16px;
+          width: 48px;
+          height: 48px;
+          /* padding: 8px 16px; */
         }
 
         nav {
@@ -134,13 +149,13 @@ export class DashedHeader extends DashedBase {
         /* Mobile navlist */
         nav.sidebar {
           position: fixed;
-          top: var(--dashed-header-height);
+          top: var(--height);
           left: 0;
           width: 60%;
           height: 100%;
-          background: var(--dashed-lightgrey);
-          transition: var(--dashed-transition);
-          box-shadow: var(--shadow-2);
+          transition: var(--transition);
+          background: var(--sidebar-background);
+          box-shadow: var(--sidebar-box-shadow);
           transform: translate3d(-100%, 0, 0);
           will-change: transform;
           z-index: 2;
@@ -156,26 +171,24 @@ export class DashedHeader extends DashedBase {
           padding: 0;
           width: 100%;
           height: 100%;
+          overflow: auto;
         }
 
-        ul li {
-          padding: 0 1rem;
+        nav.sidebar ul li a {
+          padding: 1rem;
+          width: 100%;
+          height: 100%;
         }
 
-        li a:hover,
-        li a.active {
-          border-bottom-style: solid;
-          border-bottom: 2px solid inherit;
-        }
-
-        li a.active {
-          /* font-weight: bold; */
+        nav ul li a:hover,
+        nav ul li a.active {
+          background: var(--color-accent);
+          color: white;
         }
 
         a {
           padding-bottom: 4px;
           text-decoration: none;
-          /* text-transform: uppercase; */
           display: flex;
           align-items: center;
         }
@@ -185,16 +198,8 @@ export class DashedHeader extends DashedBase {
           margin: 4px;
         }
 
-        svg.icon {
-          width: 24px;
-          height: 24px;
-          fill: var(--color-primary);
-          stroke: var(--color-primary);
-        }
-
-        svg.github-icon {
-          stroke: #000000;
-          fill: #000000;
+        a .logo-text {
+          font-size: var(--font-medium);
         }
 
         @media screen and (min-width: 600px) {
@@ -212,37 +217,39 @@ export class DashedHeader extends DashedBase {
             align-items: center;
             justify-content: flex-end;
           }
+
+          nav.topbar ul li a {
+            padding: 0.5rem;
+          }
         }
       </style>
       <header>
-        <button id="menubutton"
-          aria-expanded="false"
-          aria-controls="menu"
-          aria-label="Menu button">
-            <dashed-icon name="menu"></dashed-icon>
+        <button id="menubutton" aria-expanded="false" aria-controls="menu" aria-label="Menu button">
+          <dashed-icon name="menu"></dashed-icon>
         </button>
         <a href="#">
-          <img class="logo" src="/src/assets/img/logo.png" alt="Dashedjs logo">
-          <h1 class="logo-text"></h1>
+          <img class="logo" src="${this.logoSrc}" alt="Dashedjs logo" />
+          <h1 class="logo-text">${this.logoText}</h1>
         </a>
         <div></div>
         <nav class="sidebar" role="navigation">
           <ul id="menu" role="menu" aria-labelledby="menubutton">
-            ${this.navItems
-              .map(navItem => {
-                return `
+            ${
+              this.navItems
+                .map(navItem => {
+                  return `
                 <li role="none">
-                  <a role="menuitem" href="${navItem.href}">
+                  <a role="menuitem" href="${navItem.href}" onclick=${navItem.onclick}>
                   ${navItem.text}
                   </a>
                 </li>`;
-              })
-              .join(' ')}
+                })
+                .join(' ')
+            }
           </ul>
+          <!-- <slot name="ul"></slot> -->
         </nav>
-        <button role="search" aria-label="search button">
-          <dashed-icon name="github"></dashed-icon>
-        </button>
+        <slot name="right-slot"></slot>
       </header>
     `;
     while (this.shadowRoot.firstChild) {

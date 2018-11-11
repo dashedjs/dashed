@@ -1,23 +1,3 @@
-// const customProperties = new Map([
-//   ['--color-primary', '#3636e7'],
-//   ['--color-primary-light', ' #3636e726'],
-//   ['--color-secondary', '#ce8207'],
-//   ['--color-secondary-light', '#e39248bf'],
-//   ['--color-success', '#1f8d57'],
-//   ['--color-success-light', '#1f8d5726'],
-//   ['--color-danger', '#fa3232'],
-//   ['--color-danger-light', '#fa323226'],
-//   ['--color-warn', '#cd9a1a'],
-//   ['--color-warn-light', '#cbab59ad'],
-//   ['--color-outline', '#8181c1'],
-//   ['--color-fill', 'var(--color-primary-light)'][('--font-small', '0.8rem')],
-
-//   ['--font-medium', '1rem'],
-//   ['--font-large', '1.5rem'],
-//   ['--font-xlarge', '2rem'],
-
-// ]);
-
 export const sharedStyles = String.raw`
   <style title="Shared styles">
     :host{
@@ -25,13 +5,15 @@ export const sharedStyles = String.raw`
       --color-primary-light: #3636e726;
       --color-secondary: #ce8207;
       --color-secondary-light: #e39248bf;
+      --color-accent: #cc6c7a;
+      --color-accent-light: #ef8e9d99;
       --color-success: #1f8d57;
       --color-success-light: #1f8d5726;
       --color-danger: #fa3232;
       --color-danger-light: #fa323226;
       --color-warn: #cd9a1a;
       --color-warn-light: #cbab59ad;
-      --color-outline: #8181c1;
+      --color-outline: #6299f2;
       --color-fill: var(--color-primary-light);
 
       --font-small: 0.8rem;
@@ -48,7 +30,10 @@ export const sharedStyles = String.raw`
       pointer-events: none;
     }
 
-    :host(:focus) > * {
+    :host(:focus) > button,
+    :host(:focus) > a,
+    :host(:focus) > input,
+    :host(:focus) > dashed-icon {
       outline: 1px solid var(--color-outline);
       outline-offset: 1px;
     }

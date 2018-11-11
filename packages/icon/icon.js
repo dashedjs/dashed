@@ -13,6 +13,7 @@ export class DashedIcon extends HTMLElement {
   }
   set name(value) {
     this.setAttribute('name', value);
+    if (!this.ariaLabel) this.ariaLabel = value;
   }
 
   get src() {
@@ -20,6 +21,13 @@ export class DashedIcon extends HTMLElement {
   }
   set src(value) {
     this.setAttribute('src', value);
+  }
+
+  get iconsRoot() {
+    return this.getAttribute('icons-root') || 'assets/dashed-icons';
+  }
+  set iconsRoot(value) {
+    return this.setAttribute('icons-root', value);
   }
 
   get size() {
@@ -47,12 +55,12 @@ export class DashedIcon extends HTMLElement {
     this.render();
   }
 
-  attributeChangedCallback(attr, oldVal, newVal) {
+  attributeChangedCallback(attr, newVal, oldVal) {
     this.render();
   }
 
   async render() {
-    const icon = await this.fetchIcon();
+    const svg = await this.iconSvg();
     const template = document.createElement('template');
     template.innerHTML = `
       <style>
@@ -92,7 +100,7 @@ export class DashedIcon extends HTMLElement {
           height: 100%;
         }
       </style>
-      <span>${icon}</span>
+      <span>${svg}</span>
     `;
     while (this.shadowRoot.firstChild) {
       this.shadowRoot.removeChild(this.shadowRoot.firstChild);
@@ -100,19 +108,31 @@ export class DashedIcon extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
-  async fetchIcon() {
-    // const iconUrl = this.name ? `/node_modules/@dashedjs/dashed-icons/${this.name}.svg` : this.src;
-    const iconUrl = this.name ? `/node_modules/@dashedjs/dashed-core/packages/icons/${this.name}.svg` : this.src;
-    console.log({ name: this.name, src: this.src, iconUrl });
+  async iconSvg() {
+    let iconUrl;
+    if (this.src) {
+      iconUrl = /^\//.test(this.src) ? this.src : `/${this.src}`;
+      return this.fetchIcon(iconUrl);
+    }
+    if (this.name) {
+      iconUrl = /^\//.test(this.iconsRoot)
+        ? `${this.iconsRoot}/${this.name}.svg`
+        : `/${this.iconsRoot}/${this.name}.svg`;
+      return this.fetchIcon(iconUrl);
+    }
+  }
+
+  async fetchIcon(url) {
     try {
-      const res = await fetch(iconUrl);
+      const res = await fetch(url, { cache: 'force-cache' });
       if (res.status !== 200) {
-        throw new Error(`Error code ${res.status}, failed to load icon: ${iconUrl}`);
+        throw new Error(`Error code ${res.status}, failed to load icon: ${url}.
+          Check your 'src' attribute or try setting 'iconsRoot' if you are using the 'name' attribute inside a framework
+          (For Angular set 'iconsRoot' attribute to 'assets/dashed-icons')`);
       }
       return res.text();
     } catch (err) {
       console.error(err);
-      return '';
     }
   }
 }

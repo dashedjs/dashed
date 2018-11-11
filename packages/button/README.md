@@ -80,6 +80,8 @@ An other approach is to define your custom theme by overrinding CSS custom varia
 | --color-primary-light   | **#3636e726**                  |
 | --color-secondary       | **#ce8207**                    |
 | --color-secondary-light | **#e39248bf**                  |
+| --color-accent          | **#cc6c7a**                    |
+| --color-accent-light    | **#ef8e9d99**                  |
 | --color-success         | **#1f8d57**                    |
 | --color-success-light   | **#1f8d5726**                  |
 | --color-danger          | **#fa3232**                    |
