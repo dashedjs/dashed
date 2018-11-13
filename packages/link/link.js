@@ -1,4 +1,4 @@
-import { DashedBase, borderImage, sharedStyles } from '@dashedjs/dashed-base';
+import { DashedBase, borderImage, sharedStyles, html } from '@dashedjs/dashed-base';
 
 export class DashedLink extends DashedBase {
   constructor() {
@@ -24,56 +24,47 @@ export class DashedLink extends DashedBase {
     this.render();
   }
 
-  render() {
-    const [borderRadius = 0, dashWidth = 1.5, dashLength = 8, dashSpacing = 2] = [
-      this.borderRadius,
-      this.dashWidth,
-      this.dashLength,
-      this.dashSpacing
-    ].map(attr => (attr ? parseFloat(attr) : undefined));
-    const dashColor = this.dashColor
+  template() {
+    const templateFactory = (props = {}) => {
+      const { borderRadius, dashWidth, dashLength, dashSpacing, dashColor } = props;
+      return html`
+        ${sharedStyles}
+        <style>
+          :host {
+            display: inline-block;
+            cursor: pointer;
+            outline: none;
+            position: relative;
+            font-size: 16px;
+          }
 
-    const template = document.createElement('template');
-    template.innerHTML = `
-      ${sharedStyles}
-      <style>
-        :host {
-          display: inline-block;
-          cursor: pointer;
-          outline: none;
-          position: relative;
-          font-size: 16px;
-        }
+          :host(:hover) {
+            color: var(--color-primary);
+            --color-fill: var(--color-primary-light);
+          }
 
-        :host(:hover) {
-          color: var(--color-primary);
-          --color-fill: var(--color-primary-light);
-        }
+          a {
+            display: inline-block;
+            cursor: inherit;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            outline: none;
+            padding-bottom: 2px;
+            font-size: inherit;
+            position: relative;
+            transition: color 50ms ease-in-out;
 
-        a {
-          display: inline-block;
-          cursor: inherit;
-          text-align: center;
-          text-decoration: none;
-          color: inherit;
-          outline: none;
-          padding-bottom: 4px;
-          font-size: inherit;
-          position: relative;
-          transition: color 50ms ease-in-out;
+            border-bottom: ${dashWidth}px solid;
+            border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
+          }
+        </style>
+        <a href="#"> <slot></slot> </a>
+      `;
+    };
 
-          border-bottom: ${dashWidth}px solid;
-          border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
-        }
-      </style>
-      <a href="#">
-        <slot></slot>
-      </a>
-    `;
-    while (this.shadowRoot.firstChild) {
-      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-    }
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
+    const { borderRadius = 0, dashWidth = 1.5, dashLength = 8, dashSpacing = 2, dashColor } = this.dashProps;
+    return templateFactory({ borderRadius, dashWidth, dashLength, dashSpacing, dashColor });
   }
 }
 customElements.define('dashed-link', DashedLink);

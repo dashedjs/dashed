@@ -1,3 +1,5 @@
+import { html, render } from 'lit-html';
+
 export class DashedIcon extends HTMLElement {
   constructor() {
     super();
@@ -59,53 +61,57 @@ export class DashedIcon extends HTMLElement {
     this.render();
   }
 
-  async render() {
+  async template() {
+    const templateFactory = (props = {}) => {
+      const { svg } = props;
+      return html`
+        <style>
+          :host {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            outline: none;
+            width: 24px;
+            height: 24px;
+          }
+
+          :host-context(dashed-button),
+          :host-context(dashed-button) svg {
+            width: 16px;
+            height: 16px;
+          }
+
+          :host-context(dashed-tag),
+          :host-context(dashed-tag) svg {
+            width: 12px;
+            height: 12px;
+          }
+
+          :host-context(dashed-fab),
+          :host-context(dashed-fab) svg {
+            width: 18px;
+            height: 18px;
+          }
+
+          span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+          }
+        </style>
+        <span .innerHTML="${svg}"></span>
+      `;
+    };
+
     const svg = await this.iconSvg();
-    const template = document.createElement('template');
-    template.innerHTML = `
-      <style>
-        :host {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          outline: none;
-          width: 24px;
-          height: 24px;
-        }
+    return templateFactory({ svg });
+  }
 
-        :host-context(dashed-button),
-        :host-context(dashed-button) svg {
-          width: 16px;
-          height: 16px;
-        }
-
-        :host-context(dashed-tag),
-        :host-context(dashed-tag) svg {
-          width: 12px;
-          height: 12px;
-        }
-
-        :host-context(dashed-fab),
-        :host-context(dashed-fab) svg {
-          width: 18px;
-          height: 18px;
-        }
-        
-        span {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          width: 100%;
-          height: 100%;
-        }
-      </style>
-      <span>${svg}</span>
-    `;
-    while (this.shadowRoot.firstChild) {
-      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-    }
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
+  async render() {
+    render(this.template(), this.shadowRoot);
   }
 
   async iconSvg() {

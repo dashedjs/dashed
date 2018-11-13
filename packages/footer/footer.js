@@ -1,4 +1,4 @@
-import { DashedBase, sharedStyles } from '@dashedjs/dashed-base';
+import { DashedBase, sharedStyles, html } from '@dashedjs/dashed-base';
 
 export class DashedFooter extends DashedBase {
   constructor() {
@@ -17,10 +17,10 @@ export class DashedFooter extends DashedBase {
     this.render();
   }
 
-  render() {
-    const template = document.createElement('template');
-    template.innerHTML = `
-      ${sharedStyles}
+  template() {
+    const templateFactory = (props = {}) => {
+      return html`
+            ${sharedStyles}
       <style>
         :host {
           --dashed-footer-min-width: 256px;
@@ -74,11 +74,9 @@ export class DashedFooter extends DashedBase {
           <button class="footer__footer__button">button2</button>
         </div>
       </div>
-    `;
-    while (this.shadowRoot.firstChild) {
-      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-    }
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
+      `;
+    };
+    return templateFactory();
   }
 }
 customElements.define('dashed-footer', DashedFooter);

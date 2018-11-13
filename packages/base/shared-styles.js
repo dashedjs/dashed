@@ -1,6 +1,8 @@
-export const sharedStyles = String.raw`
+import { html } from 'lit-html';
+
+export const sharedStyles = html`
   <style title="Shared styles">
-    :host{
+    :host {
       --color-primary: #3636e7;
       --color-primary-light: #3636e726;
       --color-secondary: #ce8207;
@@ -41,19 +43,19 @@ export const sharedStyles = String.raw`
     :host([dash-color]) {
       color: attr(dash-color);
     }
-    :host([dash-color="primary"]) {
+    :host([dash-color='primary']) {
       color: var(--color-primary);
     }
-    :host([dash-color="secondary"]) {
+    :host([dash-color='secondary']) {
       color: var(--color-secondary);
     }
-    :host([dash-color="success"]) {
+    :host([dash-color='success']) {
       color: var(--color-success);
     }
-    :host([dash-color="danger"]) {
+    :host([dash-color='danger']) {
       color: var(--color-danger);
     }
-    :host([dash-color="warn"]) {
+    :host([dash-color='warn']) {
       color: var(--color-warn);
     }
 
