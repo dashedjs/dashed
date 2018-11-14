@@ -1,4 +1,4 @@
-import { html } from 'lit-html';
+import { html } from '@polymer/lit-element';
 
 export const sharedStyles = html`
   <style title="Shared styles">
