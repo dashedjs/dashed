@@ -7,14 +7,11 @@ export class DashedButton extends DashedBase {
     this.dashWidth = 2;
     this.dashLength = 8;
     this.dashSpacing = 2.4;
-    this.dashColor = '';
   }
 
   static get properties() {
-    const defaultProps = super.properties();
-    console.log({ defaultProps });
     return {
-      ...defaultProps,
+      ...super.properties,
       rounded: Boolean
     };
   }
@@ -24,7 +21,6 @@ export class DashedButton extends DashedBase {
   }
 
   render() {
-    console.log('props', DashedButton.properties);
     return html`
       ${this.renderStyle()}
       <style>

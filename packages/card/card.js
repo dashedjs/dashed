@@ -3,25 +3,19 @@ import { DashedBase, borderImage, sharedStyles, html } from '../base/base';
 export class DashedCard extends DashedBase {
   constructor() {
     super();
+    this.borderRadius = 16;
+    this.dashWidth = 2;
+    this.dashLength = 20;
+    this.dashSpacing = 2;
   }
 
-  static get observedAttributes() {
-    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
+  renderStyle() {
+    return sharedStyles;
   }
 
-  connectedCallback() {
-    this.render();
-  }
-
-  attributeChangedCallback(attr, newVal, oldVal) {
-    this.render();
-  }
-
-  template() {
-    const templateFactory = (props = {}) => {
-      const { borderRadius, dashWidth, dashLength, dashSpacing, dashColor } = props;
-      return html`
-        ${sharedStyles}
+  render() {
+    return html`
+        ${this.renderStyle()}
         <style>
           :host {
             display: inline-block;
@@ -37,8 +31,14 @@ export class DashedCard extends DashedBase {
             /* max-width: 100%; */
             padding: 10px;
 
-            border: ${dashWidth}px solid;
-            border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
+            border: ${this.dashWidth}px solid;
+            border-image: ${borderImage(
+              this.dashWidth,
+              this.dashLength,
+              this.dashSpacing,
+              this.dashColor,
+              this.borderRadius
+            )};
           }
 
           .card::before {
@@ -49,7 +49,7 @@ export class DashedCard extends DashedBase {
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: ${borderRadius}px;
+            border-radius: ${this.borderRadius}px;
             background: var(--color-primary-light);
           }
 
@@ -83,10 +83,6 @@ export class DashedCard extends DashedBase {
           </div>
         </div>
       `;
-    };
-
-    const { borderRadius = 16, dashWidth = 2, dashLength = 20, dashSpacing = 2, dashColor } = this.dashProps;
-    return templateFactory({ borderRadius, dashWidth, dashLength, dashSpacing, dashColor });
   }
 }
 customElements.define('dashed-card', DashedCard);

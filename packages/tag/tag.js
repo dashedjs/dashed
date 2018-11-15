@@ -3,103 +3,86 @@ import { DashedBase, borderImage, sharedStyles, html } from '@dashedjs/dashed-ba
 export class DashedTag extends DashedBase {
   constructor() {
     super();
+    this.borderRadius = 16;
+    this.dashWidth = 2;
+    this.dashLength = 8;
+    this.dashSpacing = 4;
+
+    this._active = false;
   }
 
-  static get observedAttributes() {
-    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
+  renderStyle() {
+    return sharedStyles;
   }
 
-  connectedCallback() {
-    this.render();
-    this.addListeners();
-  }
+  render() {
+    return html`
+      ${this.renderStyle()}
+      <style>
+        :host {
+          display: inline-block;
+          cursor: pointer;
+          outline: none;
+          position: relative;
+          font-size: 12px;
+        }
 
-  attributeChangedCallback(attr, newVal, oldVal) {
-    this.render();
-  }
+        :host(:hover) {
+          color: var(--color-primary);
+          --color-fill: var(--color-primary-light);
+        }
 
-  disconnectedCallback() {
-    this.removeListeners();
-  }
+        button {
+          min-width: 32px;
+          min-height: 24px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: none;
+          cursor: inherit;
+          color: inherit;
+          outline: none;
+          padding: 4px 10px;
+          font-size: inherit;
+          position: relative;
+          transition: color 50ms ease-in-out;
 
-  addListeners() {
-    this._nativeButton = this.shadowRoot.querySelector('button');
-    this._nativeButton.addEventListener('click', this._toggleTag.bind(this));
-  }
+          border: ${this.dashWidth}px solid;
+          border-image: ${
+            borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.dashColor, this.borderRadius)
+          };
+        }
 
-  removeListeners() {
-    this._nativeButton.remove('click', this._toggleTag.bind(this));
-  }
+        button::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: ${this.borderRadius}px;
+          background: var(--color-primary-light);
+        }
 
-  template() {
-    const templateFactory = (props = {}) => {
-      const { borderRadius, dashWidth, dashLength, dashSpacing, dashColor } = props;
-      return html`
-        ${sharedStyles}
-        <style>
-          :host {
-            display: inline-block;
-            cursor: pointer;
-            outline: none;
-            position: relative;
-            font-size: 12px;
-          }
+        button.active {
+          color: var(--color-danger);
+        }
 
-          :host(:hover) {
-            color: var(--color-primary);
-            --color-fill: var(--color-primary-light);
-          }
-
-          button {
-            min-width: 32px;
-            min-height: 24px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: none;
-            cursor: inherit;
-            color: inherit;
-            outline: none;
-            padding: 4px 10px;
-            font-size: inherit;
-            position: relative;
-            transition: color 50ms ease-in-out;
-
-            border: ${dashWidth}px solid;
-            border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
-          }
-
-          button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: ${borderRadius}px;
-            background: var(--color-primary-light);
-          }
-
-          button.active {
-            color: var(--color-danger);
-          }
-
-          :host ::slotted(dashed-icon[slot='icon']),
-          :host ::slotted(svg) {
-            stroke: currentColor;
-            padding-left: 4px;
-          }
-        </style>
-        <button type="button"><slot></slot> <slot name="icon"></slot></button>
-      `;
-    };
-
-    const { borderRadius = 16, dashWidth = 2, dashLength = 8, dashSpacing = 4, dashColor } = this.dashProps;
-    return templateFactory({ borderRadius, dashWidth, dashLength, dashSpacing, dashColor });
+        :host ::slotted(dashed-icon[slot='icon']),
+        :host ::slotted(svg) {
+          stroke: currentColor;
+          padding-left: 4px;
+        }
+      </style>
+      <button type="button" @click="${e => this._toggleTag(e)}" class="${this._active ? 'active' : ''}">
+        <slot></slot> <slot name="icon"></slot>
+      </button>
+    `;
   }
 
   _toggleTag(e) {
-    this._nativeButton.classList.toggle('active');
+    this._active = !this._active;
+    this.requestUpdate();
   }
 }
 customElements.define('dashed-tag', DashedTag);
