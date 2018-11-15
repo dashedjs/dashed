@@ -11,13 +11,16 @@ export class DashedTag extends DashedBase {
     this._active = false;
   }
 
-  renderStyle() {
-    return sharedStyles;
+  static get properties() {
+    return {
+      ...super.properties,
+      disabled: Boolean
+    };
   }
 
   render() {
     return html`
-      ${this.renderStyle()}
+      ${sharedStyles}
       <style>
         :host {
           display: inline-block;

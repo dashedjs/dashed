@@ -16,10 +16,6 @@ export class DashedSlider extends DashedBase {
     this._percentage = this.max != this.min ? `${((this.value - this.min) / (this.max - this.min)) * 100}%` : '0%';
   }
 
-  renderStyle() {
-    return sharedStyles;
-  }
-
   static get properties() {
     return {
       ...super.properties,
@@ -33,7 +29,7 @@ export class DashedSlider extends DashedBase {
   render() {
     this._percentage = this.max != this.min ? `${((this.value - this.min) / (this.max - this.min)) * 100}%` : '0%';
     return html`
-      ${this.renderStyle()}
+      ${sharedStyles}
       <style>
         :host {
           --dashed-background-width: 100%;

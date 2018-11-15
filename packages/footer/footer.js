@@ -1,13 +1,9 @@
 import { DashedBase, sharedStyles, html } from '@dashedjs/dashed-base';
 
 export class DashedFooter extends DashedBase {
-  renderStyle() {
-    return sharedStyles;
-  }
-
   render() {
     return html`
-      ${this.renderStyle()}
+      ${sharedStyles}
       <style>
         :host {
           --dashed-footer-min-width: 256px;

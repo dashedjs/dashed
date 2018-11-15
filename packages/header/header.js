@@ -46,13 +46,9 @@ export class DashedHeader extends DashedBase {
     document.removeEventListener('click', this._closeMenu.bind(this));
   }
 
-  renderStyle() {
-    return sharedStyles;
-  }
-
   render() {
     return html`
-      ${this.renderStyle()}
+      ${sharedStyles}
       <style>
         :host {
           --height: 56px;

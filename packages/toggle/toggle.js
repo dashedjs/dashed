@@ -12,18 +12,15 @@ export class DashedToggle extends DashedBase {
   static get properties() {
     return {
       ...super.properties,
+      disabled: Boolean,
       checked: Boolean
     };
-  }
-
-  renderStyle() {
-    return sharedStyles;
   }
 
   render() {
     const [widthDelta, heightDelta] = [6, 10];
     return html`
-      ${this.renderStyle()}
+      ${sharedStyles}
       <style>
         :host {
           display: inline-flex;

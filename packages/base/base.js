@@ -21,7 +21,6 @@ export class DashedBase extends LitElement {
 
   static get properties() {
     return {
-      disabled: Boolean,
       borderRadius: Number,
       dashWidth: Number,
       dashLength: Number,

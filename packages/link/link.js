@@ -12,17 +12,14 @@ export class DashedLink extends DashedBase {
   static get properties() {
     return {
       ...super.properties,
+      disabled: Boolean,
       role: String
     };
   }
 
-  renderStyle() {
-    return sharedStyles;
-  }
-
   render() {
     return html`
-      ${this.renderStyle()}
+      ${sharedStyles}
       <style>
         :host {
           display: inline-block;

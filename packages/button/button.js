@@ -12,17 +12,14 @@ export class DashedButton extends DashedBase {
   static get properties() {
     return {
       ...super.properties,
+      disabled: Boolean,
       rounded: Boolean
     };
   }
 
-  renderStyle() {
-    return sharedStyles;
-  }
-
   render() {
     return html`
-      ${this.renderStyle()}
+      ${sharedStyles}
       <style>
         :host {
           --padding: 4px 12px;

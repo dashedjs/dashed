@@ -9,13 +9,9 @@ export class DashedCard extends DashedBase {
     this.dashSpacing = 2;
   }
 
-  renderStyle() {
-    return sharedStyles;
-  }
-
   render() {
     return html`
-        ${this.renderStyle()}
+        ${sharedStyles}
         <style>
           :host {
             display: inline-block;

@@ -12,17 +12,14 @@ export class DashedCheckbox extends DashedBase {
   static get properties() {
     return {
       ...super.properties,
+      disabled: Boolean,
       checked: Boolean
     };
   }
 
-  renderStyle() {
-    return sharedStyles;
-  }
-
   render() {
     return html`
-      ${this.renderStyle()}
+      ${sharedStyles}
       <style>
         :host {
           display: inline-flex;

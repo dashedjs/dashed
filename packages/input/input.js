@@ -9,13 +9,16 @@ export class DashedInput extends DashedBase {
     this.dashSpacing = 1;
   }
 
-  renderStyle() {
-    return sharedStyles;
+  static get properties() {
+    return {
+      ...super.properties,
+      disabled: Boolean
+    };
   }
 
   render() {
     return html`
-      ${this.renderStyle()}
+      ${sharedStyles}
       <style>
         :host {
           display: inline-flex;

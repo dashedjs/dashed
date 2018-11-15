@@ -9,13 +9,9 @@ export class DashedNotification extends DashedBase {
     this.dashSpacing = 4;
   }
 
-  renderStyle() {
-    return sharedStyles;
-  }
-
   render() {
     return html`
-      ${this.renderStyle()}
+      ${sharedStyles}
       <style>
         :host {
           display: inline-block;

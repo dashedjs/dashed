@@ -12,18 +12,15 @@ export class DashedFab extends DashedBase {
   static get properties() {
     return {
       ...super.properties,
+      disabled: Boolean,
       ariaLabel: String
     };
-  }
-
-  renderStyle() {
-    return sharedStyles;
   }
 
   render() {
     const borderRadiusInner = this.borderRadius - 4;
     return html`
-      ${this.renderStyle()}
+      ${sharedStyles}
       <style>
         :host {
           display: inline-block;
