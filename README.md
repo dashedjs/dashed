@@ -1,41 +1,29 @@
 # Dashed Web Components
 
-The project is at a very early stage! This work has just begun and is in progress ...
-It contains a set of custom web components created using vanilla Html, Javascript and CSS.
+The project is at a very early stage! This work has just begun and is still in progress ...
+It contains a set of dashed web components. You can control the dash - width/length/spacing, which is not possible with the CSS dashed border. I use the CSS border-image to show the SVG dash. CSSPaintWorklet might be an alternative to the SVG border-image.
 
 ## Objectives
 
 ## Running the project
 
-### Prerequisites
+- `npm start`
 
-// TODO:
+## Building the components
 
-- Install the latest version of [@node](https://nodejs.org/) and [@yarn](https://yarnpkg.com/)
-
-### Serving the app
-
-// TODO:
-
-- `yarn start`
+- `npm build`
 
 ### Test
 
 // TODO:
 
-- `yarn test`
+- `npm test`
 
 ## Contributing
 
 // TODO:
-Any kind of contribution is welcomed:
-
-- Wheter about a currently awesome library that deserve to be considered in the architechture above
-- any bug fix
-- Or any contribution on a given feature
+Any kind of contribution is welcomed :)
 
 ## Licence
 
-// TODO:
-
-This code is completely open source, under the MIT License!
+This project is licenced under the MIT License!

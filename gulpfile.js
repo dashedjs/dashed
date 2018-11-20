@@ -10,7 +10,6 @@ const packages = [
   'card',
   'checkbox',
   'fab',
-  'footer',
   'header',
   'icon',
   'icons',
@@ -65,7 +64,8 @@ async function buildSeries() {
             module: true
           }
         })
-      ]
+      ],
+      experimentalCodeSplitting: true
     });
     console.log(`Building package: ${package} ...`);
     rollupFileBuild.write({

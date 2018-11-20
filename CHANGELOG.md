@@ -1,13 +1,12 @@
 # Changelog
 
-## 0.0.1 (2018-08-29)
+## ?
 
 First release 🎉🎈! The following components are published:
 
 - **Button**
 - **Card**
 - **Checkbox**
-- **Footer**
 - **Header**
 - **Input**
 - **Link**
