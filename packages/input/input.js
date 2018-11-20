@@ -1,33 +1,23 @@
-import { DashedBase, borderImage, sharedStyles } from '@dashedjs/dashed-base';
+import { DashedBase, borderImage, sharedStyles, html } from '@dashedjs/dashed-base';
 
 export class DashedInput extends DashedBase {
   constructor() {
     super();
+    this.borderRadius = 5;
+    this.dashWidth = 1;
+    this.dashLength = 6;
+    this.dashSpacing = 1;
   }
 
-  static get observedAttributes() {
-    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
-  }
-
-  connectedCallback() {
-    this.render();
-  }
-
-  attributeChangedCallback(attr, newVal, oldVal) {
-    this.render();
+  static get properties() {
+    return {
+      ...super.properties,
+      disabled: Boolean
+    };
   }
 
   render() {
-    const [borderRadius = 5, dashWidth = 1, dashLength = 6, dashSpacing = 1] = [
-      this.borderRadius,
-      this.dashWidth,
-      this.dashLength,
-      this.dashSpacing
-    ].map(attr => (attr ? parseFloat(attr) : undefined));
-    const dashColor = this.dashColor
-
-    const template = document.createElement('template');
-    template.innerHTML = `
+    return html`
       ${sharedStyles}
       <style>
         :host {
@@ -45,8 +35,10 @@ export class DashedInput extends DashedBase {
           display: inline-block;
           position: relative;
 
-          border: ${dashWidth}px solid;
-          border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
+          border: ${this.dashWidth}px solid;
+          border-image: ${
+            borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.dashColor, this.borderRadius)
+          };
         }
 
         input {
@@ -61,14 +53,8 @@ export class DashedInput extends DashedBase {
         }
       </style>
       <label for="input"><slot></slot></label>
-      <div class="input-container">
-        <input id="input" />
-      </div>
+      <div class="input-container"><input id="input" /></div>
     `;
-    while (this.shadowRoot.firstChild) {
-      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-    }
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
 customElements.define('dashed-input', DashedInput);

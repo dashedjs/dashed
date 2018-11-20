@@ -1,40 +1,24 @@
-import { DashedBase, borderImage, sharedStyles } from '@dashedjs/dashed-base';
+import { DashedBase, borderImage, sharedStyles, html } from '@dashedjs/dashed-base';
 
 export class DashedLink extends DashedBase {
   constructor() {
     super();
+    this.borderRadius = 0;
+    this.dashWidth = 1.5;
+    this.dashLength = 8;
+    this.dashSpacing = 2;
   }
 
-  static get observedAttributes() {
-    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
-  }
-
-  get role() {
-    return this.getAttribute('role');
-  }
-  set role(value) {
-    this.setAttribute('role', '');
-  }
-
-  connectedCallback() {
-    this.render();
-  }
-
-  attributeChangedCallback(attr, newVal, oldVal) {
-    this.render();
+  static get properties() {
+    return {
+      ...super.properties,
+      disabled: Boolean,
+      role: String
+    };
   }
 
   render() {
-    const [borderRadius = 0, dashWidth = 1.5, dashLength = 8, dashSpacing = 2] = [
-      this.borderRadius,
-      this.dashWidth,
-      this.dashLength,
-      this.dashSpacing
-    ].map(attr => (attr ? parseFloat(attr) : undefined));
-    const dashColor = this.dashColor
-
-    const template = document.createElement('template');
-    template.innerHTML = `
+    return html`
       ${sharedStyles}
       <style>
         :host {
@@ -57,23 +41,19 @@ export class DashedLink extends DashedBase {
           text-decoration: none;
           color: inherit;
           outline: none;
-          padding-bottom: 4px;
+          padding-bottom: 2px;
           font-size: inherit;
           position: relative;
           transition: color 50ms ease-in-out;
 
-          border-bottom: ${dashWidth}px solid;
-          border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
+          border-bottom: ${this.dashWidth}px solid;
+          border-image: ${
+            borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.dashColor, this.borderRadius)
+          };
         }
       </style>
-      <a href="#">
-        <slot></slot>
-      </a>
+      <a href="#"> <slot></slot> </a>
     `;
-    while (this.shadowRoot.firstChild) {
-      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-    }
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
 customElements.define('dashed-link', DashedLink);

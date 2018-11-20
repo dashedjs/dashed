@@ -1,40 +1,24 @@
-import { DashedBase, borderImage, sharedStyles } from '@dashedjs/dashed-base/base.js';
+import { DashedBase, borderImage, sharedStyles, html } from '@dashedjs/dashed-base/base.js';
 
 export class DashedSelect extends DashedBase {
   constructor() {
     super();
+    this.borderRadius = 0;
+    this.dashWidth = 2;
+    this.dashLength = 10;
+    this.dashSpacing = 3.33;
   }
 
-  static get observedAttributes() {
-    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
-  }
-
-  get value() {
-    return this.getAttribute('value');
-  }
-  set value(value) {
-    this.setAttribute('value', value);
-  }
-
-  connectedCallback() {
-    this.render();
-  }
-
-  attributeChangedCallback(attr, newVal, oldVal) {
-    this.render();
+  static get properties() {
+    return {
+      ...super.properties,
+      disabled: Boolean,
+      value: String
+    };
   }
 
   render() {
-    const [borderRadius = 0, dashWidth = 2, dashLength = 10, dashSpacing = 3.33] = [
-      this.borderRadius,
-      this.dashWidth,
-      this.dashLength,
-      this.dashSpacing
-    ].map(attr => (attr ? parseFloat(attr) : undefined));
-    const dashColor = this.dashColor
-
-    const template = document.createElement('template');
-    template.innerHTML = `
+    return html`
       ${sharedStyles}
       <style>
         :host {
@@ -50,12 +34,14 @@ export class DashedSelect extends DashedBase {
           display: inline-block;
           position: relative;
 
-          border-bottom: ${dashWidth}px solid;
-          border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
+          border-bottom: ${this.dashWidth}px solid;
+          border-image: ${
+            borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.dashColor, this.borderRadius)
+          };
         }
 
         .select-container::before {
-          content: "";
+          content: '';
           z-index: -1;
           position: absolute;
           top: 0;
@@ -79,10 +65,10 @@ export class DashedSelect extends DashedBase {
           -webkit-appearance: none;
           -moz-appearance: none;
         }
-  
+
         svg.dash .caret {
           stroke: var(--color-primary);
-          stroke-width: ${parseFloat(this.dashWidth)};
+          stroke-width: ${this.dashWidth};
         }
       </style>
       <label for="select"><slot></slot></label>
@@ -92,15 +78,9 @@ export class DashedSelect extends DashedBase {
           <option value="3">Option 3</option>
           <option value="2">Option 2</option>
         </select>
-        <svg class="dash">
-          <path class="caret" d="M0 ${8}l4 4l4 -4" transform="translate(${96 - 12}, 0)" />
-        </svg>
+        <svg class="dash"><path class="caret" d="M0 ${8}l4 4l4 -4" transform="translate(${96 - 12}, 0)" /></svg>
       </div>
     `;
-    while (this.shadowRoot.firstChild) {
-      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-    }
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
 customElements.define('dashed-select', DashedSelect);

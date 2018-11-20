@@ -19,6 +19,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "lit-html": "^0.13.0"
+    "@polymer/lit-element": "^0.6.3"
   }
 }

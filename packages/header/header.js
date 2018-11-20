@@ -3,44 +3,28 @@ import { DashedBase, borderImage, sharedStyles, html } from '@dashedjs/dashed-ba
 export class DashedHeader extends DashedBase {
   constructor() {
     super();
+    this.borderRadius = 0;
+    this.dashWidth = 1;
+    this.dashLength = 4;
+    this.dashSpacing = 4;
+
+    this.navItems = [];
+    this.navOpened = false;
+    this._mobile = true;
   }
 
-  static get observedAttributes() {
-    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
-  }
-
-  get navItems() {
-    return this._navItems || [];
-  }
-  set navItems(value) {
-    this._navItems = value;
-    this.render();
-    this.addListeners();
-  }
-
-  get logoSrc() {
-    return this.getAttribute('logo-src') || '';
-  }
-  set logoSrc(value) {
-    this.setAttribute('logo-src', value);
-  }
-
-  get logoText() {
-    return this.getAttribute('logo-text') || '';
-  }
-  set logoText(value) {
-    this.setAttribute('logo-text', value);
-  }
-
-  get iconRight() {
-    return this.getAttribute('icon-right');
-  }
-  set iconRight(value) {
-    this.setAttribute('icon-right', value);
+  static get properties() {
+    return {
+      ...super.properties,
+      logoSrc: String,
+      logoText: String,
+      iconRight: String,
+      navItems: Array,
+      navOpened: Boolean
+    };
   }
 
   connectedCallback() {
-    this.render();
     this.addListeners();
   }
 
@@ -48,24 +32,7 @@ export class DashedHeader extends DashedBase {
     this.removeListeners();
   }
 
-  attributeChangedCallback(attr, newVal, oldVal) {
-    this.render();
-    this.addListeners();
-  }
-
   addListeners() {
-    this._menuButton = this.shadowRoot.querySelector('#menubutton');
-    this._menuButton.addEventListener('click', this._toggleMenu.bind(this));
-    this._nav = this.shadowRoot.querySelector('nav');
-    this._navItemLinks = [...this._nav.querySelectorAll('a[role="menuitem"]')];
-    this._navItemLinks.forEach((navItemLink, i) => {
-      navItemLink.addEventListener('click', this._activateLink.bind(this));
-      if (this.navItems[i].onclick) {
-        console.log('function = ', this.navItems[i].onclick.bind(this));
-        navItemLink.addEventListener('click', this.navItems[i].onclick.bind(this));
-      }
-    });
-
     this._mediaQueryList = window.matchMedia('screen and (min-width: 600px)');
     this._mediaQueryList.addListener(this._mediaQueryChange.bind(this));
     this._mediaQueryChange(this._mediaQueryList);
@@ -74,24 +41,13 @@ export class DashedHeader extends DashedBase {
   }
 
   removeListeners() {
-    this._menuButton.removeEventListener('click', this._toggleMenu.bind(this));
-    this._navItemLinks.forEach(menuitem => menuitem.removeEventListener('click', this._activateLink.bind(this)));
     this._mediaQueryList.removeListener(this._mediaQueryChange.bind(this));
 
     document.removeEventListener('click', this._closeMenu.bind(this));
   }
 
   render() {
-    const [borderRadius = 0, dashWidth = 1, dashLength = 4, dashSpacing = 4] = [
-      this.borderRadius,
-      this.dashWidth,
-      this.dashLength,
-      this.dashSpacing
-    ].map(attr => (attr ? parseFloat(attr) : undefined));
-    const dashColor = this.dashColor;
-
-    const template = document.createElement('template');
-    template.innerHTML = html`
+    return html`
       ${sharedStyles}
       <style>
         :host {
@@ -115,8 +71,10 @@ export class DashedHeader extends DashedBase {
           grid-template-columns: max-content max-content auto max-content;
           align-items: center;
 
-          border-bottom: ${dashWidth}px solid;
-          border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
+          border-bottom: ${this.dashWidth}px solid;
+          border-image: ${
+            borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.dashColor, this.borderRadius)
+          };
         }
 
         header::before {
@@ -224,7 +182,13 @@ export class DashedHeader extends DashedBase {
         }
       </style>
       <header>
-        <button id="menubutton" aria-expanded="false" aria-controls="menu" aria-label="Menu button">
+        <button
+          @click="${e => this._toggleMenu(e)}"
+          id="menubutton"
+          aria-expanded="${this.navOpened}"
+          aria-controls="menu"
+          aria-label="Menu button"
+        >
           <dashed-icon name="menu"></dashed-icon>
         </button>
         <a href="#">
@@ -232,19 +196,18 @@ export class DashedHeader extends DashedBase {
           <h1 class="logo-text">${this.logoText}</h1>
         </a>
         <div></div>
-        <nav class="sidebar" role="navigation">
+        <nav class="${this._mobile ? 'sidebar' : 'topbar'} ${this.navOpened ? 'open' : ''}" role="navigation">
           <ul id="menu" role="menu" aria-labelledby="menubutton">
             ${
-              this.navItems
-                .map(navItem => {
-                  return `
-                <li role="none">
-                  <a role="menuitem" href="${navItem.href}" onclick=${navItem.onclick}>
-                  ${navItem.text}
-                  </a>
-                </li>`;
-                })
-                .join(' ')
+              this.navItems.map(
+                navItem => html`
+                  <li role="none">
+                    <a @click="${e => this._activateLink(e)}" role="menuitem" href="${navItem.href}">
+                      ${navItem.text}
+                    </a>
+                  </li>
+                `
+              )
             }
           </ul>
           <!-- <slot name="ul"></slot> -->
@@ -252,31 +215,16 @@ export class DashedHeader extends DashedBase {
         <slot name="right-slot"></slot>
       </header>
     `;
-    while (this.shadowRoot.firstChild) {
-      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-    }
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   _toggleMenu(e) {
-    if (!this._nav.classList.contains('open')) {
-      this._openMenu(e);
-    } else {
-      this._closeMenu(e);
-    }
-  }
-
-  _openMenu(e) {
-    e.stopPropagation();
-    this._nav.classList.add('open');
-    this._menuButton.setAttribute('aria-expanded', 'true');
+    this.navOpened = !this.navOpened;
   }
 
   _closeMenu(e) {
-    if (e.target != this && this._nav.classList.contains('open')) {
+    if (e.target != this && this.navOpened) {
       e.stopPropagation();
-      this._nav.classList.remove('open');
-      this._menuButton.setAttribute('aria-expanded', 'false');
+      this.navOpened = false;
     }
   }
 
@@ -293,12 +241,12 @@ export class DashedHeader extends DashedBase {
   _mediaQueryChange(e) {
     if (e.matches) {
       /* Desktop */
-      this._nav.classList.remove('sidebar');
-      this._nav.classList.add('topbar');
+      this._mobile = false;
+      this.requestUpdate();
     } else {
       /* Mobile */
-      this._nav.classList.remove('topbar');
-      this._nav.classList.add('sidebar');
+      this._mobile = true;
+      this.requestUpdate();
     }
   }
 }

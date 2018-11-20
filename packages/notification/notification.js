@@ -1,33 +1,16 @@
-import { DashedBase, borderImage, sharedStyles } from '@dashedjs/dashed-base';
+import { DashedBase, borderImage, sharedStyles, html } from '@dashedjs/dashed-base';
 
 export class DashedNotification extends DashedBase {
   constructor() {
     super();
-  }
-
-  static get observedAttributes() {
-    return ['border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
-  }
-
-  connectedCallback() {
-    this.render();
-  }
-
-  attributeChangedCallback(attr, newVal, oldVal) {
-    this.render();
+    this.borderRadius = 0;
+    this.dashWidth = 1;
+    this.dashLength = 10;
+    this.dashSpacing = 4;
   }
 
   render() {
-    const [borderRadius = 0, dashWidth = 1, dashLength = 10, dashSpacing = 4] = [
-      this.borderRadius,
-      this.dashWidth,
-      this.dashLength,
-      this.dashSpacing
-    ].map(attr => (attr ? parseFloat(attr) : undefined));
-    const dashColor = this.dashColor
-
-    const template = document.createElement('template');
-    template.innerHTML = `
+    return html`
       ${sharedStyles}
       <style>
         :host {
@@ -50,8 +33,10 @@ export class DashedNotification extends DashedBase {
           position: relative;
           padding: 4px;
 
-          border: ${dashWidth}px solid;
-          border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
+          border: ${this.dashWidth}px solid;
+          border-image: ${
+            borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.dashColor, this.borderRadius)
+          };
         }
 
         .notification__icon {
@@ -77,10 +62,6 @@ export class DashedNotification extends DashedBase {
         <button class="notification__button">x</button>
       </div>
     `;
-    while (this.shadowRoot.firstChild) {
-      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-    }
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
 customElements.define('dashed-notification', DashedNotification);

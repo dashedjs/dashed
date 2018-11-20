@@ -1,40 +1,24 @@
-import { DashedBase, borderImage, sharedStyles } from '@dashedjs/dashed-base/base.js';
+import { DashedBase, borderImage, sharedStyles, html } from '@dashedjs/dashed-base/base.js';
 
 export class DashedButton extends DashedBase {
   constructor() {
     super();
+    this.borderRadius = 0;
+    this.dashWidth = 2;
+    this.dashLength = 8;
+    this.dashSpacing = 2.4;
   }
 
-  static get observedAttributes() {
-    return ['rounded', 'border-radius', 'dash-width', 'dash-length', 'dash-spacing', 'dash-color'];
-  }
-
-  get rounded() {
-    return this.hasAttribute('rounded');
-  }
-  set rounded(value) {
-    Boolean(value) ? this.setAttribute('rounded', '') : this.removeAttribute('rounded');
-  }
-
-  connectedCallback() {
-    this.render();
-  }
-
-  attributeChangedCallback(attr, newVal, oldVal) {
-    this.render();
+  static get properties() {
+    return {
+      ...super.properties,
+      disabled: Boolean,
+      rounded: Boolean
+    };
   }
 
   render() {
-    const [borderRadius = 0, dashWidth = 2, dashLength = 8, dashSpacing = 2.4] = [
-      this.borderRadius,
-      this.dashWidth,
-      this.dashLength,
-      this.dashSpacing
-    ].map(attr => (attr ? parseFloat(attr) : undefined));
-    const dashColor = this.dashColor;
-
-    const template = document.createElement('template');
-    template.innerHTML = `
+    return html`
       ${sharedStyles}
       <style>
         :host {
@@ -67,8 +51,10 @@ export class DashedButton extends DashedBase {
           position: relative;
           transition: color 50ms ease-in-out;
 
-          border: ${dashWidth}px solid;
-          border-image: ${borderImage(dashWidth, dashLength, dashSpacing, dashColor, borderRadius)};
+          border: ${this.dashWidth}px solid;
+          border-image: ${
+            borderImage(this.dashWidth, this.dashLength, this.dashSpacing, this.dashColor, this.borderRadius)
+          };
         }
 
         button::before {
@@ -78,8 +64,8 @@ export class DashedButton extends DashedBase {
           left: 0;
           right: 0;
           bottom: 0;
-          border: ${dashWidth}px;
-          border-radius: ${borderRadius}px;
+          border: ${this.dashWidth}px;
+          border-radius: ${this.borderRadius}px;
           // background: var(--color-primary-light);
         }
 
@@ -90,10 +76,6 @@ export class DashedButton extends DashedBase {
       </style>
       <button type="button"><slot name="icon"></slot> <slot></slot></button>
     `;
-    while (this.shadowRoot.firstChild) {
-      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-    }
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
 customElements.define('dashed-button', DashedButton);

@@ -1,26 +1,20 @@
-export class DashedIcon extends HTMLElement {
+import { html, LitElement } from '@polymer/lit-element';
+
+export class DashedIcon extends LitElement {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open', delegatesFocus: true });
+    this.iconsRoot = 'assets/dashed-icons';
   }
 
-  static get observedAttributes() {
-    return ['name', 'src', 'size'];
-  }
-
-  get name() {
-    return this.getAttribute('name');
-  }
-  set name(value) {
-    this.setAttribute('name', value);
-    if (!this.ariaLabel) this.ariaLabel = value;
-  }
-
-  get src() {
-    return this.getAttribute('src');
-  }
-  set src(value) {
-    this.setAttribute('src', value);
+  static get properties() {
+    return {
+      name: String,
+      src: String,
+      iconsRoot: String,
+      size: Number,
+      ariaLabel: String,
+      ariaLabelledBy: String
+    };
   }
 
   get iconsRoot() {
@@ -30,39 +24,10 @@ export class DashedIcon extends HTMLElement {
     return this.setAttribute('icons-root', value);
   }
 
-  get size() {
-    return this.getAttribute('size');
-  }
-  set size(value) {
-    this.setAttribute('size', value);
-  }
-
-  get ariaLabel() {
-    return this.hasAttribute('aria-label');
-  }
-  set ariaLabel(value) {
-    this.setAttribute('aria-label', value);
-  }
-
-  get ariaLabelledBy() {
-    return this.hasAttribute('aria-labelledby');
-  }
-  set ariaLabelledBy(value) {
-    this.setAttribute('aria-labelledby', value);
-  }
-
-  connectedCallback() {
-    this.render();
-  }
-
-  attributeChangedCallback(attr, newVal, oldVal) {
-    this.render();
-  }
-
   async render() {
-    const svg = await this.iconSvg();
-    const template = document.createElement('template');
-    template.innerHTML = `
+    const svg = await this.fetchIcon();
+    console.log({ svg });
+    return html`
       <style>
         :host {
           display: inline-flex;
@@ -91,7 +56,7 @@ export class DashedIcon extends HTMLElement {
           width: 18px;
           height: 18px;
         }
-        
+
         span {
           display: inline-flex;
           align-items: center;
@@ -100,33 +65,23 @@ export class DashedIcon extends HTMLElement {
           height: 100%;
         }
       </style>
-      <span>${svg}</span>
+      <span .innerHTML="${svg}"></span>
     `;
-    while (this.shadowRoot.firstChild) {
-      this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-    }
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
-  async iconSvg() {
+  async fetchIcon() {
     let iconUrl;
     if (this.src) {
       iconUrl = /^\//.test(this.src) ? this.src : `/${this.src}`;
-      return this.fetchIcon(iconUrl);
-    }
-    if (this.name) {
+    } else if (this.name) {
       iconUrl = /^\//.test(this.iconsRoot)
         ? `${this.iconsRoot}/${this.name}.svg`
         : `/${this.iconsRoot}/${this.name}.svg`;
-      return this.fetchIcon(iconUrl);
     }
-  }
-
-  async fetchIcon(url) {
     try {
-      const res = await fetch(url, { cache: 'force-cache' });
+      const res = await fetch(iconUrl, { cache: 'force-cache' });
       if (res.status !== 200) {
-        throw new Error(`Error code ${res.status}, failed to load icon: ${url}.
+        throw new Error(`Error code ${res.status}, failed to load icon: ${iconUrl}.
           Check your 'src' attribute or try setting 'iconsRoot' if you are using the 'name' attribute inside a framework
           (For Angular set 'iconsRoot' attribute to 'assets/dashed-icons')`);
       }
