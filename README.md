@@ -1,7 +1,7 @@
 # Dashed Web Components
 
 The project is at a very early stage! This work has just begun and is still in progress ...
-It contains a set of dashed web components. You can control the dash - width/length/spacing, which is not possible with the CSS dashed border. I use the CSS border-image to show the SVG dash. CSSPaintWorklet might be an alternative to the SVG border-image.
+It contains a set of dashed web components. You can control the dash - width/length/spacing/color, which is not possible with regular CSS dashed border. I use the CSS border-image to show the SVG dash. CSSPaintWorklet might be an alternative to the SVG url(), especially since CSS custom properties are not supported inside (background/border)-image 's url.
 
 ## Objectives
 
